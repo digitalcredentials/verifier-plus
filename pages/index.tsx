@@ -455,10 +455,11 @@ const Home: NextPage = () => {
               value={textArea}
               onChange={(e) => setTextArea(e.target.value)}
               id='textarea'
+              data-testid="vc-text-area"
             />
             <label id='textarea-label' htmlFor='textarea'>Paste JSON or URL</label>
           </div>
-          <Button className={styles.verifyTextArea} text='Verify' onClick={verifyTextArea}/>
+          <Button data-testid="verify-btn" className={styles.verifyTextArea} text='Verify' onClick={verifyTextArea}/>
         </div>
 
         {textAreaError && (
