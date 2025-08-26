@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import testVC from "./testVC";
 
 test("should navigate to the about page", async ({ page }) => {
   // Start from the index page (the baseURL is set via the webServer in the playwright.config.ts)
@@ -9,4 +10,10 @@ test("should navigate to the about page", async ({ page }) => {
 //  await expect(page).toHaveURL("/about");
   // The new page should contain an h1 with "About"
   await expect(page.locator("h1")).toContainText("VerifierPlus");
+    await page.getByTestId('vc-text-area').fill(testVC)
+   //await page.getByTestId('verify-btn').click()
+   await page.getByRole('button', { name: 'Verify' }).click()
+   await expect(page.getByText('no expiration date set')).toBeVisible();
+
+
 });
