@@ -42,10 +42,9 @@ testVCs.forEach(({ name, vc, expected }) => {
     await page.goto("/");
     await page.getByTestId('vc-text-area').fill(remoteTestVC)
     await page.getByRole('button', { name: 'Verify' }).click()
-    expected.forEach(async expectedText=>{
-       await expect(page.getByText(expectedText)).toBeVisible();
-    })
-   
+    for(let i=0; i < expected.length; i++) {
+       await expect(page.getByText(expected[i])).toBeVisible();
+    }
     // could maybe use something like the next to explicitly test each verification result, maybe using data-testid
     //  await expect(page.getByRole('heading')).toHaveText(expected);
   });
