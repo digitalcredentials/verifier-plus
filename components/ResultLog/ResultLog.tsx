@@ -15,7 +15,20 @@ export enum LogId {
 export enum LogMessages {
   HasExpired = 'has expired',
   NoExpirationDate = 'no expiration date set',
-  HasNotExpired = 'has not expired'
+  HasNotExpired = 'has not expired',
+  GeneralError = 'There was an error verifing this credential.',
+  UnknownError = 'There was an unknown error verifing this credential.',
+  WellFormed = 'is in a supported credential format',
+  MalFormed = 'is not a recognized credential type',
+  ValidSignature = 'has a valid signature',
+  InvalidSignature = 'has an invalid signature',
+  KnownIssuer = 'has been issued by a known issuer',
+  UnknownIssuer = "isn't in a known issuer registry",
+  NotRevoked = 'has not been revoked',
+  Revoked = 'has been revoked',
+  UncheckedRevocation = 'Revocation status could not be checked',
+  NotSuspended = 'has not been suspended',
+  Suspended = 'has been suspended'
 }
 
 export const ResultLog = ({ verificationResult }: ResultLogProps) => {
@@ -80,7 +93,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
   let hasSigningError = false;
   let error: CredentialError;
   let hasResult = verificationResult.results[0];
-  
+
 
   if (hasResult) {
     let log = []
@@ -112,13 +125,13 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
   const renderResult = () => {
     const result = verificationResult.results[0];
     const isMalformedError =
-    result?.error?.message ===
-    'Credential could not be checked for verification and may be malformed.';
+      result?.error?.message ===
+      'Credential could not be checked for verification and may be malformed.';
     const { credential } = result;
     if (shouldShowKnownError) {
       return (
         <div>
-          <p className={styles.error}>There was an error verifing this credential.</p>
+          <p className={styles.error}>{LogMessages.GeneralError}</p>
           {/* <p className={styles.error}>There was an error verifing this credential. <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span> </p> */}
           {/* {moreInfo && (
             <div className={styles.errorContainer}>
@@ -140,7 +153,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
       )
     } else if (hasUnknownError) {
       return (<div>
-        <p className={styles.error}>There was an unknown error verifing this credential. <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span></p>
+        <p className={styles.error}>{LogMessages.UnknownError} <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span></p>
         {moreInfo && (
           <div className={styles.errorContainer}>
             <p>"Please try again, or let us know."</p>
@@ -149,13 +162,13 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
       </div>)
 
     } else {
-      
+
       const hasCredentialStatus = credential.credentialStatus !== undefined;
       //const hasRevocationStatus = hasStatusPurpose(credential, StatusPurpose.Revocation);
       const hasSuspensionStatus = hasStatusPurpose(credential, StatusPurpose.Suspension);
-      const expirationDateExists = 
-  ('expirationDate' in credential && !!(credential as any).expirationDate) || 
-  ('validUntil' in credential && !!(credential as any).validUntil);
+      const expirationDateExists =
+        ('expirationDate' in credential && !!(credential as any).expirationDate) ||
+        ('validUntil' in credential && !!(credential as any).validUntil);
       const expirationStatus = logMap[LogId.Expiration]; // could be true, false, or undefined
 
       return (
@@ -164,31 +177,31 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
           {/* <div className={styles.header}>Issuer</div> */}
 
           <ResultItem
-  verified={!isMalformedError}
-  positiveMessage="is in a supported credential format"
-  negativeMessage="is not a recognized credential type"
-/>
-         
+            verified={!isMalformedError}
+            positiveMessage={LogMessages.WellFormed}
+            negativeMessage={LogMessages.MalFormed}
+          />
+
           <ResultItem
             verified={logMap[LogId.ValidSignature] ?? true}
-            positiveMessage="has a valid signature"
-            negativeMessage="has an invalid signature"
+            positiveMessage={LogMessages.ValidSignature}
+            negativeMessage={LogMessages.InvalidSignature}
           />
           <ResultItem
             verified={logMap[LogId.IssuerDIDResolves] ?? true}
-            positiveMessage="has been issued by a known issuer"
-            warningMessage="isn't in a known issuer registry"
+            positiveMessage={LogMessages.KnownIssuer}
+            warningMessage={LogMessages.UnknownIssuer}
             sourceLogId={LogId.IssuerDIDResolves}
             issuer={true}
           />
 
-{ 
-  <ResultItem
-    verified={logMap[LogId.RevocationStatus] !== undefined ? logMap[LogId.RevocationStatus] : true}
-    positiveMessage="has not been revoked"
-    negativeMessage={verificationResult.hasStatusError ? "Revocation status could not be checked" : "has been revoked"}
-  />
-}
+          {
+            <ResultItem
+              verified={logMap[LogId.RevocationStatus] !== undefined ? logMap[LogId.RevocationStatus] : true}
+              positiveMessage={LogMessages.NotRevoked}
+              negativeMessage={verificationResult.hasStatusError ? LogMessages.UncheckedRevocation : LogMessages.Revoked}
+            />
+          }
           {/* </div> */}
           {/* <div className={styles.credential}> */}
           {/* <div className={styles.header}>Credential</div> */}
@@ -203,8 +216,8 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
           {hasCredentialStatus && hasSuspensionStatus &&
             <ResultItem
               verified={logMap[LogId.SuspensionStatus] ?? true}
-              positiveMessage="has not been suspended"
-              negativeMessage="has been suspended"
+              positiveMessage={LogMessages.NotSuspended}
+              negativeMessage={LogMessages.Suspended}
             />}
 
 
