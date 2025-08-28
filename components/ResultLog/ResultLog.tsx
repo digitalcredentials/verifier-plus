@@ -4,12 +4,18 @@ import type { ResultLogProps } from './ResultLog.d';
 import styles from './ResultLog.module.css';
 import { StatusPurpose, hasStatusPurpose } from 'lib/credentialStatus';
 
-enum LogId {
+export enum LogId {
   ValidSignature = 'valid_signature',
   Expiration = 'expiration',
   IssuerDIDResolves = 'registered_issuer',
   RevocationStatus = 'revocation_status',
   SuspensionStatus = 'suspension_status'
+}
+
+export enum LogMessages {
+  HasExpired = 'has expired',
+  NoExpirationDate = 'no expiration date set',
+  HasNotExpired = 'has not expired'
 }
 
 export const ResultLog = ({ verificationResult }: ResultLogProps) => {
@@ -57,7 +63,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               ? 'priority_high'
               : 'close'}
         </span>
-        <div>
+        <div data-testid={`${sourceLogId}-msg`}>
           {status === 'positive' && positiveMessage}
           {status === 'warning' && warningMessage}
           {status === 'negative' && negativeMessage}
@@ -189,8 +195,8 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
 
           <ResultItem
             verified={expirationStatus === false ? false : true}
-            positiveMessage={!expirationDateExists ? "no expiration date set" : "has not expired"}
-            warningMessage="has expired"
+            positiveMessage={!expirationDateExists ? LogMessages.NoExpirationDate : LogMessages.HasNotExpired}
+            warningMessage={LogMessages.HasExpired}
             sourceLogId={LogId.Expiration}
           />
 
