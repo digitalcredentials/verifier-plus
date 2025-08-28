@@ -1,17 +1,18 @@
 import { test, expect } from "@playwright/test";
 import testVC from "./testVC";
+import { LogId, LogMessages } from "components/ResultLog/ResultLog";
 
 const testVCs =
   [
     {
       name: 'no expiration date set',
       vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
-      expected: ['no expiration date set']
+      expected: [LogMessages.NoExpirationDate]
     },
     {
       name: 'has expired',
       vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
-      expected: ['has expired']
+      expected: [LogMessages.HasExpired]
     },
     {
       name: 'has been revoked',
@@ -31,7 +32,7 @@ const testVCs =
     {
       name: 'expired and revoked',
       vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
-      expected: ['has expired', 'has been revoked']
+      expected: [LogMessages.HasExpired, 'has been revoked']
     }
   ]
 
@@ -51,20 +52,6 @@ testVCs.forEach(({ name, vc, expected }) => {
 });
 
 
-
-/** will want to move the visible tests into an array of checks 
-test("revoked and expired", async ({ page }) => {
-  const response = await fetch("https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json");
-  const remoteTestVC = await response.text()
-  await page.goto("/");
-  await page.getByTestId('vc-text-area').fill(remoteTestVC)
-  await page.getByRole('button', { name: 'Verify' }).click()
-  await expect(page.getByText('has expired')).toBeVisible();
-  await expect(page.getByText('has been revoked')).toBeVisible();
-})
-*/
-
-
 test("local vc", async ({ page }) => {
   // Start from the index page (the baseURL is set via the webServer in the playwright.config.ts)
   await page.goto("/");
@@ -76,5 +63,13 @@ test("local vc", async ({ page }) => {
   await page.getByTestId('vc-text-area').fill(testVC)
   //await page.getByTestId('verify-btn').click()
   await page.getByRole('button', { name: 'Verify' }).click()
-  await expect(page.getByText('no expiration date set')).toBeVisible();
+  await expect(page.getByText(LogMessages.NoExpirationDate)).toBeVisible();
 });
+
+test("get by id", async ({page}) => {
+  await page.goto("/")
+  await page.getByTestId('vc-text-area').fill(testVC)
+  //await page.getByTestId('verify-btn').click()
+  await page.getByRole('button', { name: 'Verify' }).click()
+  await expect(page.getByTestId(`${LogId.Expiration}-msg`)).toHaveText(LogMessages.NoExpirationDate)
+})
