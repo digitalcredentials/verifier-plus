@@ -43,8 +43,8 @@ testVCs.forEach(({ name, vc, expected }) => {
     await page.goto("/");
     await page.getByTestId('vc-text-area').fill(remoteTestVC)
     await page.getByRole('button', { name: 'Verify' }).click()
-    for(let i=0; i < expected.length; i++) {
-       await expect(page.getByText(expected[i])).toBeVisible();
+    for (let i = 0; i < expected.length; i++) {
+      await expect(page.getByText(expected[i])).toBeVisible();
     }
     // could maybe use something like the next to explicitly test each verification result, maybe using data-testid
     //  await expect(page.getByRole('heading')).toHaveText(expected);
@@ -66,10 +66,26 @@ test("local vc", async ({ page }) => {
   await expect(page.getByText(LogMessages.NoExpirationDate)).toBeVisible();
 });
 
-test("get by id", async ({page}) => {
-  await page.goto("/")
-  await page.getByTestId('vc-text-area').fill(testVC)
-  //await page.getByTestId('verify-btn').click()
-  await page.getByRole('button', { name: 'Verify' }).click()
-  await expect(page.getByTestId(`${LogId.Expiration}-msg`)).toHaveText(LogMessages.NoExpirationDate)
-})
+const logTests = [
+  {
+    name: 'legacy-noStatus',
+    vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
+    expected: { expiry: LogMessages.NoExpirationDate }
+  },
+  {
+    name: 'has expired',
+    vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
+    expected: { expiry: LogMessages.HasExpired }
+  },
+
+]
+
+logTests.forEach(({ name, vc, expected }) => {
+  test(`log: ${name}`, async ({ page }) => {
+    await page.goto("/")
+    await page.getByTestId('vc-text-area').fill(vc)
+    await page.getByRole('button', { name: 'Verify' }).click()
+    await expect(page.getByTestId(`${LogId.Expiration}-msg`)).toHaveText(expected.expiry)
+    await expect(page.getByText(expected.expiry)).toBeVisible();
+  })
+});
