@@ -7,7 +7,11 @@ const logTests = [
     vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
     expected:  [
         { testId: TestId.ExpirationLogMsg, expectedText: LogMessages.NoExpirationDate },
-        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.NotRevoked }
+        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.NotRevoked },
+        { testId: TestId.SigningLogMsg, expectedText: LogMessages.ValidSignature },
+        { testId: TestId.MalformedLogMsg, expectedText: LogMessages.WellFormed },
+        { testId: TestId.IssuerLogMsg, expectedText: LogMessages.KnownIssuer }
+
     ] 
   },
   {
@@ -15,12 +19,16 @@ const logTests = [
     vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
     expected: [
         { testId: TestId.ExpirationLogMsg, expectedText: LogMessages.HasExpired },
-        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.Revoked }
+        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.Revoked },
+        { testId: TestId.SigningLogMsg, expectedText: LogMessages.ValidSignature },
+        { testId: TestId.MalformedLogMsg, expectedText: LogMessages.WellFormed },
+        { testId: TestId.IssuerLogMsg, expectedText: LogMessages.KnownIssuer }
     ]
   }
 ]
 
-// NOTE: these tests pass the url for the VC to V+, whereas the other tests above go get the text and paste that in.
+// NOTE: these tests paste the url for the VC into V+, 
+// The tests in app.spec.ts retrieve the json and paste that.
 logTests.forEach(({ name, vc, expected }) => {
   test(`log: ${name}`, async ({ page }) => {
     await page.goto("/")
