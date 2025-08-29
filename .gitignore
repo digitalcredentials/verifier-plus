@@ -11,7 +11,11 @@
 !.yarn/versions
 
 # testing
+/blob-report/
 /coverage
+/playwright/.cache/
+/playwright-report/
+/test-results/
 
 # next.js
 /.next/
@@ -40,6 +44,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+
 # Playwright
 node_modules/
 /test-results/
@@ -51,3 +56,4 @@ compose.yml
 compose.yaml
 docker-compose.yml
 docker-compose.yaml
+
