@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import testVC from "./testVC";
 import { TestId, LogMessages } from "components/ResultLog/ResultLog";
 
 const logTests = [
@@ -7,14 +6,17 @@ const logTests = [
     name: 'legacy-noStatus-noExpiry',
     vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
     expected:  [
-      { testId: TestId.ExpirationLogMsg, expectedText: LogMessages.NoExpirationDate },
-      { testId: TestId.RevocationLogMsg, expectedText: LogMessages.NotRevoked }
+        { testId: TestId.ExpirationLogMsg, expectedText: LogMessages.NoExpirationDate },
+        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.NotRevoked }
     ] 
   },
   {
     name: 'legacy-revoked-expired',
     vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
-    expected: [{ testId: TestId.ExpirationLogMsg, expectedText: LogMessages.HasExpired }]
+    expected: [
+        { testId: TestId.ExpirationLogMsg, expectedText: LogMessages.HasExpired },
+        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.Revoked }
+    ]
   }
 ]
 
@@ -27,7 +29,7 @@ logTests.forEach(({ name, vc, expected }) => {
     for (let i = 0; i < expected.length; i++) {
       const logTest = expected[i];
       await expect(page.getByText(logTest.expectedText)).toBeVisible();
-      await expect(page.getByTestId(`${logTest.testId}-msg`)).toHaveText(logTest.expectedText)
+      await expect(page.getByTestId(logTest.testId)).toHaveText(logTest.expectedText)
     }
   })
 });
