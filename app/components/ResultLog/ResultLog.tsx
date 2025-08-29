@@ -13,6 +13,10 @@ export enum LogId {
   SuspensionStatus = 'suspension_status'
 }
 
+export enum TestId {
+  ExpirationLogMsg = 'expiration-log-msg'
+}
+
 export enum LogMessages {
   HasExpired = 'has expired',
   NoExpirationDate = 'no expiration date set',
@@ -42,6 +46,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
     negativeMessage = '',
     warningMessage = '',
     sourceLogId = '',
+    testId = '',
     issuer = false
   }) => {
     const isIssuerCheck = sourceLogId === LogId.IssuerDIDResolves;
@@ -77,7 +82,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               ? 'priority_high'
               : 'close'}
         </span>
-        <div data-testid={`${sourceLogId}-msg`}>
+        <div data-testid={testId}>
           {status === 'positive' && positiveMessage}
           {status === 'warning' && warningMessage}
           {status === 'negative' && negativeMessage}
@@ -212,6 +217,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
             positiveMessage={!expirationDateExists ? LogMessages.NoExpirationDate : LogMessages.HasNotExpired}
             warningMessage={LogMessages.HasExpired}
             sourceLogId={LogId.Expiration}
+            testId={TestId.ExpirationLogMsg}
           />
 
           {hasCredentialStatus && hasSuspensionStatus &&
