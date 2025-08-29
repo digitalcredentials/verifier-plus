@@ -13,7 +13,16 @@ export enum LogId {
 }
 
 export enum TestId {
-  ExpirationLogMsg = 'expiration-log-msg'
+  MalformedLogMsg = 'malformed-log-msg',
+  SigningLogMsg = 'signing-log-msg',
+  IssuerLogMsg = 'issuer-log-msg',
+  ExpirationLogMsg = 'expiration-log-msg',
+  RevocationLogMsg = 'revocation-log-msg',
+  SuspensionLogMsg = 'suspension-log-msg',
+  GeneralErrorMsg = 'general-error-msg',
+  UnknownErrorMsg = 'unknown-error-msg',
+  SigningErrorMsg = 'signing-error-msg',
+  MalformedErrorMsg = 'malformed-error-msg'
 }
 
 export enum LogMessages {
@@ -136,7 +145,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
     if (shouldShowKnownError) {
       return (
         <div>
-          <p className={styles.error}>{LogMessages.GeneralError}</p>
+          <p data-testid={TestId.GeneralErrorMsg} className={styles.error}>{LogMessages.GeneralError}</p>
           {/* <p className={styles.error}>There was an error verifing this credential. <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span> </p> */}
           {/* {moreInfo && (
             <div className={styles.errorContainer}>
@@ -148,7 +157,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
     } else if (hasSigningError) {
       return (
         <div>
-          <p className={styles.error}>"This credential cannot be verified. Note that the JSON code is sensitive to changes in code text including spaces and characters. Please ensure you have input the correct code." <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span></p>
+          <p data-testid={TestId.SigningErrorMsg} className={styles.error}>"This credential cannot be verified. Note that the JSON code is sensitive to changes in code text including spaces and characters. Please ensure you have input the correct code." <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span></p>
           {moreInfo && (
             <div className={styles.errorContainer}>
               <p>Something has changed in the credential so that the electronic signature no longer matches the content. This could be something as simple as inadvertently adding a space.</p>
@@ -158,7 +167,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
       )
     } else if (hasUnknownError) {
       return (<div>
-        <p className={styles.error}>{LogMessages.UnknownError} <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span></p>
+        <p data-testid={TestId.UnknownErrorMsg} className={styles.error}>{LogMessages.UnknownError} <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span></p>
         {moreInfo && (
           <div className={styles.errorContainer}>
             <p>"Please try again, or let us know."</p>
@@ -185,18 +194,21 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
             verified={!isMalformedError}
             positiveMessage={LogMessages.WellFormed}
             negativeMessage={LogMessages.MalFormed}
+            testId={TestId.MalformedLogMsg}
           />
 
           <ResultItem
             verified={logMap[LogId.ValidSignature] ?? true}
             positiveMessage={LogMessages.ValidSignature}
             negativeMessage={LogMessages.InvalidSignature}
+            testId={TestId.SigningLogMsg}
           />
           <ResultItem
             verified={logMap[LogId.IssuerDIDResolves] ?? true}
             positiveMessage={LogMessages.KnownIssuer}
             warningMessage={LogMessages.UnknownIssuer}
             sourceLogId={LogId.IssuerDIDResolves}
+            testId={TestId.IssuerLogMsg}
             issuer={true}
           />
 
@@ -205,6 +217,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               verified={logMap[LogId.RevocationStatus] !== undefined ? logMap[LogId.RevocationStatus] : true}
               positiveMessage={LogMessages.NotRevoked}
               negativeMessage={verificationResult.hasStatusError ? LogMessages.UncheckedRevocation : LogMessages.Revoked}
+              testId={TestId.RevocationLogMsg}
             />
           }
           {/* </div> */}
@@ -224,6 +237,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               verified={logMap[LogId.SuspensionStatus] ?? true}
               positiveMessage={LogMessages.NotSuspended}
               negativeMessage={LogMessages.Suspended}
+              testId={TestId.SuspensionLogMsg}
             />}
 
 
