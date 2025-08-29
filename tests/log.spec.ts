@@ -1,43 +1,49 @@
 import { test, expect } from "@playwright/test";
 import { TestId, LogMessages } from "components/ResultLog/ResultLog";
 
-const logTests = [
-  {
-    name: 'legacy-noStatus-noExpiry',
-    vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
-    expected:  [
-        { testId: TestId.ExpirationLogMsg, expectedText: LogMessages.NoExpirationDate },
-        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.NotRevoked },
-        { testId: TestId.SigningLogMsg, expectedText: LogMessages.ValidSignature },
-        { testId: TestId.MalformedLogMsg, expectedText: LogMessages.WellFormed },
-        { testId: TestId.IssuerLogMsg, expectedText: LogMessages.KnownIssuer }
+const baseExpectedLogMessages = {
+    expiry: LogMessages.HasNotExpired,
+    revocation: LogMessages.NotRevoked,
+    signature: LogMessages.ValidSignature,
+    issuer: LogMessages.KnownIssuer,
+    wellFormed: LogMessages.WellFormed
+}
 
-    ] 
-  },
-  {
-    name: 'legacy-revoked-expired',
-    vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
-    expected: [
-        { testId: TestId.ExpirationLogMsg, expectedText: LogMessages.HasExpired },
-        { testId: TestId.RevocationLogMsg, expectedText: LogMessages.Revoked },
-        { testId: TestId.SigningLogMsg, expectedText: LogMessages.ValidSignature },
-        { testId: TestId.MalformedLogMsg, expectedText: LogMessages.WellFormed },
-        { testId: TestId.IssuerLogMsg, expectedText: LogMessages.KnownIssuer }
-    ]
-  }
+const logTests = [
+    {
+        name: 'legacy-noStatus-noExpiry',
+        vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
+        expected: { expiry: LogMessages.NoExpirationDate }
+    },
+    {
+        name: 'legacy-revoked-expired',
+        vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
+        expected: { expiry: LogMessages.HasExpired, revocation: LogMessages.Revoked }
+    }
 ]
 
 // NOTE: these tests paste the url for the VC into V+, 
 // The tests in app.spec.ts retrieve the json and paste that.
 logTests.forEach(({ name, vc, expected }) => {
-  test(`log: ${name}`, async ({ page }) => {
-    await page.goto("/")
-    await page.getByTestId('vc-text-area').fill(vc)
-    await page.getByRole('button', { name: 'Verify' }).click()
-    for (let i = 0; i < expected.length; i++) {
-      const logTest = expected[i];
-      await expect(page.getByText(logTest.expectedText)).toBeVisible();
-      await expect(page.getByTestId(logTest.testId)).toHaveText(logTest.expectedText)
-    }
-  })
+    test(`log: ${name}`, async ({ page }) => {
+        const expectedMessages ={ ...baseExpectedLogMessages, ...expected }
+        await page.goto("/")
+        await page.getByTestId('vc-text-area').fill(vc)
+        await page.getByRole('button', { name: 'Verify' }).click()
+        // check well formed message matches expected
+        await expect(page.getByText(expectedMessages.wellFormed)).toBeVisible();
+        await expect(page.getByTestId(TestId.MalformedLogMsg)).toHaveText(expectedMessages.wellFormed)
+        // check signature message matches expected
+        await expect(page.getByText(expectedMessages.signature)).toBeVisible();
+        await expect(page.getByTestId(TestId.SigningLogMsg)).toHaveText(expectedMessages.signature)
+        // check issuer message matches expected
+        await expect(page.getByText(expectedMessages.issuer)).toBeVisible();
+        await expect(page.getByTestId(TestId.IssuerLogMsg)).toHaveText(expectedMessages.issuer)
+        // check revocation message matches expected
+        await expect(page.getByText(expectedMessages.revocation)).toBeVisible();
+        await expect(page.getByTestId(TestId.RevocationLogMsg)).toHaveText(expectedMessages.revocation)
+        // check expired message matches expected
+        await expect(page.getByText(expectedMessages.expiry)).toBeVisible();
+        await expect(page.getByTestId(TestId.ExpirationLogMsg)).toHaveText(expectedMessages.expiry)
+    })
 });
