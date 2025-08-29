@@ -6,7 +6,11 @@
 .pnp.js
 
 # testing
+/blob-report/
 /coverage
+/playwright/.cache/
+/playwright-report/
+/test-results/
 
 # next.js
 /.next/
@@ -39,3 +43,4 @@ compose.yaml
 *.tsbuildinfo
 
 compose.yaml
+
