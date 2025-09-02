@@ -22,7 +22,8 @@ export enum TestId {
   GeneralErrorMsg = 'general-error-msg',
   UnknownErrorMsg = 'unknown-error-msg',
   SigningErrorMsg = 'signing-error-msg',
-  MalformedErrorMsg = 'malformed-error-msg'
+  MalformedErrorMsg = 'malformed-error-msg',
+  ResultLog = "result-log"
 }
 
 export enum LogMessages {
@@ -186,7 +187,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
       const expirationStatus = logMap[LogId.Expiration]; // could be true, false, or undefined
 
       return (
-        <div className={styles.resultLog}>
+        <div className={styles.resultLog} data-testid={TestId.ResultLog}>
           {/* <div className={styles.issuer}> */}
           {/* <div className={styles.header}>Issuer</div> */}
 

@@ -13,12 +13,12 @@ const logTests = [
     {
         name: 'legacy-noStatus-noExpiry',
         vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
-        expected: { expiry: LogMessages.NoExpirationDate }
+        expected: { ...baseExpectedLogMessages, expiry: LogMessages.NoExpirationDate }
     },
     {
         name: 'legacy-revoked-expired',
         vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
-        expected: { expiry: LogMessages.HasExpired, revocation: LogMessages.Revoked }
+        expected: { ...baseExpectedLogMessages, expiry: LogMessages.HasExpired, revocation: LogMessages.Revoked }
     }
 ]
 
@@ -45,5 +45,9 @@ logTests.forEach(({ name, vc, expected }) => {
         // check expired message matches expected
         await expect(page.getByText(expectedMessages.expiry)).toBeVisible();
         await expect(page.getByTestId(TestId.ExpirationLogMsg)).toHaveText(expectedMessages.expiry)
+        // finally take a screenshot of the log area to capture the combination of checkmarks and x's
+        // NOTE: it is very important that this screenshot be taken when the app is working/displaying correctly
+        // SEE: https://playwright.dev/docs/test-snapshots
+        await expect(page.getByTestId('result-log')).toHaveScreenshot();
     })
 });
