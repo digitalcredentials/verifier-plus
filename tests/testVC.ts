@@ -1,4 +1,6 @@
-export default `{
+
+
+const sampleVC = `{
     "@context": [
         "https://www.w3.org/ns/credentials/v2"
     ],
@@ -20,3 +22,21 @@ export default `{
         "proofValue": "z55KdEZMVuxVgDvhoFz8h4YC7nTqKMYuM7Fy4C1Qpff2TU9A3DMAmMM32Xkzdix6sYa5dhq7XLPHceYJz6pRz1Wmf"
     }
 }`
+
+export const getTamperedVC = () => {
+    const tampered = getSampleVC()
+    tampered.credentialSubject.name = 'Taylor Tuna'
+    return tampered
+}
+
+export const getTamperedVCAsString = () => {
+    return JSON.stringify(getTamperedVC())
+}
+
+export const getSampleVC = ()=>{
+    return JSON.parse(sampleVC)
+}
+
+export const getSampleVCAsString = () => {
+    return JSON.stringify(getSampleVC())
+}
