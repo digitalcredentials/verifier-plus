@@ -22,6 +22,11 @@ const logTests = [
         expected: { ...baseExpectedLogMessages, expiry: LogMessages.HasExpired, revocation: LogMessages.Revoked }
     },
     {
+        name: 'oidf-noStatus-expired',
+        vc: 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/oidf-noStatus-expired.json',
+        expected: { ...baseExpectedLogMessages, expiry: LogMessages.HasExpired, revocation: LogMessages.NotRevoked }
+    },
+    {
         name: 'noRegistry-noStatus-noExpiry',
         vc: '  https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/noRegistry-noStatus-noExpiry.json',
         expected: { ...baseExpectedLogMessages, expiry: LogMessages.NoExpirationDate, issuer: LogMessages.UnknownIssuer }
