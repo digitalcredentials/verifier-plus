@@ -20,7 +20,13 @@ const logTests = [
         name: 'legacy-revoked-expired',
         vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
         expected: { ...baseExpectedLogMessages, expiry: LogMessages.HasExpired, revocation: LogMessages.Revoked }
+    },
+    {
+        name: 'noRegistry-noStatus-noExpiry',
+        vc: '  https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/noRegistry-noStatus-noExpiry.json',
+        expected: { ...baseExpectedLogMessages, expiry: LogMessages.NoExpirationDate, issuer: LogMessages.UnknownIssuer }
     }
+  
 ]
 
 // NOTE: these tests paste the url for the VC into V+, 
@@ -59,6 +65,5 @@ test('tampered', async ({ page }) => {
     await page.getByTestId('vc-text-area').fill(tamperedVC)
     await page.getByRole('button', { name: 'Verify' }).click()
     await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError);
-
-
 })
+
