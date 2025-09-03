@@ -51,4 +51,9 @@ testVCs.forEach(({ name, vc, expected }) => {
   });
 });
 
-
+test('invalid', async ({ page }) => {
+    await page.goto("/")
+    await page.getByTestId('vc-text-area').fill('blah')
+    await page.getByRole('button', { name: 'Verify' }).click()
+    await expect(page.getByText('The JSON is not a Verifiable Credential')).toBeVisible()
+})
