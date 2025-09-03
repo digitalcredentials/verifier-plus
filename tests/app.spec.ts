@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import testVC from "./testVC";
+import { getSampleVCAsString} from "./testVC";
 import { TestId, LogMessages } from "components/ResultLog/ResultLog";
 
 const testVCs =
