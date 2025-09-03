@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { getTamperedVC, getTamperedVCAsString } from "./testVC";
 import { TestId, LogMessages } from "components/ResultLog/ResultLog";
 
 const baseExpectedLogMessages = {
@@ -26,7 +27,7 @@ const logTests = [
 // The tests in app.spec.ts retrieve the json and paste that.
 logTests.forEach(({ name, vc, expected }) => {
     test(`log: ${name}`, async ({ page }) => {
-        const expectedMessages ={ ...baseExpectedLogMessages, ...expected }
+        const expectedMessages = { ...baseExpectedLogMessages, ...expected }
         await page.goto("/")
         await page.getByTestId('vc-text-area').fill(vc)
         await page.getByRole('button', { name: 'Verify' }).click()
@@ -48,6 +49,16 @@ logTests.forEach(({ name, vc, expected }) => {
         // finally take a screenshot of the log area to capture the combination of checkmarks and x's
         // NOTE: it is very important that this screenshot be taken when the app is working/displaying correctly
         // SEE: https://playwright.dev/docs/test-snapshots
-        await expect(page.getByTestId('result-log')).toHaveScreenshot();
+        await expect(page.getByTestId(TestId.ResultLog)).toHaveScreenshot();
     })
 });
+
+test('tampered', async ({ page }) => {
+    const tamperedVC = getTamperedVCAsString()
+    await page.goto("/")
+    await page.getByTestId('vc-text-area').fill(tamperedVC)
+    await page.getByRole('button', { name: 'Verify' }).click()
+    await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError);
+
+
+})
