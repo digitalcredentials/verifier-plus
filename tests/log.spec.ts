@@ -35,6 +35,11 @@ const logTests = [
         name: 'mixedRegistry-validStatus-noExpiry',
         vc: 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/mixedRegistry-validStatus-noExpiry.json',
         expected: { expiry: LogMessages.NoExpirationDate, revocation: LogMessages.NotRevoked }
+    },
+    {
+        name: 'mixedRegistry-validStatus-expired',
+        vc: 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/dataIntegrityProof/didKey/twoOIDF-validStatus-expired.json',
+        expected: { expiry: LogMessages.HasExpired, revocation: LogMessages.NotRevoked }
     }
 ]
     
