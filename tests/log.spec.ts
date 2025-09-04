@@ -14,25 +14,30 @@ const logTests = [
     {
         name: 'legacy-noStatus-noExpiry',
         vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
-        expected: { ...baseExpectedLogMessages, expiry: LogMessages.NoExpirationDate }
+        expected: { expiry: LogMessages.NoExpirationDate }
     },
     {
         name: 'legacy-revoked-expired',
         vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/legacy-revokedStatus-expired.json',
-        expected: { ...baseExpectedLogMessages, expiry: LogMessages.HasExpired, revocation: LogMessages.Revoked }
+        expected: { expiry: LogMessages.HasExpired, revocation: LogMessages.Revoked }
     },
     {
         name: 'oidf-noStatus-expired',
         vc: 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/oidf-noStatus-expired.json',
-        expected: { ...baseExpectedLogMessages, expiry: LogMessages.HasExpired, revocation: LogMessages.NotRevoked }
+        expected: { expiry: LogMessages.HasExpired, revocation: LogMessages.NotRevoked }
     },
     {
         name: 'noRegistry-noStatus-noExpiry',
-        vc: '  https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/noRegistry-noStatus-noExpiry.json',
-        expected: { ...baseExpectedLogMessages, expiry: LogMessages.NoExpirationDate, issuer: LogMessages.UnknownIssuer }
+        vc: 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/noRegistry-noStatus-noExpiry.json',
+        expected: { expiry: LogMessages.NoExpirationDate, issuer: LogMessages.UnknownIssuer }
+    },
+    {
+        name: 'mixedRegistry-validStatus-noExpiry',
+        vc: 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/mixedRegistry-validStatus-noExpiry.json',
+        expected: { expiry: LogMessages.NoExpirationDate, revocation: LogMessages.NotRevoked }
     }
-  
 ]
+    
 
 // NOTE: these tests paste the url for the VC into V+, 
 // The tests in app.spec.ts retrieve the json and paste that.
@@ -64,6 +69,7 @@ logTests.forEach(({ name, vc, expected }) => {
     })
 });
 
+// errors that prevent the log from being shown
 test('tampered', async ({ page }) => {
     const tamperedVC = getTamperedVCAsString()
     await page.goto("/")
