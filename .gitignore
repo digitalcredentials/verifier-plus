@@ -3,7 +3,12 @@
 # dependencies
 /node_modules
 /.pnp
-.pnp.js
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
 # testing
 /coverage
@@ -25,17 +30,24 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-.env*.local
-.env
-
-docker-compose.yml
-compose.yaml
+# env files (can opt-in for committing if needed)
+.env*
 
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
+next-env.d.ts
 
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+compose.yml
 compose.yaml
+docker-compose.yml
+docker-compose.yaml
