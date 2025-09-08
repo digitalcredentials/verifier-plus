@@ -1,4 +1,4 @@
-import type { Subject } from '../types/credential';
+import type { Subject } from '../types/credential.d';
 
 export function extractNameFromOBV3Identifier (credentialSubject: Subject): string | undefined {
     

@@ -1,16 +1,16 @@
 import { DateTime, Info } from 'luxon';
-import { CompletionDocumentSection } from 'components/CompletionDocumentSection/CompletionDocumentSection';
-import { Issuer } from 'components/Issuer/Issuer';
-import { IssuerObject, VerifiableCredential } from 'types/credential.d';
+import { CompletionDocumentSection } from '@/components/CompletionDocumentSection/CompletionDocumentSection';
+import { Issuer } from '@/components/Issuer/Issuer';
+import { IssuerObject, VerifiableCredential } from '@/types/credential.d';
 import type { CredentialCardProps, CredentialDisplayFields } from './CredentialCard.d';
 import styles from './CredentialCard.module.css';
-import { InfoBlock } from 'components/InfoBlock/InfoBlock';
-import { VerifyIndicator } from 'components/VerifyIndicator/VerifyIndicator';
+import { InfoBlock } from '@/components/InfoBlock/InfoBlock';
+import { VerifyIndicator } from '@/components/VerifyIndicator/VerifyIndicator';
 import { useState } from 'react';
-import { useVerificationContext } from "lib/verificationContext";
+import { useVerificationContext } from "@/lib/verificationContext";
 import ReactMarkdown from 'react-markdown';
-import { getExpirationDate, getIssuanceDate } from 'lib/credentialValidityPeriod';
-import { extractNameFromOBV3Identifier } from 'lib/extractNameFromOBV3Identifier';
+import { getExpirationDate, getIssuanceDate } from '@/lib/credentialValidityPeriod';
+import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifier';
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
   // TODO: add back IssuerInfoModal

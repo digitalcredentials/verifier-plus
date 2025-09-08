@@ -1,6 +1,8 @@
 import * as verifierCore from '@digitalcredentials/verifier-core';
-import { VerifiablePresentation, PresentationError } from 'types/presentation.d';
-import { VerifiableCredential, CredentialError, CredentialErrorTypes } from 'types/credential.d';
+import type { VerifiablePresentation } from '@/types/presentation.d';
+import { PresentationError } from '@/types/presentation.d';
+import type { VerifiableCredential, CredentialError } from '@/types/credential.d';
+import { CredentialErrorTypes } from '@/types/credential.d';
 //import { KnownDidRegistries } from './../data/knownRegistries'
 
 export type ResultLog = {

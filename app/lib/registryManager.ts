@@ -1,5 +1,5 @@
 import { RegistryClient } from '@digitalcredentials/issuer-registry-client';
-import { KnownDidRegistries } from 'data/knownRegistries';
+import { KnownDidRegistries } from '../../data/knownRegistries';
 
 /**
  * Loads remote Known Issuer / Known Verifier DID registries from config.

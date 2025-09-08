@@ -1,7 +1,7 @@
-import { Button } from 'components/Button/Button';
+import { Button } from '@/components/Button/Button';
 import type { ScanModalProps } from './ScanModal.d';
 import styles from './ScanModal.module.css';
-import { QrReader } from 'react-qr-reader';
+//import { QrReader } from 'react-qr-reader';
 import { Result } from '@zxing/library';
 
 export const ScanModal = ({ isOpen, setIsOpen, onScan, setErrorMessage }: ScanModalProps) => {
@@ -38,11 +38,11 @@ export const ScanModal = ({ isOpen, setIsOpen, onScan, setErrorMessage }: ScanMo
                 </button>
               </div>
               <div className={styles.cameraContainer}>
-                <QrReader 
+              {/*  <QrReader 
                   onResult={(result, error) => handleScan(result, error)}
                   constraints={{facingMode: "environment"}}
                   className={styles.qrReader}
-                />
+                /> */}
               </div>
               <div className={styles.bottomRow}>
                 <Button 

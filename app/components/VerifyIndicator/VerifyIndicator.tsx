@@ -1,4 +1,4 @@
-import { useVerificationContext } from "lib/verificationContext";
+import { useVerificationContext } from "@/lib/verificationContext";
 import styles from './VerifyIndicator.module.css';
 
 export const VerifyIndicator = () => {

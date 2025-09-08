@@ -1,5 +1,5 @@
 import type { TopBarProps } from "./TopBar.d"
-import { ToggleSwitch } from "components/ToggleSwitch/ToggleSwitch";
+import { ToggleSwitch } from "@/components/ToggleSwitch/ToggleSwitch";
 import Link from "next/link";
 import { useCallback, useEffect } from "react"
 import styles from './TopBar.module.css'

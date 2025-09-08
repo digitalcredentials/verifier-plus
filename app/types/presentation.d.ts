@@ -1,4 +1,4 @@
-import type { VerifiableCredential, Proof, Issuer } from './credential';
+import type { VerifiableCredential, Proof, Issuer } from '@/types/credential.d';
 
 export type VerifiablePresentation = {
   readonly '@context': string | string[];
