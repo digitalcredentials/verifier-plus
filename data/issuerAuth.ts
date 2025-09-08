@@ -1,4 +1,4 @@
-import type { RegistryRaw } from '../lib/registry';
+import type { RegistryRaw } from '@/lib/registry';
 
 export type IssuerAuthEntry = Record<string, any>
 

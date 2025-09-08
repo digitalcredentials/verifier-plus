@@ -1,10 +1,10 @@
-import { ResultLog } from 'components/ResultLog/ResultLog';
+import { ResultLog } from '@/components/ResultLog/ResultLog';
 import React from 'react';
-import { VerificationControls } from 'components/VerificationControls/VerificationControls';
-import { useVerificationContext } from 'lib/verificationContext';
-import { VerifyResponse } from 'types/credential';
+import { VerificationControls } from '@/components/VerificationControls/VerificationControls';
+import { useVerificationContext } from '@/lib/verificationContext';
+import { VerifyResponse } from '@/types/credential';
 import styles from './VerificationCard.module.css';
-import { RegistryCard } from 'components/RegistryCard/RegistryCard';
+import { RegistryCard } from '@/components/RegistryCard/RegistryCard';
 
 export const VerificationCard = () => {
   const { loading, verificationResult, verifyCredential } = useVerificationContext();

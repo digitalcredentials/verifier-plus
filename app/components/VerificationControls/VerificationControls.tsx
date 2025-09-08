@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon';
 import type { VerificationControlsProps } from './VerificationControls.d';
 import styles from './VerificationControls.module.css';
-import { ResultLog } from 'components/ResultLog/ResultLog';
-import { VerifyResponse } from 'types/credential';
+import { ResultLog } from '@/components/ResultLog/ResultLog';
+import { VerifyResponse } from '@/types/credential';
 
 export const VerificationControls = ({ verificationResult, verifyCredential }: VerificationControlsProps ) => {
   const { verified } = verificationResult;

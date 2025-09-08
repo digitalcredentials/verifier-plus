@@ -1,6 +1,6 @@
 import { fromQrCode } from '@digitalcredentials/vpqr';
 import { securityLoader } from '@digitalcredentials/security-document-loader';
-import type { VerifiableCredential } from '../types/credential';
+import type { VerifiableCredential } from '../types/credential.d';
 import { VerifiableObject, extractCredentialsFrom } from './verifiableObject';
 
 const documentLoader = securityLoader().build();

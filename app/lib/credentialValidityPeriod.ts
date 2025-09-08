@@ -2,7 +2,7 @@ import {
   VerifiableCredential,
   VerifiableCredentialV1,
   VerifiableCredentialV2
-} from 'types/credential.d';
+} from '../types/credential.d';
 
 function getIssuanceDateV1(credential: VerifiableCredential): string | undefined {
   return (credential as VerifiableCredentialV1).issuanceDate;

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { CredentialError } from 'types/credential.d';
+import { CredentialError } from '@/types/credential.d';
 import type { ResultLogProps } from './ResultLog.d';
 import styles from './ResultLog.module.css';
-import { StatusPurpose, hasStatusPurpose } from 'lib/credentialStatus';
+import { StatusPurpose, hasStatusPurpose } from '@/lib/credentialStatus';
 
 enum LogId {
   ValidSignature = 'valid_signature',

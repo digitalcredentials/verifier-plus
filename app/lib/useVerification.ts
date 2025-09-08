@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { IssuerObject, VerifiableCredential, VerifyResponse } from 'types/credential';
+import { VerifiableCredential, VerifyResponse } from '../types/credential.d';
 import { VerificationContextType } from './verificationContext';
 
 export const useVerification = (credential?: VerifiableCredential) => {
   const [verificationResult, setVerificationResult] = useState<VerifyResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [timerExpired, setTimerExpired] = useState(false);
-  const timeout = useRef<number>();
+  const timeout = useRef<number>(0);
   //console.log('Trying to verify:', credential)
 
   const issuerName = typeof credential?.issuer === 'string' ? credential?.issuer : credential?.issuer.name;

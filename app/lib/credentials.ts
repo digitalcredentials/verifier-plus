@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { dbCredentials } from './database';
-import { VerifiablePresentation } from '../types/presentation';
-import { VerifiableCredential } from '../types/credential';
+import { VerifiablePresentation } from '../types/presentation.d';
+import { VerifiableCredential } from '../types/credential.d';
 
 export type CredentialPayload = {
   // a signed VP containing one VC (more than one will be supported in the future)

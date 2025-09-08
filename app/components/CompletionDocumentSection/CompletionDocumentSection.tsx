@@ -1,4 +1,4 @@
-import { InfoBlock } from 'components/InfoBlock/InfoBlock';
+import { InfoBlock } from '@/components/InfoBlock/InfoBlock';
 import { DateTime } from 'luxon';
 import type { CompletionDocumentSectionProps } from './CompletionDocumentSection.d';
 import styles from './CompletionDocumentSection.module.css';

@@ -1,4 +1,4 @@
-import { issuerAuthRegistry, IssuerAuthEntry } from '../data/issuerAuth';
+import { issuerAuthRegistry, IssuerAuthEntry } from '../../data/issuerAuth';
 
 type RegistryMetadata = {
   created: string;

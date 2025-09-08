@@ -1,5 +1,5 @@
-import { VerifiableCredential } from '../types/credential';
-import { VerifiablePresentation } from '../types/presentation';
+import { VerifiableCredential } from '../types/credential.d';
+import { VerifiablePresentation } from '../types/presentation.d';
 import { verifyCredential, verifyPresentation } from './validate';
 
 /**
