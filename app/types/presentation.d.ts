@@ -8,7 +8,4 @@ export type VerifiablePresentation = {
   readonly proof?: Proof;
 }
 
-export enum PresentationError {
-  IsNotVerified = 'Presentation is not verified.',
-  CouldNotBeVerified = 'Presentation encoded could not be checked for verification and may be malformed.',
-}
+

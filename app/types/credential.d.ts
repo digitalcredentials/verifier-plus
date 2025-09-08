@@ -129,19 +129,12 @@ export type VerifiableCredentialV2 = {
 
 export type VerifiableCredential = VerifiableCredentialV1 | VerifiableCredentialV2;
 
-export enum CredentialErrorTypes {
-  IsNotVerified = 'Credential is not verified.',
-  CouldNotBeVerified = 'Credential could not be checked for verification and may be malformed.',
-  DidNotInRegistry = 'Could not find issuer in registry with given DID.',
-}
-
-
-
 export type ErrorDetails = {
   cause: ErrorCause;
   code?: string;
   url?: string;
 }
+
 
 export type CredentialError = {
   details: ErrorDetails,
