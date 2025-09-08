@@ -1,9 +1,17 @@
 import * as verifierCore from '@digitalcredentials/verifier-core';
 import type { VerifiablePresentation } from '@/types/presentation.d';
-import { PresentationError } from '@/types/presentation.d';
 import type { VerifiableCredential, CredentialError } from '@/types/credential.d';
-import { CredentialErrorTypes } from '@/types/credential.d';
+//import { CredentialErrorTypes } from '@/types/credential.d';
 //import { KnownDidRegistries } from './../data/knownRegistries'
+
+const NOT_VERIFIED_ERROR = 'Presentation encoded could not be checked for verification and may be malformed.'
+
+enum CredentialErrorTypes {
+  IsNotVerified = 'Credential is not verified.',
+  CouldNotBeVerified = 'Credential could not be checked for verification and may be malformed.',
+  DidNotInRegistry = 'Could not find issuer in registry with given DID.',
+}
+
 
 export type ResultLog = {
   id: string,
@@ -36,7 +44,7 @@ export async function verifyPresentation(
     return result;
   } catch (err) {
     console.warn(err);
-    throw new Error(PresentationError.CouldNotBeVerified);
+    throw new Error(NOT_VERIFIED_ERROR);
   }
 }
 
