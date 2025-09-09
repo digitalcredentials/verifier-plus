@@ -1,3 +1,4 @@
+'use client'
 import type { TopBarProps } from "./TopBar.d"
 import { ToggleSwitch } from "@/components/ToggleSwitch/ToggleSwitch";
 import Link from "next/link";
