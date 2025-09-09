@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link';
 import type { BottomBarProps } from './BottomBar.d'
 import styles from './BottomBar.module.css'
