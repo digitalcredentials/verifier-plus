@@ -119,11 +119,10 @@ export async function get({ publicCredentialId }: any): Promise<GetCredentialRes
  * Unshares a credential from database by id (performs a "soft delete").
  *
  * @param publicCredentialId {string}
- * @param payload {CredentialPayload} - { vp: signedVerifiablePresentation }
  *
  * @returns {Promise<GetCredentialResult>}
  */
-export async function unshare({ publicCredentialId, payload }: any): Promise<GetCredentialResult> {
+export async function unshare({ publicCredentialId }: any): Promise<GetCredentialResult> {
   const Credentials = await dbCredentials.open();
   const result = await Credentials.findOne({ id: publicCredentialId });
 
@@ -144,10 +143,6 @@ export async function unshare({ publicCredentialId, payload }: any): Promise<Get
   }
 
   const unshareResult: any = await Credentials.updateOne(filter, update, options);
-
-  //console.log('VC unshare result:', JSON.stringify(unshareResult, null, 2));
-
   await dbCredentials.close();
-
   return { ...unshareResult }
 }
