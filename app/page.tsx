@@ -2,7 +2,7 @@
 import styles from './index.module.css'
 import { Accordion } from '@/components/Accordion/Accordion'
 import { Button } from '@/components/Button/Button'
-import { useEffect, useState  } from 'react'
+import { useEffect, useState } from 'react'
 import { ScanModal } from '@/components/ScanModal/ScanModal'
 import { CredentialCard } from '@/components/CredentialCard/CredentialCard'
 import { Container } from '@/components/Container/Container'
@@ -28,7 +28,7 @@ const randomPageId = uuidv4();
 
 
 export default function Home() {
-const [textArea, setTextArea] = useState('');
+  const [textArea, setTextArea] = useState('');
   const [isDark, setIsDark] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -109,6 +109,11 @@ const [textArea, setTextArea] = useState('');
     return () => window.removeEventListener('popstate', handlePopstate);
   }, []);
 
+
+
+
+
+
   useEffect(() => {
     if (credential === undefined) {
       setTextAreaError(false);
@@ -117,13 +122,17 @@ const [textArea, setTextArea] = useState('');
     }
   }, [credential])
 
+
+
+
+
   useEffect(() => {
     if (file !== null) {
       const reader = new FileReader();
 
       reader.onload = (e) => {
         let text = e.target?.result as string ?? '';
-        if(file.type == 'image/png'){
+        if (file.type == 'image/png') {
           // Search for keyword and extract the object following it
           const keyword = 'openbadgecredential';
           const keywordIndex = text.indexOf(keyword);
@@ -204,10 +213,10 @@ const [textArea, setTextArea] = useState('');
     if (vc === null) { return; }
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
     const vcUrl = urlParams.get('vc');
-    
+
     // Create a new history state
     const state = { credential: vc[0] };
-    
+
     if (vcUrl) {
       // If we're coming from a URL, replace the current state
       history.replaceState(state, '', `#verify?vc=${vcUrl}`);
@@ -215,9 +224,9 @@ const [textArea, setTextArea] = useState('');
       // If we're navigating within the app, push a new state
       history.pushState(state, '', '#verify/results');
     }
-    
+
     // get first cred. this will eventually need to be changed
-    if(vc.length > 1) { setWasMulti(true); }
+    if (vc.length > 1) { setWasMulti(true); }
     setCredential(vc[0]);
     return result;
   }
@@ -247,7 +256,7 @@ const [textArea, setTextArea] = useState('');
 
     const chapiResult = await navigator.credentials.get(credentialQuery) as any
 
-    if(!chapiResult?.data) {
+    if (!chapiResult?.data) {
       console.log('no credentials received');
     }
 
@@ -272,11 +281,11 @@ const [textArea, setTextArea] = useState('');
         },
         body: JSON.stringify({ url }),
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const responseJson = await response.json();
       return JSON.stringify(responseJson);
     } catch (error) {
@@ -303,8 +312,8 @@ const [textArea, setTextArea] = useState('');
       if (fromUrl !== "") {
         input = fromUrl;
       }
-    } else { 
-      input = textArea; 
+    } else {
+      input = textArea;
     }
 
     const result = verifyCredential(input);
@@ -315,14 +324,14 @@ const [textArea, setTextArea] = useState('');
     }
   }
 
-  async function onScan(json: string) : Promise<Boolean> {
+  async function onScan(json: string): Promise<Boolean> {
     const fromqr = await credentialsFromQrText(json);
     if (fromqr === null) { return false; }
     // get first cred. this will eventually need to be changed
     const cred = fromqr[0];
 
     history.pushState(null, '', '#verify/results');
-    if(fromqr.length > 1) { setWasMulti(true); }
+    if (fromqr.length > 1) { setWasMulti(true); }
     setCredential(cred);
     return true;
   }
@@ -342,17 +351,17 @@ const [textArea, setTextArea] = useState('');
   if (credential !== undefined) {
     return (
       <main className={styles.container}>
-        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential}/>
+        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
         <div className={styles.verifyContainer}>
           <VerificationContext.Provider value={credentialContext}>
             <Container>
-              <CredentialCard credential={credential} wasMulti={wasMulti}/>
+              <CredentialCard credential={credential} wasMulti={wasMulti} />
               <VerificationCard />
             </Container>
           </VerificationContext.Provider>
         </div>
 
-        <BottomBar isDark={isDark}/>
+        <BottomBar isDark={isDark} />
       </main>
     );
   }
@@ -382,10 +391,10 @@ const [textArea, setTextArea] = useState('');
         exchangeUrl,
         onFetchVP: (vp: any) => {
           const parsed = JSON.parse(vp);
-          setCredential(parsed.verifiablePresentation.verifiableCredential[0]);          
+          setCredential(parsed.verifiablePresentation.verifiableCredential[0]);
           if (!credential) { // Only set credential if it hasn't been set yet
             setCredential(parsed.verifiablePresentation.verifiableCredential[0]);
-          }else{
+          } else {
             window.clearInterval(newIntervalId);
             stopPolling(newIntervalId);
           }
@@ -394,7 +403,7 @@ const [textArea, setTextArea] = useState('');
       });
     }, 3000); // poll every 3 seconds
   };
-  
+
   const stopPolling = (newIntervalId: string | number | NodeJS.Timeout | undefined) => {
     if (newIntervalId) {
       clearInterval(newIntervalId); // Clear the interval when stopping polling
@@ -403,7 +412,7 @@ const [textArea, setTextArea] = useState('');
 
   return (
     <main className={styles.container}>
-      <TopBar isDark={isDark} setIsDark={setIsDark} setCredential={setCredential}/>
+      <TopBar isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
       <div className={styles.contentContainer}>
         <div>
           <h1 className={styles.title}>
@@ -438,7 +447,7 @@ const [textArea, setTextArea] = useState('');
             onOpen={startPolling}
             onClose={() => stopPolling(undefined)}
             title="Request credentials from LCW" >
-{/*             <p>
+            {/*             <p>
               <a className={styles.lcwLink} target={'_blank'} rel={'noreferrer'} href={lcwRequestUrl}><h3>Mobile Link</h3></a>
             </p> */}
             <div><h5 className={styles.lcwLink}>Open Request in wallet via QR Code:</h5></div>
@@ -459,7 +468,7 @@ const [textArea, setTextArea] = useState('');
             />
             <label id='textarea-label' htmlFor='textarea'>Paste JSON or URL</label>
           </div>
-          <Button className={styles.verifyTextArea} text='Verify' onClick={verifyTextArea}/>
+          <Button className={styles.verifyTextArea} text='Verify' onClick={verifyTextArea} />
         </div>
 
         {textAreaError && (
@@ -468,7 +477,7 @@ const [textArea, setTextArea] = useState('');
               warning
             </span>
             <p className={styles.error}>
-            The JSON is not a Verifiable Credential or an Open Badge 3.0
+              The JSON is not a Verifiable Credential or an Open Badge 3.0
             </p>
           </div>
         )}
@@ -482,14 +491,14 @@ const [textArea, setTextArea] = useState('');
         >
           <div className={styles.dndUploadText}>
             Drag and drop a file here or <label className={styles.fileUpload}>
-            <input type='file' onChange={handleBrowse}/>
-            <span className={styles.browseLink}>browse</span>
-          </label>
+              <input type='file' onChange={handleBrowse} />
+              <span className={styles.browseLink}>browse</span>
+            </label>
           </div>
           <span className={styles.supportText}>Supports JSON</span>
         </div>
 
-        <div style={{marginTop: '1em'}}>
+        <div style={{ marginTop: '1em' }}>
           <Button
             icon={<span className="material-icons">qr_code_scanner</span>}
             className={styles.scan}
@@ -516,11 +525,11 @@ const [textArea, setTextArea] = useState('');
             text='Request from web wallet via CHAPI'
             onClick={requestVcOnClick}
           />
-        </div> 
+        </div>
 
-        <ScanModal isOpen={isOpen} setIsOpen={setIsOpen} onScan={onScan} setErrorMessage={setScanError}/>
+        <ScanModal isOpen={isOpen} setIsOpen={setIsOpen} onScan={onScan} setErrorMessage={setScanError} />
       </div>
-      <BottomBar isDark={isDark}/>
+      <BottomBar isDark={isDark} />
     </main>
   )
 }
