@@ -1,43 +1,41 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import * as credentials from 'lib/credentials';
+import { NextRequest } from 'next/server';
+import * as credentials from '@/lib/credentials';
 
 /**
  * GET /api/credentials/{publicCredentialId}
+ */
+export async function GET(request: NextRequest, { params }: { params: Promise<{ publicCredentialId: string }> }) {
+  try {
+    const { publicCredentialId } = await params
+    // Returns a GetCredentialResult instance
+    const result = await credentials.get({ publicCredentialId });
+    return Response.json(result)
+  } catch (e) {
+    processError(e)
+  }
+}
+
+
+/**
  * DELETE /api/credentials/{publicCredentialId}
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ publicCredentialId: string }> }) {
   try {
-    let result: any;
-    const { publicCredentialId } = req.query;
-
-    if(!publicCredentialId) {
-      throw new Error('Credential id is required.');
-    }
-
-    switch (req.method) {
-      case 'GET':
-        // Returns a GetCredentialResult instance
-        result = await credentials.get({ publicCredentialId });
-        res.status(200).json(result);
-        break;
-      case 'DELETE':
-        result = await credentials.unshare({ publicCredentialId, payload: req.body });
-        res.status(200).json({ message: 'Credential unshared.' });
-        break;
-      default:
-        res.setHeader('Allow', 'GET, DELETE');
-        res.status(405).json({ status: 'Method not allowed' })
-    }
-  } catch (error: any) {
-    console.error(error);
-
-    const statusCode = error.statusCode || 400;
-
-    res.status(statusCode).json({
-      status: error.statusText || 'Invalid request',
-      // @ts-ignore
-      error: error.message
-    })
+    const { publicCredentialId } = await params
+    await credentials.unshare({ publicCredentialId });
+    return Response.json({ message: 'Credential unshared.' })
+  } catch (e) {
+    processError(e)
   }
+}
+
+function processError(thrownError: any) {
+  console.error(thrownError);
+  const status = thrownError.statusCode || 400;
+  const error = {
+    status: thrownError.statusText || 'Invalid request',
+    // @ts-ignore
+    error: err.message
+  }
+  return Response.json(error, { status });
 }
