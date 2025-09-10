@@ -1,18 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest } from 'next/server';
 import axios from 'axios'
-import { CredentialErrorTypes } from 'types/credential';
+
 /**
  * GET /api/healthz
- * @param req
- * @param res
+ * @param request
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(request: NextRequest) {
     try {
-        if (req.method === 'GET') {
             let allChecksPass = true;
             let error;
-            const protocol = req.headers["x-forwarded-proto"] === 'https' ? 'https' : 'http'
-            const host = req.headers.host;
+            const protocol = request.headers.get("x-forwarded-proto") === 'https' ? 'https' : 'http'
+            const host = request.headers.get('host')
             const baseURL = `${protocol}://${host}/`
             const credentialsURL = `${baseURL}api/credentials`
 
@@ -77,22 +75,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (allChecksPass) {
                 console.log("server status ok")
-                res.status(200).json({ message: 'verifier-plus server status: ok.', healthy: true });
+                return Response.json({ message: 'verifier-plus server status: ok.', healthy: true });
             } else {
-                res.status(503).json({ error, healthy: false })
+                return Response.json({ error, healthy: false }, {status:503});
             }
-        } else {
-            res.status(400).json({ status: 'Invalid Request' })
-        }
+       
     } catch (e) {
         console.log(`exception in healthz: ${JSON.stringify(e)}`)
-        res.status(503).json({
+        return Response.json({
             error: `verifier-plus healthz check failed with error: ${e}`,
             healthy: false
-        })
+        }, {status:503});
     }
 }
 
+// a VP for testing
 const vp = {
     vp: {
         holder: 'does not matter what is here, just that it is here, at least for now',
