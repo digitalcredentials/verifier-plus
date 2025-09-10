@@ -1,64 +1,62 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { exchanges } from '../../../lib/exchanges';
+import { NextRequest } from 'next/server';
+import { exchanges } from '@/lib/exchanges';
+
+/**
+ * GET /api/exchanges/[txId]
+ * @param request
+ */
+export async function GET(request: NextRequest,
+  { params }: { params: Promise<{ txId: string }> }) {
+  try {
+    const { txId } = await params
+    console.log('Looking for tx', txId, exchanges.get(txId))
+    if (exchanges.has(txId)) {
+      return Response.json(exchanges.get(txId));
+    } else {
+      console.log('Incoming GET: tx not found.')
+      return new Response('Not found', { status: 404 });
+    }
+  } catch (err: any) {
+    return processError(err);
+  }
+}
 
 /**
  * POST /api/exchanges/[txId]
- * @param req
- * @param res
+ * @param request
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(request: NextRequest,
+  { params }: { params: Promise<{ txId: string }> }) {
   try {
-    const { txId } = req.query;
-
-    if(!txId) {
-      throw new Error('Transaction id is required.');
+    const { txId } = await params
+    const body = await request.json()
+    console.log('Incoming POST:', body)
+    const payload = JSON.stringify(body);
+    if (payload === '{}') {
+      // Initial POST by the wallet, send the VP Request query
+      const query = vprQuery()
+      return Response.json(query);
+    } else {
+      // Requested credentials sent by the wallet
+      // Store in the exchanges cache
+      console.log('Storing txId', txId, payload)
+      exchanges.set(txId, payload)
+      return Response.json({ status: 'received' });
     }
-
-    switch (req.method) {
-      case 'GET':
-        console.log('Looking for tx', txId, exchanges.get(txId))
-
-        if (exchanges.has(txId)) {
-          res.status(200).json(exchanges.get(txId));
-          // exchanges.delete(txId);
-        } else {
-          console.log('Incoming GET: tx not found.')
-          res.status(404).send('Not found');
-        }
-        break;
-      case 'POST':
-        const payload = JSON.stringify(req.body);
-
-        console.log('Incoming POST:', req.body)
-
-        if (payload === '{}') {
-          // Initial POST by the wallet, send the VP Request query
-          const query = vprQuery()
-          res.status(200).json(query)
-        } else {
-          // Requested credentials sent by the wallet
-          // Store in the exchanges cache
-          console.log('Storing txId', txId, payload)
-          exchanges.set(txId, payload)
-          res.status(200).json({ status: 'received' })
-        }
-
-        break;
-      default:
-        res.setHeader('Allow', 'GET, POST');
-        res.status(405).json({ status: 'Method not allowed' })
-    }
-  } catch (error: any) {
-    console.error(error);
-
-    const statusCode = error.statusCode || 400;
-
-    res.status(statusCode).json({
-      status: error.statusText || 'Invalid request',
-      // @ts-ignore
-      error: error.message
-    })
+  } catch (err: any) {
+    return processError(err)
   }
+}
+
+function processError(err: any) {
+  console.error(err);
+  const status = err.statusCode || 400;
+  const error = {
+    status: err.statusText || 'Invalid request',
+    // @ts-ignore
+    error: err.message
+  }
+  return Response.json(error, { status });
 }
 
 function vprQuery() {
@@ -79,20 +77,4 @@ function vprQuery() {
   }
 }
 
-/**
- * Check to see if wallet has returned the requested VC API query response.
- * Used by the 'Request from Wallet' button.
- *
- * @param txId - Unique random transaction id polled by a browser instance.
- */
-async function pollForTx(req: NextApiRequest, res: NextApiResponse, txId: string) {
-  // Check the memoized exchanges cache to see if wallet has responded
-  // with credentials
-}
 
-/**
- * @param txId - Unique random transaction id polled by a browser instance.
- */
-async function postTx(req: NextApiRequest, res: NextApiResponse, txId: string) {
-
-}
