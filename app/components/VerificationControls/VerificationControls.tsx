@@ -5,7 +5,7 @@ import { ResultLog } from '@/components/ResultLog/ResultLog';
 import { VerifyResponse } from '@/types/credential';
 
 export const VerificationControls = ({ verificationResult, verifyCredential }: VerificationControlsProps ) => {
-  const { verified } = verificationResult;
+  //const { verified } = verificationResult;
   return (
     <div>
       
