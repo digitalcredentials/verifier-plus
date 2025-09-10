@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     if (!url) {
       console.error('No URL provided in request body');
-      return new Response(JSON.stringify({ error: 'URL is required' }), {
+      return Response.json({ error: 'URL is required' }, {
         status: 400,
         headers
       });
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         const vcUrl = urlObj.searchParams.get('vc');
         if (!vcUrl) {
           console.error('No vc parameter found in URL:', url);
-          return new Response(JSON.stringify({ error: 'No credential URL found in query parameters' }), {
+          return Response.json({ error: 'No credential URL found in query parameters' }, {
             status: 400,
             headers
           })
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         targetUrl = vcUrl;
       } catch (error) {
         console.error('Error parsing URL:', error);
-        return new Response(JSON.stringify({ error: 'Invalid URL format' }), {
+        return Response.json({ error: 'Invalid URL format' }, {
           status: 400,
           headers
         })
@@ -47,21 +47,21 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       console.error('Fetch failed:', response.status, response.statusText);
-      return new Response(JSON.stringify({ error: 'Failed to fetch URL' }), {
+      return Response.json({ error: 'Failed to fetch URL' }, {
         status: response.status,
         headers
       })
     }
 
     const data = await response.json();
-    return new Response(JSON.stringify(data), {
+    return Response.json(data, {
       status: 200,
       headers
     })
 
   } catch (error) {
     console.error('Proxy error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch URL' }), {
+    return Response.json({ error: 'Failed to fetch URL' }, {
       status: 200,
       headers
     })
