@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import * as credentials from 'lib/credentials';
+import { NextRequest } from 'next/server';
+import * as credentials from '@/lib/credentials';
 
 /**
  * POST /api/credentials
@@ -30,25 +30,21 @@ import * as credentials from 'lib/credentials';
  *
  * (Note the /api/ prefix in the get and unshare URLs, above).
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(request: NextRequest) {
+
   try {
-    switch (req.method) {
-      case 'POST':
-        const result = await credentials.post(req.body);
-        
-        res.setHeader('Location', result.url.view);
-        res.status(201).json({ status: 'Credential added', ...result });
-        break;
-      default:
-        res.setHeader('Allow', 'POST');
-        res.status(405).json({ status: 'Method not allowed' })
-    }
+        const credential = await request.json();
+        const result = await credentials.post(credential);
+        const headers = {'Location': result.url.view};
+        return Response.json({ status: 'Credential added', ...result }, {status:201, headers})
+     
   } catch (error) {
     console.error(error);
-    res.status(400).json({
+    return Response.json({
       status: 'Invalid request',
       // @ts-ignore
       error: error.message
-    })
+    }, {status: 400})
+
   }
 }
