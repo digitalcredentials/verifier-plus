@@ -7,6 +7,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@digitalbazaar/lru-memoize": "^4.0.0",
     "@digitalcredentials/ed25519-signature-2020": "^6.0.0",
     "@digitalcredentials/issuer-registry-client": "^3.0.0",
     "@digitalcredentials/security-document-loader": "^8.0.0",
@@ -20,11 +21,11 @@
     "axios": "^1.7.7",
     "credential-handler-polyfill": "^4.0.0",
     "jsonld-signatures": "^11.3.0",
-    "lru-cache": "^11.0.2",
     "luxon": "^3.7.2",
-    "material-icons": "^1.11.4",
-    "mongodb": "^4.11.0",
     "next": "15.5.2",
+    "lru-cache": "^11.2.1",
+    "material-icons": "^1.11.4",
+    "mongodb": "^6.19.0",
     "nodemailer": "^6.9.13",
     "qr-scanner": "^1.4.2",
     "qrcode.react": "^4.2.0",
