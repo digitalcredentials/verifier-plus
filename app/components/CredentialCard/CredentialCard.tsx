@@ -1,3 +1,4 @@
+'use client'
 import { DateTime, Info } from 'luxon';
 import { CompletionDocumentSection } from '@/components/CompletionDocumentSection/CompletionDocumentSection';
 import { Issuer } from '@/components/Issuer/Issuer';
