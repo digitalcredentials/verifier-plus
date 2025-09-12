@@ -1,110 +1,53 @@
-'use client'
-import useSWR from 'swr';
 import styles from './[publicCredentialId].module.css'
-import { CredentialCard } from '@/components/CredentialCard/CredentialCard';
-import { Container } from '@/components/Container/Container';
-import { useState, use } from 'react';
-import { useVerification } from '@/lib/useVerification';
 import { VerifiableCredential } from '@/types/credential';
-import { VerificationContext } from '@/lib/verificationContext';
-import { VerificationCard } from '@/components/VerificationCard/VerificationCard';
-import { TopBar } from '@/components/TopBar/TopBar';
-import { BottomBar } from '@/components/BottomBar/BottomBar';
-import { extractCredentialsFrom, VerifiableObject } from '@/lib/verifiableObject';
+import { extractCredentialsFrom } from '@/lib/verifiableObject';
 import { LoadingError } from '@/components/LoadingError/LoadingError';
 import Link from "next/link";
+import { CredentialVerification } from '@/components/CredentialVerification/CredentialVerification'
+import * as credentialsFetcher from '@/lib/credentials';
 
-interface CredentialVerificationProps {
-  credential: VerifiableCredential;
-}
-
-
-const CredentialVerification: React.FC<CredentialVerificationProps> = ({
-  credential,
-}) => {
-  const verificationContext = useVerification(credential);
-
-  return (
-    <div className={styles.verifyContainer}>
-      <VerificationContext.Provider value={verificationContext}>
-        <Container>
-          <CredentialCard credential={credential} />
-          <VerificationCard />
-        </Container>
-      </VerificationContext.Provider>
-    </div>
-  );
-};
-
-// @see https://nextjs.org/docs/basic-features/data-fetching/client-side#client-side-data-fetching-with-swr
-// think this needed to be changed because of ts https://stackoverflow.com/questions/64199630/problem-with-typescript-while-making-request-to-swr
-const fetcher = (input: RequestInfo, init: RequestInit, ...args: any[]) => fetch(input, init).then((res) => res.json());
-
-export default function Page({
+export default async function Page({
   params,
 }: {
   params: Promise<{ publicCredentialId: string }>
 }) {
-
-  const { publicCredentialId } = use(params)
-
-  // On page load, the credential is undefined, and is loaded and set
-  // asynchronously from server-side API via `useSWR` hook
-  const [credentials, setCredentials] = useState<VerifiableCredential[]>([]);
-  const [isDark, setIsDark] = useState(false);
-
-  const extract = (data: {vp: VerifiableObject}) => {
-    if (data !== undefined) {
-      const vp = data.vp;
-      const creds = extractCredentialsFrom(vp);
-      setCredentials(creds || []);
-    }
+  let credentials : VerifiableCredential[]
+  try {
+    const { publicCredentialId } = await params
+    const credentialVP = await credentialsFetcher.get({ publicCredentialId });
+    credentials = extractCredentialsFrom(credentialVP.vp) || []
+  } catch (error) {
+    console.log(error)
+    return (<LoadingError />)
   }
 
-  const { error } = useSWR(`/api/credentials/${publicCredentialId}`, fetcher, {onSuccess: extract});
-
-  if (error) {
-    return (
-    <div className={styles.container}>
-      <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} />
-        <LoadingError/>
-      <BottomBar isDark={isDark}/>
-    </div>);
-  }
   if (credentials.length === 0) {
     return (
-      <main className={styles.container}>
-      <TopBar isDark={isDark} setIsDark={setIsDark}/>
       <div className={styles.contentContainer}>
-        <div>
         <Link href='/'>
-              <div>
-                <h1 className={styles.title}>
-                  VerifierPlus
-                </h1>
-              </div>
+          <div>
+            <h1 className={styles.title}>
+              VerifierPlus
+            </h1>
+          </div>
         </Link>
         <h2 className={styles.errorTitle}>404: Credential Not Found</h2>
         <p className={styles.errorMessage}>
-            Please confirm you have entered the correct URL or public link. <br/> Other reasons for this error could include:
+          Please confirm you have entered the correct URL or public link. <br /> Other reasons for this error could include:
         </p>
         <ul className={styles.errorList}>
-            <li>The credential has expired</li>
-            <li>The credential holder has unshared the URL or public link</li>
+          <li>The credential has expired</li>
+          <li>The credential holder has unshared the URL or public link</li>
         </ul>
-        </div>
-       </div>
-      <BottomBar isDark={isDark}/>
-    </main>);  
+      </div>
+    )
   }
 
   return (
-    <div className={styles.container}>
-      <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} />
+    <div>
       {credentials.map((credential, index) => (
         <CredentialVerification credential={credential} key={index} />
       ))}
-      <BottomBar isDark={isDark} />
     </div>
   )
 }
