@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react';
 import { CredentialError } from '@/types/credential.d';
 import type { ResultLogProps } from './ResultLog.d';
