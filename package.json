@@ -30,7 +30,6 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-markdown": "^8.0.7",
-    "swr": "^2.3.6",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
