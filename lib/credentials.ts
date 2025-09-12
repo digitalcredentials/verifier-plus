@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { dbCredentials } from './database';
+import { cachedClient } from './database';
 import { VerifiablePresentation } from '../types/presentation';
 import { VerifiableCredential } from '../types/credential';
 
@@ -45,18 +45,17 @@ export async function post({ vp }: CredentialPayload): Promise<StoreCredentialRe
   // TODO: Authenticate the presenter (make sure the 'holder' did matches the
   //  signature on the VP).
 
-  const Credentials = await dbCredentials.open();
+  const { credentialsCollection } = await cachedClient();
   const credential = _extractCredential(vp)[0];
   const publicId = publicIdFrom(holder, credential);
 
-  await Credentials.insert({
+  await credentialsCollection.insert({
     id: publicId,
     controller: holder,
     createdAt: new Date(),
     vp,
     shared: true
   });
-  await dbCredentials.close();
 
   return {
     url: {
@@ -90,9 +89,9 @@ function _extractCredential(vp: VerifiablePresentation): VerifiableCredential[] 
  * @returns {Promise<GetCredentialResult>}
  */
 export async function get({ publicCredentialId }: any): Promise<GetCredentialResult> {
-  const Credentials = await dbCredentials.open();
-  const result = await Credentials.findOne({ id: publicCredentialId });
-  await dbCredentials.close();
+  const { credentialsCollection } = await cachedClient();
+
+  const result = await credentialsCollection.findOne({ id: publicCredentialId });
 
   if(!result || !result.shared) {
     const notFound: any = new Error('Public share of this credential expired, unshared, or not found.')
@@ -124,14 +123,13 @@ export async function get({ publicCredentialId }: any): Promise<GetCredentialRes
  * @returns {Promise<GetCredentialResult>}
  */
 export async function unshare({ publicCredentialId, payload }: any): Promise<GetCredentialResult> {
-  const Credentials = await dbCredentials.open();
-  const result = await Credentials.findOne({ id: publicCredentialId });
+  const { credentialsCollection } = await cachedClient();
+  const result = await credentialsCollection.findOne({ id: publicCredentialId });
 
   if(!result) {
     const notFound: any = new Error('This credential does not exist, has expired, or has already been unshared.')
     notFound.statusCode = 404;
-    notFound.statusText = 'Not found'
-    await dbCredentials.close();
+    notFound.statusText = 'Not found';
     throw notFound;
   }
 
@@ -143,11 +141,9 @@ export async function unshare({ publicCredentialId, payload }: any): Promise<Get
     }
   }
 
-  const unshareResult: any = await Credentials.updateOne(filter, update, options);
+  const unshareResult: any = await credentialsCollection.updateOne(filter, update, options);
 
   //console.log('VC unshare result:', JSON.stringify(unshareResult, null, 2));
-
-  await dbCredentials.close();
 
   return { ...unshareResult }
 }
