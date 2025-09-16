@@ -18,7 +18,7 @@ export const BottomBar = ({isDark}: BottomBarProps) => {
         <Link href='/terms' className={styles.link}>Terms and Conditions of Use</Link>
         <Link href='/privacy' className={styles.link}>Privacy Policy</Link>
         <Link className={styles.link} href='https://accessibility.mit.edu/'>Accessibility</Link>
-        <Link className={styles.link} href='https://github.com/digitalcredentials/web-verifier-plus'>View on Github</Link>
+        <Link className={styles.link} href='https://github.com/digitalcredentials/verifier-plus'>View on Github</Link>
       </div>
     </footer>
   )

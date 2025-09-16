@@ -1,4 +1,4 @@
-# web-verifier-plus Changelog
+# verifier-plus Changelog
 
 ## 1.1.0 
 ### Added
