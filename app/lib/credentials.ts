@@ -50,7 +50,7 @@ export async function post({ vp }: CredentialPayload): Promise<StoreCredentialRe
   const credential = _extractCredential(vp)[0];
   const publicId = publicIdFrom(holder, credential);
 
-  await credentialsCollection.insert({
+  await credentialsCollection.insertOne({
     id: publicId,
     controller: holder,
     createdAt: new Date(),
