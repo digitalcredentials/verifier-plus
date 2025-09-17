@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       console.error('Fetch failed:', response.status, response.statusText);
+      
       return Response.json({ error: 'Failed to fetch URL' }, {
         status: response.status,
         headers
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Proxy error:', error);
     return Response.json({ error: 'Failed to fetch URL' }, {
-      status: 200,
+      status: 500,
       headers
     })
   }
