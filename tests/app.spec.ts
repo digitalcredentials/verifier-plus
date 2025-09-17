@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { getSampleVCAsString} from "./testVC";
-import { TestId, LogMessages } from "components/ResultLog/ResultLog";
+import { LogMessages } from "@/components/ResultLog/ResultLog";
 
 const testVCs =
   [
