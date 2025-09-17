@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
-import {getSampleVC} from "./testVC";
+import {getSampleVCAsString} from "./testVC";
 import {  LogMessages } from "@/components/ResultLog/ResultLog";
 
 /** A test that uses a local VC and not the github vcs. */
 test("local vc", async ({ page }) => {
-const testVC = getSampleVC()
+const testVC = getSampleVCAsString()
   // Start from the index page (the baseURL is set via the webServer in the playwright.config.ts)
   await page.goto("/");
   // Find an element with the text 'About' and click on it
