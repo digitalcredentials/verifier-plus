@@ -25,7 +25,7 @@ export async function verifyVerifiableObject(obj: VerifiableObject): Promise<boo
   } catch (err) {
     console.warn(err);
   }
-
+  
   return false;
 }
 
