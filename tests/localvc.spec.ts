@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import {getSampleVC} from "./testVC";
-import {  LogMessages } from "components/ResultLog/ResultLog";
+import {  LogMessages } from "@/components/ResultLog/ResultLog";
 
 /** A test that uses a local VC and not the github vcs. */
 test("local vc", async ({ page }) => {

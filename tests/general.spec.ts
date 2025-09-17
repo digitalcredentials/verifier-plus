@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { TestId, LogMessages } from "components/ResultLog/ResultLog";
+import { TestId, LogMessages } from "@/components/ResultLog/ResultLog";
 
 const logTests = [
   {
