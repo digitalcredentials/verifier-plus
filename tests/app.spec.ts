@@ -45,8 +45,6 @@ testVCs.forEach(({ name, vc, expected }) => {
     for (let i = 0; i < expected.length; i++) {
       await expect(page.getByText(expected[i])).toBeVisible();
     }
-    // could maybe use something like the next to explicitly test each verification result, maybe using data-testid
-    //  await expect(page.getByRole('heading')).toHaveText(expected);
   });
 });
 
