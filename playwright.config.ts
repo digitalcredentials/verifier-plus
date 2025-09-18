@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 // Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
 const baseURL = `http://localhost:${PORT}`;
+const baseURLAPI = `${baseURL}/api/credentials/`
 
 // Reference: https://playwright.dev/docs/test-configuration
 export default defineConfig({
@@ -20,12 +21,15 @@ export default defineConfig({
 
   // Run your local dev server before starting the tests:
   // https://playwright.dev/docs/test-advanced#launching-a-development-web-server-during-the-tests
-  webServer: {
+
+  // JC disable for now because I'm running it locally
+  // could later have it run as part of CI
+  /*webServer: {
     command: "npm run dev",
     url: baseURL,
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
-  },
+  },*/
 
   use: {
     // Use baseURL so to make navigations relative.
@@ -44,19 +48,33 @@ export default defineConfig({
 
   projects: [
     {
+      name: 'API',
+      testMatch: /.*api.spec.ts/,
+      retries: 0,
+      use: {
+        extraHTTPHeaders: {
+          // not sure if this header is really needed
+          'Content-Type': 'application/json'
+      }
+      }
+    },
+    {
       name: "Desktop Chrome",
+      testIgnore: /.*api.spec.ts/,
       use: {
         ...devices["Desktop Chrome"],
       },
     },
     // {
     //   name: 'Desktop Firefox',
+    //.  testIgnore: /.*api.spec.ts/,
     //   use: {
     //     ...devices['Desktop Firefox'],
     //   },
     // },
     // {
     //   name: 'Desktop Safari',
+    //.  testIgnore: /.*api.spec.ts/,
     //   use: {
     //     ...devices['Desktop Safari'],
     //   },
@@ -64,12 +82,14 @@ export default defineConfig({
     // Test against mobile viewports.
     {
       name: "Mobile Chrome",
+      testIgnore: /.*api.spec.ts/,
       use: {
         ...devices["Pixel 5"],
       },
     },
     {
       name: "Mobile Safari",
+      testIgnore: /.*api.spec.ts/,
       use: devices["iPhone 12"],
     },
   ],
