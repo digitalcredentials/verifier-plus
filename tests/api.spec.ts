@@ -28,10 +28,21 @@ test('POST /credentials should store posted VP', async ({ request }) => {
       unshare: expect.any(String)}),
   }));
 
+  // after adding it, it should be returned by the get
   const getReply = await request.get(newRecord.url.get)
   expect(getReply.ok()).toBeTruthy();
-  
   const storedVP = (await getReply.json()).vp;
   expect(storedVP).toEqual(testVP.vp);
+
+  // now delete it
+  const deleteReply = await request.delete(newRecord.url.unshare)
+  expect(deleteReply.ok()).toBeTruthy();
+
+  // and now it should return not available
+  // when we try to get it again
+  const secondGetReply = await request.get(newRecord.url.get)
+  expect(secondGetReply.ok()).not.toBeTruthy();
+  expect(secondGetReply.status()).toBe(500)
+
 
 });
