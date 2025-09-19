@@ -1,6 +1,11 @@
 import { test, expect } from "@playwright/test";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 
+/* note that these tests retrieve the text of the VC to be tested
+and then paste it into the verification input field.
+The tests in verifyURL.spec.ts instead test by pasting the URL and
+letting V+ go get the text of the VC*/
+
 const testVCs =
   [
     {
