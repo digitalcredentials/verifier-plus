@@ -260,13 +260,9 @@ export default function Home() {
       console.log('no credentials received');
     }
 
-    console.log(chapiResult);
-
     const { data: vp } = chapiResult
     // @ts-ignore
     const vc = extractCredentialsFrom(vp)[0]
-
-    console.log('Extracted VC:', vc)
 
     setCredential(vc)
   }
