@@ -46,8 +46,7 @@ test('a stored credential should display', async ({ request, page }) => {
 
   // 5. now confirm we can view it in the VerifierPlus UI:
   await page.goto(viewURL)
-  // check well formed message matches expected
-  
+
   // check well formed message matches expected
         await expect(page.getByText(LogMessages.WellFormed)).toBeVisible();
         await expect(page.getByTestId(TestId.MalformedLogMsg)).toHaveText(LogMessages.WellFormed)
