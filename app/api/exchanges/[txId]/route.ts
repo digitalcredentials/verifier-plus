@@ -11,6 +11,7 @@ export async function GET(request: NextRequest,
     const { txId } = await params
     console.log('Looking for tx', txId, exchanges.get(txId))
     if (exchanges.has(txId)) {
+      console.log("WE SHOULD HAVE DOUND THE TRANSACTON AT THIS POINT.")
       return Response.json(exchanges.get(txId));
     } else {
       console.log('Incoming GET: tx not found.')
@@ -59,7 +60,7 @@ function processError(err: any) {
   return Response.json(error, { status });
 }
 
-function vprQuery() {
+export function vprQuery() {
   return {
     "verifiablePresentationRequest": {
       "query": [
