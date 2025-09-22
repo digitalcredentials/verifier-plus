@@ -58,3 +58,9 @@ export const getTestVP = ()=>{
 export const getSampleVCAsString = () => {
     return testVP
 }
+
+export const getTestVPForVPQR = () => {
+    const testVP = getTestVP().vp
+    testVP.verifiableCredential = [testVP.verifiableCredential]
+    return {verifiablePresentation: testVP}
+}
