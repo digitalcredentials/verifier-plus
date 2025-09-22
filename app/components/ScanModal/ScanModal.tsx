@@ -21,6 +21,7 @@ export const ScanModal = ({ isOpen, setIsOpen, onScan, setErrorMessage }: ScanMo
     if (err === "No QR code found") {
       // do nothing; these errors occur repeatedly until a QR is detected
     } else {
+      // otherwise, this is likely a fatal error
       console.log("Scanning error: ", err)
       setErrorMessage(true)
       closeModal();
