@@ -436,7 +436,7 @@ export default function Home() {
           </div>
         )}
 
-        <div className={styles.lcwContainer}>
+        <div className={styles.lcwContainer} data-testid="lcw-request-btn">
           <Accordion
             iconClosed={lcwIcon}
             iconOpen={spinner}
@@ -448,7 +448,7 @@ export default function Home() {
             </p> */}
             <div><h5 className={styles.lcwLink}>Open Request in wallet via QR Code:</h5></div>
             <div className={styles.qrCode}>
-              <QRCodeSVG value={lcwRequestUrl} />
+              <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl}/>
             </div>
           </Accordion>
         </div>
