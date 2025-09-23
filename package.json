@@ -26,7 +26,7 @@
     "luxon": "^3.7.2",
     "material-icons": "^1.11.4",
     "mongodb": "^6.19.0",
-    "next": "15.5.2",
+    "next": "^15.5.4",
     "nodemailer": "^6.9.13",
     "qr-scanner": "^1.4.2",
     "qrcode.react": "^4.2.0",
@@ -42,7 +42,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.2.1",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.1.13",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-arm64-musl": "^1.30.1"
   }
 }
