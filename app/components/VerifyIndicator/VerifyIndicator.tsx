@@ -4,7 +4,7 @@ import styles from './VerifyIndicator.module.css';
 export const VerifyIndicator = () => {
   const { loading, verificationResult } = useVerificationContext();
   let className: string = '';
-  let icon: JSX.Element | null = null;
+  let icon: React.ReactElement | null = null;
   let text: string = '';
 
   const result = verificationResult?.results?.[0];
