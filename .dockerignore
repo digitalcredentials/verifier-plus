@@ -4,3 +4,5 @@ node_modules/
 acme/
 certs/
 vhost/
+CHANGELOG.md
+docker-compose.example.*
