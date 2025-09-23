@@ -22,17 +22,17 @@
     "axios": "^1.7.7",
     "credential-handler-polyfill": "^4.0.0",
     "jsonld-signatures": "^11.3.0",
-    "luxon": "^3.7.2",
-    "next": "15.5.2",
     "lru-cache": "^11.2.1",
+    "luxon": "^3.7.2",
     "material-icons": "^1.11.4",
     "mongodb": "^6.19.0",
+    "next": "15.5.2",
     "nodemailer": "^6.9.13",
     "qr-scanner": "^1.4.2",
     "qrcode.react": "^4.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-markdown": "^8.0.7",
+    "react-markdown": "^10.1.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -41,8 +41,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.1",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "dotenv": "^17.2.1"
+    "typescript": "^5"
   }
 }
