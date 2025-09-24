@@ -1,13 +1,13 @@
-# VerifierPlus
+# verifier-plus
 
-VerifierPlus is a [Next.js](https://nextjs.org/) application providing two related, but still fundamentally different services:
+verifier-plus is a [Next.js](https://nextjs.org/) application providing two related, but fundamentally separate services:
 
-* Credential Verification and Display - A web page for viewing and verifying [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/).
+* ***Credential Verification and Display*** - A web page for viewing and verifying [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/).
 
-* Online Credential Storage - server storage for Verifiable Credentials, to enable sharing a public link for a credential.
+* ***Online Credential Storage*** - server storage for Verifiable Credentials, to enable sharing a public link for a credential.
 
 > [!NOTE]
-> Supposts versions 1 and 2 of [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/), including version 3 of [Open Badges](https://www.imsglobal.org/spec/ob/v3p0), but NOT version 2 of Open Badges.
+> verifier-plus upports versions 1 and 2 of [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/), including version 3 of [Open Badges](https://www.imsglobal.org/spec/ob/v3p0), but NOT version 2 of Open Badges.
 
 >[!TIP]
 >The [Digital Credentials Consortium](http://dcconsortium.org) runs an instance of this application at [verifierplus.org](https://verifierplus.org), but anyone is free to run their own instance elsewhere.
@@ -16,11 +16,11 @@ Let's talk a bit about the two services: credential verification and credential 
 
 ## Credential Verification
 
-The landing page of VerifierPlus provides options for copy/pasting, uploading, linking to, or scanning a QR for a [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/). VerifierPlus displays a nicely formatted human-readable version of provided credentials, verifies the credentials, and displays the results of verification. You can see the our instance of it in action [here](https://verifierPlus.org).
+The landing page of VerifierPlus provides options for copy/pasting, uploading, linking to, or scanning a QR for a [Verifiable Credential](https://www.w3.org/TR/vc-data-model-2.0/). VerifierPlus displays a nicely formatted human-readable version of a credential, verifies the credential, and displays the results of verification.
 
 The key idea with [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/) is that we can on-the-spot check the cryptographic signature of a Verifiable Credential to confirm that the credential hasn't been tampered with since it was signed. A full explanation of all that this entails is available in the [Verifiable Credentials Specification](https://www.w3.org/TR/vc-data-model-2.0/).
 
-Beyond the signature itself, we check a few other things, like that the credential hasn't expired, hasn't been revoked, and that it was in fact signed by a known issuer. A good place to read more about what we specificially check is our [verifier-core repository](https://github.com/digitalcredentials/verifier-core) which handles the verification for both VerifierPlus and the [Learner Credential Wallet](lcw.app).
+Beyond the signature itself, we check a few other things, like that the credential hasn't expired, hasn't been revoked, and that it was in fact signed by a known issuer. A good place to read more about what we specificially check is our [verifier-core repository](https://github.com/digitalcredentials/verifier-core) which handles the underlying verification for both VerifierPlus and the [Learner Credential Wallet](lcw.app).
 
 We've pre-generated some sample credentials [here](https://github.com/digitalcredentials/vc-test-fixtures/) that you can play with in our [running instance of VerifierPlus](https://verifierPlus.org). 
 
@@ -96,21 +96,21 @@ You may well be wondering why anyone would ever want to deal with raw JSON code,
 
 ## Online Credential Storage
 
-A fundamental idea behind Verifiable Credentials is that they are standalone, autonomous, cryptographically signed declarations of some fact or facts. They are most simply just standard text (even the cryptographic signature is just text), usually stored in files that the holder of the credential (like say a student with a Verifiable Credential copy of their degree) takes away with them and can keep forever, storing them wherever they like, without any dependency on the original issuer.
+A fundamental idea behind Verifiable Credentials is that they are standalone, autonomous, cryptographically signed declarations of some fact or facts. Verifiable Credentials are most simply just standard text (even the cryptographic signature is plain text), usually stored in files that the holder of the credential (like say a student with a Verifiable Credential copy of their degree) takes away with them and can keep forever, storing them wherever they like, without any dependency on the original issuer.
 
-Most notably, the credentials do not have to be stored on a public server owned by an issuer (or a company acting on behalf of the issuer), and verification of the credentials can happen anywhere, anytime, without needing to make a call back to the original issuer or to any kind of online service that the issuer provides. This affords the credential holder significantly increased control over their own credentials than if the credential verification runs back to the issuer.
+Most notably, the credentials do not have to be stored on a public server owned by an issuer (or a company acting on behalf of the issuer), and verification of the credentials can happen anywhere, anytime, without needing to make a call back to the original issuer or to any kind of online service that the issuer provides. This affords the credential holder significantly increased privacy, control and long-term ownership of their own credentials than if the credential verification runs back to the issuer.
 
 However, because the credentials themselves are files, it can be difficult to manage them, and to share them with other people. So we usually encourage people to store their credentials in a so-called 'wallet' like our [Learner Credential Wallet](https://lcw.app) which consolidates the credentials in one place, in an app built specifically to help with things like receiving credentials, viewing credentials, verifying credentials, and sharing credentials.
 
- From within a wallet we can email, text message, AirDrop/QuickShare credentials, but even then it can be confusing for the receipient to know what to do with the file: how to view it and how to verify it. They can certainly do what we've described above and upload the file to VerifierPlus, but that takes some degree of understanding, and effort, and things can go wrong. During the copy/pasting for example, characters might get moved that affect the signature. And furthermore, we might even want to share our credendial more publicly with the world, which we of course can't (easily) do with email or text messages.
+ From within a wallet we can email, text message, AirDrop/QuickShare credentials, but even then it can be confusing for the receipient to know what to do with the file: how to view it and how to verify it. They can certainly do what we've described above and upload the file to VerifierPlus, but that takes some degree of understanding, and effort, and things can go wrong. During the copy/pasting for example, characters might get moved that affect the signature. And furthermore, we might even want to share our credendial more publicly with the world, which we of course can't feasibly do with email or text messages.
 
-One answer to all of this is of course to put the file somewhere from which it can be publicly downloaded, like DropBox, Google Drive, Github, or really anywhere that provides a public link to the file, and then we can share that link widely, even posting it to our say our LinkedIn profile. But sharing files this way can be annoying to get the permissions right, to know how to upload a file, and so for many it's just not viable. 
+One answer to all of this is of course to put the file somewhere from which it can be publicly downloaded, like DropBox, Google Drive, Github, or really anywhere that provides a public link to the file, and then we can share that link widely, even posting it to our say our LinkedIn profile. But sharing files this way can be annoying to get the permissions right, to know how to upload a file, and for many people it's just not viable. 
 
 Furthermore when we share the link to the file, whoever downloads it still has to know what to do with it, which can of course be a significant problem. Imagine, for example, if we are asked to upload proof of graduation to an online portal when say applying for a job. Whoever later reviews our application may well not know what to make of a file with JSON code in it.
 
-Our approach, therefore, has been to provide a storage service for credentials that makes it easy to upload the credential directly from the Learner Credential Wallet, and at the same time generates a link for the credential that doesn't just return the credential, but opens the credential directly in VerifierPlus, instantly displaying and verifying the credential. The recipient of such a link doesn't see the JSON code at all.
+Our approach, therefore, has been to provide a storage service for credentials that makes it easy to upload the credential directly from the Learner Credential Wallet, and at the same time generates a link for the credential that doesn't just return the credential, but opens the credential directly in VerifierPlus, instantly displaying and verifying the credential. The recipient of such a link doesn't see the JSON code at all, just the nicely formatted view of the credential and its verification details.
 
-The LCW also provides options making it easy to share that link with others either through email, messages, a QR code, or even by posting it to one's LinkedIn profile. 
+The Learner Credential Wallet also provides options making it easy to share that link with others either through email, messages, a QR code, or even by posting it to one's LinkedIn profile. 
 
 The storage service itself is simply three API endpoints for storing, retrieving, and deleting a credential. You can find them in the [/app/api/credentials/route.ts](/app/api/credentials/route.ts) file.
 
@@ -156,22 +156,23 @@ The development server updates as you save changes to the underlying files.
 
 Note that unless you've also configured a mongo backend as described in the [MongoDB](#mongodb) section below, then the credentials api endpoints won't work, but all verification should work as expected.
 
-# MongoDB
+## MongoDB
 
 Th credential storage part of VerifierPlus requires MongoDB for its backend storage. To set up MongoDB for this app:
 
- * create an Mongo Atlas cluster. 
- * From there create a collection, as well as a user with read and write permissions. 
- * Copy `.env.example`, and rename the copy `.env` 
- * Copy all the information from your Atlas cluster into the appropriate fields in the `.env` file.
+ * create a Mongo Atlas cluster. 
+ * from there create a collection, as well as a user with read and write permissions. 
+ * copy `.env.example` to `.env` 
+ * copy the connection details for your Atlas cluster into the appropriate fields in the `.env` file.
 
-TROUBLESHOOTING: If the app can't connect to your Mongo Atlas collection, make sure that you've added your server IP to the whitelist for your Mongo Atlas account.
+> [!TIP]
+> If the app can't connect to your Mongo Atlas collection, make sure that you've added your server IP to the whitelist for your Mongo Atlas account.
 
- # Docker
+## Docker
 
  We've provided both a sample Dockerfile and two sample docker compose files.
 
- The two docker compose files are identical except that the production version includes configuration for [nginxproxy/nginx-proxy](https://github.com/nginx-proxy/nginx-proxy) and [nginxproxy/acme-companion](https://github.com/nginx-proxy/acme-companion).
+ The two docker compose files are identical except that the production version includes configuration for [nginxproxy/nginx-proxy](https://github.com/nginx-proxy/nginx-proxy) and [nginxproxy/acme-companion](https://github.com/nginx-proxy/acme-companion) to make it easier to run on your domain.
 
  Both compose files include a HEALTHCHECK configuration that monitors the running web app container. If the healthcheck returns 'unhealthy' three times in a row, the the [willfarrell/autoheal](https://github.com/willfarrell/docker-autoheal) service restarts the container.
 
@@ -181,7 +182,7 @@ TROUBLESHOOTING: If the app can't connect to your Mongo Atlas collection, make s
 
  We've set the configuation values in the 'environment' sections of the compose file, but you can also use a .env file, like the .env.example we provide. The .env file may be more secure.
 
- # Verifiable Presentation Request Exchange
+## Verifiable Presentation Request Exchange
 
  VerifierPlus provides an option on the landing page to request credentials from the Learner Credential Wallet.
 
@@ -189,11 +190,11 @@ TROUBLESHOOTING: If the app can't connect to your Mongo Atlas collection, make s
  
  See [.env.example](./.env.example) for an example
 
-# Environment variables
+## Testing
 
-Take a look at [.env.example](./.env.example) which should be self-explanatory.
+We use [Playwright](https://playwright.dev) for testing, pretty much as described on the excellent Playwright site, so we won't reproduce the Playwright documentation.
 
- # Next.js
+## Next.js
 
 To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
