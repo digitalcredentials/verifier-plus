@@ -7,7 +7,7 @@ VerifierPlus is a [Next.js](https://nextjs.org/) application providing two relat
 * Online Credential Storage - server storage for Verifiable Credentials, to enable sharing a public link for a credential.
 
 > [!NOTE]
-> Versions 1 and 2 of [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/), including version 3 of [Open Badges](https://www.imsglobal.org/spec/ob/v3p0), but NOT version 2 of Open Badges
+> Supposts versions 1 and 2 of [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/), including version 3 of [Open Badges](https://www.imsglobal.org/spec/ob/v3p0), but NOT version 2 of Open Badges.
 
 Let's talk a bit about each service.
 
