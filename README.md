@@ -26,21 +26,24 @@ We've pre-generated some sample credentials [here](https://github.com/digitalcre
 
 Each credential on the samples page has a QR that you can scan from VerifierPlus, a url that you can paste into the VerifierPlus text box, or the raw JSON that you can also paste into the VerifierPlus text box.
 
-Here is one such credential to get you started:
+Here is one such credential to get you started. We've provided four options for opening it in VerifierPlus:
 
-Scan this from [VerifierPlus](https://verifierPlus.org):
+1. Open directly in VerifierPlus:
+
+[Open it in VerifierPlus](https://verifierplus.org/#verify?vc=https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json)
+
+2. Scan QR from [VerifierPlus](https://verifierPlus.org):
 
 ![QR](https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.png)
 
-Or copy this link (which is the same link as in the QR) and paste it into the VerifierPlus text box:
+3. Copy this link (which is the same link as in the QR) and paste it into the VerifierPlus text box:
 
 [https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json](https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json)
 
-OR
 
 <details>
 
-<summary>Click here to see copyable raw json that you can copy/paste into VerifierPlus</summary>
+<summary>4. Click here to see copyable raw json that you can copy/paste into VerifierPlus</summary>
 
 ```json
    {
@@ -137,7 +140,7 @@ The raw JSON for the credential can then be retrieved using the 'get', or remove
 
 Worth noting is that the same effect as the 'view' url can be achieved with a credential that is stored somewhere else, simply by creating a url like so:
 
-https://verifierplus.org?url=<put the url pointing at the credential here>
+`https://verifierplus.org/#verify?vc=https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json`
 
 VerifierPlus knows to go fetch the credential, verify it, and display it in the rendered view.
 
