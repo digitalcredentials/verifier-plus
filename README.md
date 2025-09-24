@@ -9,31 +9,38 @@ VerifierPlus is a [Next.js](https://nextjs.org/) application providing two relat
 > [!NOTE]
 > Supposts versions 1 and 2 of [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/), including version 3 of [Open Badges](https://www.imsglobal.org/spec/ob/v3p0), but NOT version 2 of Open Badges.
 
-Let's talk a bit about each service.
+>[!TIP]
+>The [Digital Credentials Consortium](http://dcconsortium.org) runs an instance of this application at [verifierplus.org](https://verifierplus.org), but anyone is free to run their own instance elsewhere.
+
+Let's talk a bit about the two services: credential verification and credential storage.
 
 ## Credential Verification
 
-The landing page of VerifierPlus provides options for copy/pasting, uploading, linking to, or scanning a QR for a [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/). VerifierPlus then displays a nicely formatted human-readable version of the credential, verifies the credential, and displays the results of verification. You can see the our instance of it in action [here](https://verifierPlus.org).
+The landing page of VerifierPlus provides options for copy/pasting, uploading, linking to, or scanning a QR for a [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/). VerifierPlus displays a nicely formatted human-readable version of provided credentials, verifies the credentials, and displays the results of verification. You can see the our instance of it in action [here](https://verifierPlus.org).
 
-The key idea is that we can on-the-spot check the cryptographic signature of a [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/) to confirm that the credential hasn't been tampered with since it was signed. A full explanation of all that this entails is available in the [Verifiable Credentials Specification](https://www.w3.org/TR/vc-data-model-2.0/).
+The key idea with [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/) is that we can on-the-spot check the cryptographic signature of a Verifiable Credential to confirm that the credential hasn't been tampered with since it was signed. A full explanation of all that this entails is available in the [Verifiable Credentials Specification](https://www.w3.org/TR/vc-data-model-2.0/).
 
 Beyond the signature itself, we check a few other things, like that the credential hasn't expired, hasn't been revoked, and that it was in fact signed by a known issuer. A good place to read more about what we specificially check is our [verifier-core repository](https://github.com/digitalcredentials/verifier-core) which handles the verification for both VerifierPlus and the [Learner Credential Wallet](lcw.app).
 
-Try out our [running instance of VerifierPlus](https://verifierPlus.org). We've pre-generated some sample credentials [here](https://github.com/digitalcredentials/vc-test-fixtures/) that you can play with in VerifierPlus. Each credential on that page has a QR that you can scan from VerifierPlus, a url that you can paste into the VerifierPlus text box, or the raw JSON that you can also paste into the VerifierPlus text box.
+We've pre-generated some sample credentials [here](https://github.com/digitalcredentials/vc-test-fixtures/) that you can play with in our [running instance of VerifierPlus](https://verifierPlus.org). 
+
+Each credential on the samples page has a QR that you can scan from VerifierPlus, a url that you can paste into the VerifierPlus text box, or the raw JSON that you can also paste into the VerifierPlus text box.
 
 Here is one such credential to get you started:
 
 Scan this from [VerifierPlus](https://verifierPlus.org):
 
-![QR](verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.png)
+![QR](https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.png)
 
-Or copy this link (same link as in the QR) and paste it into the VerifierPlus text box:
+Or copy this link (which is the same link as in the QR) and paste it into the VerifierPlus text box:
 
 [https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json](https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json)
 
+OR
+
 <details>
 
-<summary>Click to see copyable raw json that you can copy/paste into VerifierPlus</summary>
+<summary>Click here to see copyable raw json that you can copy/paste into VerifierPlus</summary>
 
 ```json
    {
@@ -85,11 +92,7 @@ Or copy this link (same link as in the QR) and paste it into the VerifierPlus te
 
 </details>
 
-Copy this link and paste it into the VerifierPlus text box:
-
-[https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json](https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-noExpiry.json)
-
-You may well be wondering why anyone would ever want to copy/paste the raw JSON, and indeed that brings us to the second service that VerifierPlus provides:
+You may well be wondering why anyone would ever want to deal with raw JSON code, and indeed that brings us to the second service that VerifierPlus provides:
 
 ## Online Credential Storage
 
