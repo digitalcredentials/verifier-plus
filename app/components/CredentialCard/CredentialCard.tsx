@@ -74,7 +74,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               <Issuer issuer={issuer} infoButtonPushed={infoButtonPushed} header='Issuer' />
               <div className={styles.headerRow}>
                 {displayValues.issuanceDate && (
-                  <InfoBlock header="Issuance Date" contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} testId='issuance-date' />
+                  <InfoBlock header="Issuance Date" contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} testId={TestId.IssuanceDate} />
                 )}
 
                 <InfoBlock
@@ -84,6 +84,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
                       ? DateTime.fromISO(displayValues.expirationDate).toLocaleString(DateTime.DATE_MED)
                       : "N/A"
                   }
+                  testId={TestId.ExpirationDate}
                 />
               </div>
               {credential?.credentialSubject?.hasCredential?.awardedOnCompletionOf && (
@@ -102,7 +103,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               null
             }
             {displayValues.credentialDescription ?
-              <InfoBlock header="Description" contents={displayValues.credentialDescription} />
+              <InfoBlock header="Description" contents={displayValues.credentialDescription} testId={TestId.CredentialDescription}/>
               :
               null
             }
@@ -111,7 +112,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
                 <h3 className={styles.smallHeader}>Criteria</h3>
                 {/* <div className={styles.credentialCriteria}>{displayValues.criteria}</div> */}
                 <div className={styles.markdownContainer}>
-                  <ReactMarkdown >{displayValues.criteria}</ReactMarkdown>
+                  <ReactMarkdown data-testid={TestId.CredentialCriteria}>{displayValues.criteria}</ReactMarkdown>
                 </div>
               </div>
             )}
