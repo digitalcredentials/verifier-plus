@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { getTamperedVC, getTamperedVCAsString } from "./testVC";
-import { TestId, LogMessages } from "@/components/ResultLog/ResultLog";
+import { LogMessages } from "@/components/ResultLog/ResultLog";
+import { TestId } from "@/tests/testIds"
 
 const baseExpectedLogMessages = {
     expiry: LogMessages.HasNotExpired,
