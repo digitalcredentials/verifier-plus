@@ -12,6 +12,8 @@ import { useVerificationContext } from "@/lib/verificationContext";
 import ReactMarkdown from 'react-markdown';
 import { getExpirationDate, getIssuanceDate } from '@/lib/credentialValidityPeriod';
 import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifier';
+import { TestId } from '@/tests/testIds';
+
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
   // TODO: add back IssuerInfoModal
@@ -72,7 +74,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               <Issuer issuer={issuer} infoButtonPushed={infoButtonPushed} header='Issuer' />
               <div className={styles.headerRow}>
                 {displayValues.issuanceDate && (
-                  <InfoBlock header="Issuance Date" contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} />
+                  <InfoBlock header="Issuance Date" contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} testId='issuance-date' />
                 )}
 
                 <InfoBlock
@@ -95,7 +97,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
 
           <div className={styles.primaryColumn}>
             {displayValues.issuedTo ?
-              <InfoBlock header="Issued To" contents={displayValues.issuedTo} />
+              <InfoBlock header="Issued To" contents={displayValues.issuedTo} testId={TestId.IssuedTo}/>
               :
               null
             }
