@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 import { getTestVPForVPQR } from './testVP';
 
 import { vprQuery } from '@/app/api/exchanges/[txId]/route';
-import { TestId, LogMessages } from "@/components/ResultLog/ResultLog";
+import { LogMessages } from "@/components/ResultLog/ResultLog";
+import { TestId } from "@/tests/testIds"
 
 test('test the qr', async ({ page, request }) => {
   await page.goto('http://localhost:3000/');
