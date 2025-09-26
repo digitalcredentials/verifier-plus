@@ -1,4 +1,4 @@
-const obv3 = `{
+const obv3_v2 = `{
     "type": [
         "VerifiableCredential",
         "OpenBadgeCredential"
@@ -33,20 +33,30 @@ const obv3 = `{
             "criteria": {
                 "narrative": "Team members are nominated for this badge by their peers and recognized upon review by Example Corp management."
             },
-            "description": "This badge recognizes the development of the capacity to collaborate within a group environment."
+            "description": "This badge recognizes the development of the capacity to collaborate within a group environment.",
+            "image": {
+                "id": "https://digitalcredentials.github.io/badge-assets/DCC_Delft_Summit_Presenter.png",
+                "type": "Image"
+            }
         }
     },
     "id": "urn:uuid:677fe8a6cacf98774d482d06",
     "proof": {
         "type": "DataIntegrityProof",
-        "created": "2025-09-26T17:41:27Z",
+        "created": "2025-09-26T19:12:26Z",
         "verificationMethod": "did:key:z6MknNQD1WHLGGraFi6zcbGevuAgkVfdyCdtZnQTGWVVvR5Q#z6MknNQD1WHLGGraFi6zcbGevuAgkVfdyCdtZnQTGWVVvR5Q",
         "cryptosuite": "eddsa-rdfc-2022",
         "proofPurpose": "assertionMethod",
-        "proofValue": "z4J5pCVJAw7VqXkxVpUFZyGZXZmRgMTnHSz6jBp3qMQcrvuBRSud7kYkBaqyfLJViUG1BgLAi5JCc63RJbcnMMtRh"
+        "proofValue": "z2p7cy2HS4Sv5whEwubM2tgcq5GDN9keGPR5kMNAFfad57guJdf5zsF5a77BkaMVduQgdzFPiLN8TmpLYc51bw1ks"
     }
 }`
 
-export const getOBv3 = () => {
-    return JSON.parse(obv3);
+const obv3_v1 = ``
+
+export const getOBv3_v2 = () => {
+    return JSON.parse(obv3_v2);
+}
+
+export const getOBv3_v1 = () => {
+    return JSON.parse(obv3_v1)
 }
