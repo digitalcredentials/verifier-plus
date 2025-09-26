@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { getMinimalVCv2 } from "@/tests/fixtures/minimalVCv2";
-import { getOBv3 } from "@/tests/fixtures/obv3";
+import { getOBv3_v2 } from "@/tests/fixtures/obv3";
 import { TestId } from "@/tests/testIds"
 import { DateTime } from "luxon";
 
@@ -57,7 +57,7 @@ test("minimal credential display version 2", async ({ page }) => {
 
 // Test that all data fields appear
 test("full credential display OBv3 VCv2", async ({ page }) => {
-  const testVC = getOBv3()
+  const testVC = getOBv3_v2()
   const testVCAsString = JSON.stringify(testVC)
 
   await page.goto("/");
@@ -95,4 +95,10 @@ test("full credential display OBv3 VCv2", async ({ page }) => {
   await expect(page.getByText('Criteria')).toBeVisible();
   await expect(page.getByTestId(TestId.CredentialCriteria)).toHaveText(criteria)
 
+  // confirm the credential image is shown
+  const credentialImageURL = testVC.credentialSubject.achievement.image.id
+  await expect(page.getByTestId(TestId.AchievementImage)).toHaveScreenshot();
+  const credentialImage = page.getByTestId(TestId.AchievementImage)
+  const srcAttrValue = await credentialImage.getAttribute('src');
+  await expect(srcAttrValue).toEqual(credentialImageURL)
 });
