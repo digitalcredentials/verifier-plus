@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { getTestVPForVPQR } from './fixtures/testVP';
+import { getTestVPForVPQR } from '@/tests/fixtures/testVP';
 
 import { vprQuery } from '@/app/api/exchanges/[txId]/route';
 import { LogMessages } from "@/components/ResultLog/ResultLog";

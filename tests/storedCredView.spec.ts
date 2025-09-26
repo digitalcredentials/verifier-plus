@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { getTestVP } from "./fixtures/testVP";
+import { getTestVP } from "@/tests/fixtures/testVP";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/tests/testIds"
 

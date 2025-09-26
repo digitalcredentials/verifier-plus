@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { getTamperedVC, getTamperedVCAsString } from "./fixtures/testVC";
+import { getTamperedVCAsString } from "@/tests/fixtures/minimalVCv2";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/tests/testIds"
 
