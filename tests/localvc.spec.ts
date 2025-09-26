@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {getSampleVCAsString} from "./testVC";
+import {getSampleVCAsString} from "./fixtures/testVC";
 import {  LogMessages } from "@/components/ResultLog/ResultLog";
 
 /** A test that uses a local VC and not the github vcs. */

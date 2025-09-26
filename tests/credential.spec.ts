@@ -1,16 +1,24 @@
 import { test, expect } from "@playwright/test";
-import {getSampleVC} from "./testVC";
+import { getMinimalVCv2 } from "@/tests/fixtures/minimalVCv2";
+import { getOBv3 } from "@/tests/fixtures/obv3";
 import { TestId } from "@/tests/testIds"
+import { DateTime } from "luxon";
 
-/** Test that the basic VC data renders properly*/
-test("credential display version 2", async ({ page }) => {
-const testVC = getSampleVC()
-const testVCAsString = JSON.stringify(testVC)
+/**
+ * Test individually, with different VCs:
+ * - expiry for v1 and v2
+ * - issuance/validFrom for v1 and v2
+ * - description
+ * - credential name?
+ * - criteria
+ * - holder name in 'name' or in identity or in neither?
+ */
+/** Test that the basic VC data renders properly, or not as required*/
+test("minimal credential display version 2", async ({ page }) => {
+  const testVC = getMinimalVCv2()
+  const testVCAsString = JSON.stringify(testVC)
 
-  // load the page and do a quick check on title
   await page.goto("/");
-  await expect(page.locator("h1")).toContainText("VerifierPlus");
-
   // load the VC into V+
   await page.getByTestId('vc-text-area').fill(testVCAsString)
   await page.getByRole('button', { name: 'Verify' }).click()
@@ -25,18 +33,66 @@ const testVCAsString = JSON.stringify(testVC)
   await expect(page.getByText(expiry)).toBeVisible();
   await expect(page.getByTestId(TestId.ExpirationDate)).toHaveText(expiry)
 
-  // check issuance date doesn't appear because there isn't one
+  // confirm that issuance date doesn't appear because there isn't one
   await expect(page.getByText('Issuance Date')).not.toBeVisible();
   await expect(page.getByTestId(TestId.IssuanceDate)).not.toBeVisible()
 
-  // check description doesn't appear because there isn't one
+  // confirm that description doesn't appear because there isn't one
   await expect(page.getByText('Description')).not.toBeVisible();
   await expect(page.getByTestId(TestId.CredentialDescription)).not.toBeVisible()
 
-  // check criteria doesn't appear because there isn't one
+  // confirm criteria doesn't appear because there isn't one
   await expect(page.getByText('Criteria')).not.toBeVisible();
   await expect(page.getByTestId(TestId.CredentialCriteria)).not.toBeVisible()
 
+  // confirm 'achievement type' doesn't appear because there isn't one
+  await expect(page.getByText('Achievement Type')).not.toBeVisible();
+  await expect(page.getByTestId(TestId.AchievementType)).not.toBeVisible()
+
+  // confirm the 'credential name' fileld doesn't appear, even if empty
+  await expect(page.getByTestId(TestId.CredentialName)).not.toBeVisible()
   // await expect(page.getByTestId(TestId.IssuanceDate)).toHaveText(DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED))
+
 });
 
+// Test that all data fields appear
+test("full credential display OBv3 VCv2", async ({ page }) => {
+  const testVC = getOBv3()
+  const testVCAsString = JSON.stringify(testVC)
+
+  await page.goto("/");
+  // load the VC into V+
+  await page.getByTestId('vc-text-area').fill(testVCAsString)
+  await page.getByRole('button', { name: 'Verify' }).click()
+
+  // check credential holder's name
+  const issuedTo = testVC.credentialSubject.name
+  await expect(page.getByText(issuedTo)).toBeVisible();
+  await expect(page.getByTestId(TestId.IssuedTo)).toHaveText(issuedTo)
+
+  // check credential name
+  const credentialName = testVC.credentialSubject.achievement.name
+  await expect(page.getByText(credentialName)).toBeVisible();
+  await expect(page.getByTestId(TestId.CredentialName)).toHaveText(credentialName)
+
+  // check expiry date
+  const expiry = DateTime.fromISO(testVC.validUntil).toLocaleString(DateTime.DATE_MED)
+  await expect(page.getByText('Expiration Date')).toBeVisible();
+  await expect(page.getByTestId(TestId.ExpirationDate)).toHaveText(expiry)
+
+  // check isuance date
+  const issuanceDate = DateTime.fromISO(testVC.validFrom).toLocaleString(DateTime.DATE_MED)
+  await expect(page.getByText('Issuance Date')).toBeVisible();
+  await expect(page.getByTestId(TestId.IssuanceDate)).toHaveText(issuanceDate)
+
+  // confirm that description matches
+  const description = testVC.credentialSubject.achievement.description
+  await expect(page.getByText('Description')).toBeVisible();
+  await expect(page.getByTestId(TestId.CredentialDescription)).toHaveText(description)
+
+  // confirm criteria matches
+  const criteria = testVC.credentialSubject.achievement.criteria.narrative
+  await expect(page.getByText('Criteria')).toBeVisible();
+  await expect(page.getByTestId(TestId.CredentialCriteria)).toHaveText(criteria)
+
+});

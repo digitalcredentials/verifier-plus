@@ -61,10 +61,10 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
             </div>
           </div>
           <div className={styles.achivementInfo}>
-            {displayValues.achievementImage ? <img className={styles.achievementImage} src={displayValues.achievementImage} alt="achievement image" /> : null}
+            {displayValues.achievementImage ? <img className={styles.achievementImage} src={displayValues.achievementImage} alt="achievement image" data-testid={TestId.AchievementImage}/> : null}
             <div>
-              <h1 id='title' className={styles.credentialName}>{displayValues.credentialName}</h1>
-              {displayValues.achievementType ? <p className={styles.achievementType}>Achievement Type : {displayValues.achievementType}</p> : null}
+              <h1 id='title' className={styles.credentialName} data-testid={TestId.CredentialName}>{displayValues.credentialName}</h1>
+              {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type : {displayValues.achievementType}</p> : null}
             </div>
           </div>
         </div>
@@ -111,8 +111,8 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               <div>
                 <h3 className={styles.smallHeader}>Criteria</h3>
                 {/* <div className={styles.credentialCriteria}>{displayValues.criteria}</div> */}
-                <div className={styles.markdownContainer}>
-                  <ReactMarkdown data-testid={TestId.CredentialCriteria}>{displayValues.criteria}</ReactMarkdown>
+                <div className={styles.markdownContainer} data-testid={TestId.CredentialCriteria}>
+                  <ReactMarkdown >{displayValues.criteria}</ReactMarkdown>
                 </div>
               </div>
             )}
