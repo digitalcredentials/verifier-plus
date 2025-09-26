@@ -14,5 +14,8 @@ export enum TestId {
     IssuanceDate = "issuance-date",
     ExpirationDate = "expiration-date",
     CredentialDescription = "credential-description",
-    CredentialCriteria = "credential-criteria"
+    CredentialCriteria = "credential-criteria",
+    CredentialName="credential-name",
+    AchievementType="achievement-type",
+    AchievementImage="achievement-image"
 }
