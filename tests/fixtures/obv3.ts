@@ -51,7 +51,72 @@ const obv3_v2 = `{
     }
 }`
 
-const obv3_v1 = ``
+const obv3_v1 = `{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+        "https://w3id.org/security/data-integrity/v2"
+    ],
+    "id": "urn:uuid:2fe53dc9-b2ec-4939-9b2c-0d00f6663b6c",
+    "issuanceDate": "2025-01-09T15:06:31Z",
+    "expirationDate": "2090-01-09T16:23:24Z",
+    "type": [
+        "VerifiableCredential",
+        "AchievementCredential"
+    ],
+    "name": "DCC Test Credential",
+    "issuer": {
+        "type": [
+            "Profile"
+        ],
+        "id": "did:key:z6MknNQD1WHLGGraFi6zcbGevuAgkVfdyCdtZnQTGWVVvR5Q",
+        "name": "Digital Credentials Consortium Test Issuer",
+        "url": "https://dcconsortium.org",
+        "image": {
+            "id": "https://digitalcredentials.github.io/badge-assets/dcc.png",
+            "type": "Image"
+        }
+    },
+    "credentialSubject": {
+        "type": [
+            "AchievementSubject"
+        ],
+        "achievement": {
+            "id": "urn:uuid:bd6d9316-f7ae-4073-a1e5-2f7f5bd22922",
+            "type": [
+                "Achievement"
+            ],
+            "achievementType": "Diploma",
+            "name": "Badge",
+            "description": "This is a sample credential issued by the Digital Credentials Consortium to demonstrate the functionality of Verifiable Credentials for wallets and verifiers.",
+            "criteria": {
+                "type": "Criteria",
+                "narrative": "This credential was issued to a student that demonstrated proficiency in the Python programming language that occurred from February 17, 2023 to June 12, 2023."
+            },
+            "image": {
+                "id": "https://digitalcredentials.github.io/badge-assets/DCC_Delft_Summit_Presenter.png",
+                "type": "Image"
+            }
+        },
+        "identifier": [
+            {
+                "type": "IdentityObject",
+                "identityHash": "Taylor Tuna",
+                "identityType": "name",
+                "hashed": false,
+                "salt": "not-used"
+            }
+        ]
+    },
+    "proof": {
+        "type": "DataIntegrityProof",
+        "created": "2025-09-26T19:51:25Z",
+        "verificationMethod": "did:key:z6MknNQD1WHLGGraFi6zcbGevuAgkVfdyCdtZnQTGWVVvR5Q#z6MknNQD1WHLGGraFi6zcbGevuAgkVfdyCdtZnQTGWVVvR5Q",
+        "cryptosuite": "eddsa-rdfc-2022",
+        "proofPurpose": "assertionMethod",
+        "proofValue": "z5DawfsUZsKJiTr6ea34VJFwJj9PXuHEdNxqp91N6dDkXqL2iTkLhBtifFjUrhCa65GF9ZmzcbjV6dW2k2MAgrZnZ"
+    }
+}`
 
 export const getOBv3_v2 = () => {
     return JSON.parse(obv3_v2);
