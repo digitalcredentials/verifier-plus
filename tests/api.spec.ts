@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { getTestVP } from "./fixtures/testVP";
+import { getTestVP } from "@/tests/fixtures/testVP";
 
 test('POST /credentials should store posted VP', async ({ request }) => {
   const testVP = getTestVP();
