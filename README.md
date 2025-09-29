@@ -123,17 +123,17 @@ When storing a credential with an intial POST of the credential to /api/credenti
 
 ```JSON
  {
- *   "url": {
- *     // human-readable HTML view of the credential
- *     "view": "/credentials/{publicCredentialId}",
- *
- *     // raw JSON GET (used by the html view)
- *     "get": "/api/credentials/{publicCredentialId}",
- *
- *     // used for DELETE/unshare API
- *     "unshare": "/api/credentials/{publicCredentialId}"
- *   }
- * }
+    "url": {
+      // human-readable HTML view of the credential
+      "view": "/credentials/{publicCredentialId}",
+ 
+      // raw JSON GET (used by the html view)
+      "get": "/api/credentials/{publicCredentialId}",
+ 
+      // used for DELETE/unshare API
+      "unshare": "/api/credentials/{publicCredentialId}"
+    }
+  }
  ```
 
 The raw JSON for the credential can then be retrieved using the 'get', or removed from public view with 'unshare'. The 'view' url can be used to open the credential directly in VerifierPlus, where it will be verified and displayed in a nicely formatted view.
