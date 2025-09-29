@@ -185,6 +185,9 @@ Th credential storage part of VerifierPlus requires MongoDB for its backend stor
 
  We've set the configuation values in the 'environment' sections of the compose file, but you can also use a .env file, like the .env.example we provide. The .env file may be more secure.
 
+> [!TIP]
+> If, when deploying to a different architecture, you get errors that seem related to tailwind, it may be that you need to include specific builds of the [lightningcss](https://lightningcss.dev) library, which [tailwind](https://tailwindcss.com) uses under the hood. The error should tell you which specific build is needed. You can then find the right package in npm and install it as an optionalDependency as we've already done for the linux build we needed for our AWS deployment: `npm i lightningcss-linux-x64-musl --save-optional`. You'll see in the optionalDependencies section of [package.json](./package.json) that we've also installed another build for an M4 Mac, `lightningcss-linux-arm64-musl`.
+
 ## Verifiable Presentation Request Exchange
 
  VerifierPlus provides an option on the landing page to request credentials from the Learner Credential Wallet.
