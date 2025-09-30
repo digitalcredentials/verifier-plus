@@ -17,5 +17,7 @@ export enum TestId {
     CredentialCriteria = "credential-criteria",
     CredentialName="credential-name",
     AchievementType="achievement-type",
-    AchievementImage="achievement-image"
+    AchievementImage="achievement-image",
+    IssuerName = "issuer-name",
+    RegistryIssuerName = "registry-issuer-name"
 }

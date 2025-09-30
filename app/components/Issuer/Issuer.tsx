@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import type { IssuerProps } from './Issuer.d';
 import styles from './Issuer.module.css';
+import { TestId } from '@/tests/testIds';
 
 export const Issuer = ({ issuer, header, infoButtonPushed }: IssuerProps) => {
   const issuerImage = useRef<HTMLImageElement>(null);
@@ -21,7 +22,7 @@ export const Issuer = ({ issuer, header, infoButtonPushed }: IssuerProps) => {
               <img src={issuer.image?.id || issuer.image} width={36} height={36} alt={`${issuer.name} logo`} ref={issuerImage} onError={handleonError} />
             )}
             <div className={styles.issuerInformation}>
-              <div>{issuer.name}
+              <div data-testid={TestId.IssuerName}>{issuer.name}
                 {/* <span className={`material-icons-outlined ${styles.infoIcon}`} onClick={infoButtonPushed}>
                   info
                 </span> */}
