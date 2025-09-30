@@ -1,6 +1,7 @@
 
 import React from 'react';
 import styles from './RegistryCard.module.css';
+import { TestId } from '@/tests/testIds';
 
 type RegistryCardProps = {
   registryName: string;
@@ -38,6 +39,7 @@ export const RegistryCard: React.FC<RegistryCardProps> = ({ registryName, issuer
           {issuerName && (
             <p className={styles.registryName}>
               <strong>Issuer Name:</strong>{' '}
+              <span data-testid={TestId.RegistryIssuerName}>
               {issuerUrl ? (
                 <a href={issuerUrl} target="_blank" rel="noopener noreferrer">
                   {issuerName}
@@ -45,6 +47,7 @@ export const RegistryCard: React.FC<RegistryCardProps> = ({ registryName, issuer
               ) : (
                 issuerName
               )}
+              </span>
             </p>
           )}
           {issuerLegalName && (
