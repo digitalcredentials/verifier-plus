@@ -5,7 +5,7 @@ import { useVerificationContext } from '@/lib/verificationContext';
 import { VerifyResponse } from '@/types/credential';
 import styles from './VerificationCard.module.css';
 import { RegistryCard } from '@/components/RegistryCard/RegistryCard';
-import { TestId } from '@/tests/testIds';
+import { TestId } from '@/lib/testIds';
 
 export const UNSUCCESSFUL_VERIFICATION_MSG = 'This credential was not verified successfully.';
 export const VERIFICATION_WARNING_MSG = 'There is a warning about this credential.'

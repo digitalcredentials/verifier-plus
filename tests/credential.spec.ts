@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { getMinimalVCv2 } from "@/tests/fixtures/minimalVCv2";
 import { getOBv3_v2, getOBv3_v1 } from "@/tests/fixtures/obv3";
-import { TestId } from "@/tests/testIds"
+import { TestId } from "@/lib/testIds"
 import { DateTime } from "luxon";
 
 /**

@@ -3,7 +3,7 @@ import { getTestVPForVPQR } from '@/tests/fixtures/testVP';
 
 import { vprQuery } from '@/app/api/exchanges/[txId]/route';
 import { LogMessages } from "@/components/ResultLog/ResultLog";
-import { TestId } from "@/tests/testIds"
+import { TestId } from "@/lib/testIds"
 
 test('test the qr', async ({ page, request }) => {
   await page.goto('http://localhost:3000/');
