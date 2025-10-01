@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { getOBv3_v2} from "@/tests/fixtures/obv3";
 import { TestId } from "@/lib/testIds"
 import { VERIFICATION_WARNING_MSG } from "@/components/VerificationCard/VerificationCard";
+import { WARNING_MSG } from "@/components/VerifyIndicator/VerifyIndicator";
 
 // Note that this name is taken from the DCC Sandbox Registry
 // We have to take it from there so we can confirm in our tests that
@@ -55,9 +56,12 @@ test("warning message shown when no registry", async ({ page }) => {
   await page.getByTestId('vc-text-area').fill(testVC)
   await page.getByRole('button', { name: 'Verify' }).click()
 
-  // a warning should be shown, and no issuer
+  // a warning should be shown in the resgistry area, and no issuer
   await expect(page.getByTestId(TestId.VerificationMessage)).toHaveText(VERIFICATION_WARNING_MSG);
   await expect(page.getByTestId(TestId.RegistryIssuerName)).not.toBeVisible
+
+  // a warning should also be shown up by the credential title
+  await expect(page.getByTestId(TestId.VerifyIndicator)).toHaveText(WARNING_MSG)
 });
 
 
