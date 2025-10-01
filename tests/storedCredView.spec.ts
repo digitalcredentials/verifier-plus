@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { getTestVP } from "@/tests/fixtures/testVP";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
-import { TestId } from "@/tests/testIds"
+import { TestId } from "@/lib/testIds"
 
 const generalErrorMessages = {
   NOT_FOUND: '404 credential not found'

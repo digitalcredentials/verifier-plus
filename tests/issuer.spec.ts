@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { getMinimalVCv2 } from "@/tests/fixtures/minimalVCv2";
-import { getOBv3_v2, getOBv3_v1 } from "@/tests/fixtures/obv3";
-import { TestId } from "@/tests/testIds"
+import { getOBv3_v2} from "@/tests/fixtures/obv3";
+import { TestId } from "@/lib/testIds"
 import { VERIFICATION_WARNING_MSG } from "@/components/VerificationCard/VerificationCard";
 
 // Note that this name is taken from the DCC Sandbox Registry

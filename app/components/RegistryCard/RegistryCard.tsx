@@ -1,7 +1,7 @@
 
 import React from 'react';
 import styles from './RegistryCard.module.css';
-import { TestId } from '@/tests/testIds';
+import { TestId } from '@/lib/testIds';
 
 type RegistryCardProps = {
   registryName: string;

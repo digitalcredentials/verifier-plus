@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
-import { TestId } from "@/tests/testIds"
+import { TestId } from "@/lib/testIds"
 
 // NOTE: these tests paste the url for the VC into V+, 
 // The tests in verifyText.spec.ts retrieve the json and paste that.

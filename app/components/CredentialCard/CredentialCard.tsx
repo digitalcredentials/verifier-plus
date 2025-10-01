@@ -12,7 +12,7 @@ import { useVerificationContext } from "@/lib/verificationContext";
 import ReactMarkdown from 'react-markdown';
 import { getExpirationDate, getIssuanceDate } from '@/lib/credentialValidityPeriod';
 import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifier';
-import { TestId } from '@/tests/testIds';
+import { TestId } from '@/lib/testIds';
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {

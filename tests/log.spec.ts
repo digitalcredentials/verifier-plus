@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { getTamperedVCAsString } from "@/tests/fixtures/minimalVCv2";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
-import { TestId } from "@/tests/testIds"
+import { TestId } from "@/lib/testIds"
 
 const baseExpectedLogMessages = {
     expiry: LogMessages.HasNotExpired,
