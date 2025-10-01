@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { getMinimalVCv2 } from "@/tests/fixtures/minimalVCv2";
 import { getOBv3_v2, getOBv3_v1 } from "@/tests/fixtures/obv3";
 import { TestId } from "@/tests/testIds"
+import { VERIFICATION_WARNING_MSG } from "@/components/VerificationCard/VerificationCard";
 
 // Note that this name is taken from the DCC Sandbox Registry
 // We have to take it from there so we can confirm in our tests that
@@ -13,7 +14,7 @@ const publicTestIssuerName = 'Public Test Issuer'
 /** Test that the issuer name shown in the top issuer section matches the
  * issuer name shown in the registry section
 */
-test("issuer names come from registry and match", async ({ page }) => {
+test("issuer names come from registry and both match", async ({ page }) => {
   const testVC = getOBv3_v2()
   const testVCAsString = JSON.stringify(testVC)
 
@@ -46,6 +47,20 @@ test("issuer name comes from vc when issuer not in registry", async ({ page }) =
   // and also check that an issuer name isn't shown in the registry area
   await expect(page.getByTestId(TestId.RegistryIssuerName)).not.toBeVisible
 });
+
+test("warning message shown when no registry", async ({ page }) => {
+  const testVC = 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v1/bothSignatureTypes/didKey/noRegistry-noStatus-noExpiry.json'
+  
+  await page.goto("/");
+  // load the VC into V+, allowing V+ to go fetch the text itself
+  await page.getByTestId('vc-text-area').fill(testVC)
+  await page.getByRole('button', { name: 'Verify' }).click()
+
+  // a warning should be shown, and no issuer
+  await expect(page.getByTestId(TestId.VerificationMessage)).toHaveText(VERIFICATION_WARNING_MSG);
+  await expect(page.getByTestId(TestId.RegistryIssuerName)).not.toBeVisible
+});
+
 
 
 
