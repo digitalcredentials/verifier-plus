@@ -5,6 +5,11 @@ import { useVerificationContext } from '@/lib/verificationContext';
 import { VerifyResponse } from '@/types/credential';
 import styles from './VerificationCard.module.css';
 import { RegistryCard } from '@/components/RegistryCard/RegistryCard';
+import { TestId } from '@/tests/testIds';
+
+export const UNSUCCESSFUL_VERIFICATION_MSG = 'This credential was not verified successfully.';
+export const VERIFICATION_WARNING_MSG = 'There is a warning about this credential.'
+export const SUCCESSFUL_VERIFICATION_MSG = 'This credential was verified successfully'
 
 export const VerificationCard = () => {
   const { loading, verificationResult, verifyCredential } = useVerificationContext();
@@ -36,17 +41,17 @@ export const VerificationCard = () => {
     if (hasFailure) {
       return {
         type: 'error',
-        text: 'This credential was not verified successfully.',
+        text: UNSUCCESSFUL_VERIFICATION_MSG,
       };
     } else if (hasWarning) {
       return {
         type: 'warning',
-        text: 'There is a warning about this credential.',
+        text: VERIFICATION_WARNING_MSG,
       };
     } else {
       return {
         type: 'success',
-        text: 'This credential was verified successfully',
+        text: SUCCESSFUL_VERIFICATION_MSG,
       };
     }
   };
@@ -76,7 +81,7 @@ export const VerificationCard = () => {
           </div>
         ) : (
           <>
-            <div className={`${styles.verificationStatus} ${styles[type]}`}>
+            <div className={`${styles.verificationStatus} ${styles[type]}`} data-testid={TestId.VerificationMessage}>
               {text}
             </div>
 
