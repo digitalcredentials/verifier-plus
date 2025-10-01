@@ -20,5 +20,6 @@ export enum TestId {
     AchievementImage="achievement-image",
     IssuerName = "issuer-name",
     RegistryIssuerName = "registry-issuer-name",
-    VerificationMessage = "verification_message"
+    VerificationMessage = "verification_message",
+    VerifyIndicator = "verify-indicator"
 }

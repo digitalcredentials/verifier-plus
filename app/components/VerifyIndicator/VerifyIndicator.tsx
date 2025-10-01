@@ -1,5 +1,11 @@
 import { useVerificationContext } from "@/lib/verificationContext";
 import styles from './VerifyIndicator.module.css';
+import { TestId } from "@/lib/testIds";
+
+export const VERIFYING_MSG = 'Verifying...';
+export const NOT_VERIFIED_MSG = 'Not Verified'
+export const WARNING_MSG = 'Warning';
+export const VERIFIED_MSG = 'Verified'
 
 export const VerifyIndicator = () => {
   const { loading, verificationResult } = useVerificationContext();
@@ -35,26 +41,26 @@ export const VerifyIndicator = () => {
   // Determine status
   if (loading) {
     className = styles.loading;
-    text = 'Verifying...';
+    text = VERIFYING_MSG;
   } else if (hasFailure) {
     icon = <span className={`material-icons ${styles.indicatorIcon}`}>cancel</span>;
-    text = 'Not Verified';
+    text = NOT_VERIFIED_MSG;
     className = styles.notVerified;
   } else if (hasWarning) {
     icon = <span className={`material-icons ${styles.indicatorIcon}`}>priority_high</span>;
-    text = 'Warning';
+    text = WARNING_MSG;
     className = styles.warning;
   } else {
     icon = <span className={`material-icons ${styles.indicatorIcon}`}>check_circle</span>;
-    text = 'Verified';
+    text = VERIFIED_MSG;
     className = styles.verified;
   }
 
   return (
     <div className={styles.container}>
-      <span className={`${styles.indicator} ${className}`}>
+      <span className={`${styles.indicator} ${className}`} >
         {icon}
-        {text}
+        <span data-testid={TestId.VerifyIndicator}>{text}</span>
       </span>
     </div>
   );
