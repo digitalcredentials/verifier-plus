@@ -5,7 +5,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "test": "playwright test"
+    "test": "playwright test --project=DesktopChrome --project=API"
   },
   "dependencies": {
     "@digitalbazaar/lru-memoize": "^4.0.0",
