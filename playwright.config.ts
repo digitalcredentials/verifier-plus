@@ -1,11 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 import path from "path";
 
-// Use process.env.PORT by default and fallback to port 3000
+// Use process.env.PORT if set, otherwise fallback to port 3000
 const PORT = process.env.PORT || 3000;
 
-// Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
-const baseURL = `http://localhost:${PORT}`;
+// run tests against env value if set, otherwise fallback to localhost
+const baseURL = process.env.PLAYWRIGHT_TEST_URL || `http://localhost:${PORT}`;
 const baseURLAPI = `${baseURL}/api/credentials/`
 
 // Reference: https://playwright.dev/docs/test-configuration
@@ -22,8 +22,8 @@ export default defineConfig({
   // Run your local dev server before starting the tests:
   // https://playwright.dev/docs/test-advanced#launching-a-development-web-server-during-the-tests
 
-  // JC disable for now because I'm running it locally
-  // could later have it run as part of CI
+  // can have playwright fire up a server against which to test, say for CI
+  // but for the verifierPlus api tests you'd need a running mongo instance too
   /*webServer: {
     command: "npm run dev",
     url: baseURL,
@@ -59,7 +59,7 @@ export default defineConfig({
       }
     },
     {
-      name: "Desktop Chrome",
+      name: "DesktopChrome",
       testIgnore: /.*api.spec.ts/,
       use: {
         ...devices["Desktop Chrome"],
@@ -81,14 +81,14 @@ export default defineConfig({
     // },
     // Test against mobile viewports.
     {
-      name: "Mobile Chrome",
+      name: "MobileChrome",
       testIgnore: /.*api.spec.ts/,
       use: {
         ...devices["Pixel 5"],
       },
     },
     {
-      name: "Mobile Safari",
+      name: "MobileSafari",
       testIgnore: /.*api.spec.ts/,
       use: devices["iPhone 12"],
     },
