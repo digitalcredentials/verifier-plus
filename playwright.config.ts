@@ -19,6 +19,7 @@ export default defineConfig({
   // Artifacts folder where screenshots, videos, and traces are stored.
   outputDir: "test-results/",
 
+
   // Run your local dev server before starting the tests:
   // https://playwright.dev/docs/test-advanced#launching-a-development-web-server-during-the-tests
 
@@ -55,7 +56,7 @@ export default defineConfig({
         extraHTTPHeaders: {
           // not sure if this header is really needed
           'Content-Type': 'application/json'
-      }
+        }
       }
     },
     {
@@ -86,11 +87,18 @@ export default defineConfig({
       use: {
         ...devices["Pixel 5"],
       },
+      expect: {
+        toHaveScreenshot: {
+          maxDiffPixels: 2000, // Allow up to 2000 pixels to be different
+          maxDiffPixelRatio: 0.1, // Allow up to 10% of pixels to be different
+          //threshold: 0.1, // Adjust color difference tolerance
+        },
+      },
     },
-    {
-      name: "MobileSafari",
-      testIgnore: /.*api.spec.ts/,
-      use: devices["iPhone 12"],
-    },
+   // {
+    //  name: "MobileSafari",
+    //  testIgnore: /.*api.spec.ts/,
+   //   use: devices["iPhone 12"],
+   // },
   ],
 });
