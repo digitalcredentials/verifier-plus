@@ -21,33 +21,37 @@ export async function POST(request: NextRequest) {
 
     let targetUrl = url;
 
-    // If URL contains query parameters, extract the vc parameter
-    if (url.includes('?')) {
-      try {
-        const urlObj = new URL(url);
-        const vcUrl = urlObj.searchParams.get('vc');
-        if (!vcUrl) {
-          console.error('No vc parameter found in URL:', url);
-          return Response.json({ error: 'No credential URL found in query parameters' }, {
+    try {
+      const urlObj = new URL(url);
+      // if there is a 'vc' query param then 
+      // we want to use the value of that as our url
+      const vcUrl = urlObj.searchParams.get('vc');
+      if (vcUrl) {
+        try {
+          // now check the vcURL by parsing it
+          new URL(vcUrl)
+        } catch (e) {
+          console.error("Error parsing the URL in the 'VC' query parameter:", e);
+          return Response.json({ error: "Invalid URL format in the 'vc' query parameter" }, {
             status: 400,
             headers
           })
         }
         targetUrl = vcUrl;
-      } catch (error) {
-        console.error('Error parsing URL:', error);
-        return Response.json({ error: 'Invalid URL format' }, {
-          status: 400,
-          headers
-        })
       }
+    } catch (error) {
+      console.error('Error parsing URL:', error);
+      return Response.json({ error: 'Invalid URL format' }, {
+        status: 400,
+        headers
+      })
     }
 
     const response = await fetch(targetUrl);
 
     if (!response.ok) {
       console.error('Fetch failed:', response.status, response.statusText);
-      
+
       return Response.json({ error: 'Failed to fetch URL' }, {
         status: response.status,
         headers
