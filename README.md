@@ -200,6 +200,19 @@ Th credential storage part of VerifierPlus requires MongoDB for its backend stor
 
 We use [Playwright](https://playwright.dev) for testing, pretty much as described on the excellent Playwright site, so we won't reproduce the Playwright documentation.
 
+The basic idea, though, is that the playwright tests check a running server, which by default
+is localhost, but can be set to any server using the env variable, like so:
+
+`PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org`
+
+This therefore allows us to run end to end tests on our local development server, on a staging server, or on a production server. Any running instance of verifier-plus.
+
+You can set that env variable however you prefer, but typically in an .env file or by passing the value in on the command line when running your test script, e.g.,
+
+`PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org npm run test`
+
+Note too that you can set which browsers you'd like to run the tests on using the --project flag as described in this [Playwright doc](https://playwright.dev/docs/running-tests#run-tests-on-different-browsers). Note that you'll have to have defined the projects in the [playwright.config.ts](./playwright.config.ts).
+
 ## Next.js
 
 To learn more about Next.js, take a look at the following resources:
