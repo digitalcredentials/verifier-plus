@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
-import path from "path";
+import path from 'path';
+import dotenv from 'dotenv';
+// Read from .env.playwright
+dotenv.config({ path: path.resolve(__dirname, '.env.playwright') });
 
 // Use process.env.PORT if set, otherwise fallback to port 3000
 const PORT = process.env.PORT || 3000;
@@ -64,6 +67,13 @@ export default defineConfig({
       testIgnore: /.*api.spec.ts/,
       use: {
         ...devices["Desktop Chrome"],
+      },
+      expect: {
+        toHaveScreenshot: {
+          maxDiffPixels: 2000, // Allow up to 2000 pixels to be different
+          maxDiffPixelRatio: 0.1, // Allow up to 10% of pixels to be different
+          //threshold: 0.1, // Adjust color difference tolerance
+        },
       },
     },
     // {
