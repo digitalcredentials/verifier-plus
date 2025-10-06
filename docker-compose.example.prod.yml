@@ -1,8 +1,8 @@
 version: "3.7"
 
 services:
-  web-verifier-plus:
-    container_name: web-verifier-plus
+  verifier-plus:
+    container_name: verifier-plus
     build: .
     environment:
       - HEALTH_CHECK_SMTP_HOST=add your email host, like smtp.sendgrid.net
