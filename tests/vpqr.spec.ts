@@ -6,7 +6,7 @@ import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds"
 
 test('test the qr', async ({ page, request }) => {
-  await page.goto('http://localhost:3000/');
+  await page.goto('/');
   await page.getByTestId('lcw-request-btn').click();
   const qr = await page.getByTestId("lcw-qr-request")
   const theValueOfTheQR: any = await qr.getAttribute('data-testvalue')
