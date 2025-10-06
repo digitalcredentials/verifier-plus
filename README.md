@@ -201,17 +201,24 @@ Th credential storage part of VerifierPlus requires MongoDB for its backend stor
 We use [Playwright](https://playwright.dev) for testing, pretty much as described on the excellent Playwright site, so we won't reproduce the Playwright documentation.
 
 The basic idea, though, is that the playwright tests check a running server, which by default
-is localhost, but can be set to any server using the env variable, like so:
+is localhost, but can be set to any server by setting `PLAYWRIGHT_TEST_URL` in [.env.playwright](./.env.playwright), like so:
 
 `PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org`
 
 This therefore allows us to run end to end tests on our local development server, on a staging server, or on a production server. Any running instance of verifier-plus.
 
-You can set that env variable however you prefer, but typically in an .env file or by passing the value in on the command line when running your test script, e.g.,
+You can also pass the value in on the command line if you like, e.g.,
 
 `PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org npm run test`
 
 Note too that you can set which browsers you'd like to run the tests on using the --project flag as described in this [Playwright doc](https://playwright.dev/docs/running-tests#run-tests-on-different-browsers). Note that you'll have to have defined the projects in the [playwright.config.ts](./playwright.config.ts).
+
+>[!NOTE]
+>We've set a fairly relaxed maxDiffPixels and maxDiffPixelRatio in [playwright.config.ts](./playwright.config.ts) for the screenshot matching because our tests were failing because of inconsequential differences between the images. You may want to change those if need be.
+
+>[!TIP]
+>If for whatever reason you don't want to set the playwright PLAYWRIGHT_TEST_URL as an environment variable you can of course also directly change the baseURL in [playwright.config.ts](./playwright.config.ts).
+
 
 ## Next.js
 
