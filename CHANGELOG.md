@@ -1,12 +1,22 @@
 # verifier-plus Changelog
 
+## 2.0.0 
+### Added
+- Updates to NextJS 15 - consequential major code rework to use latest NextJS and React
+- enables scanning a QR that points at a VC
+- adds Playwright tests, both UI and API
+- updates libs
+- switches deprecated QR scanning lib to qr-scanner
+- reworks docker build
+### Fixed
+- Hanging mongo connections
+
 ## 1.1.0 
 ### Added
 - [EPIC] - Presentation request link: Send link; receive wallet creds and verify
 - Add API endpoint to request/receive creds
 - UI: adds link and QR code
 - extract SERVER_URL to env
-
 ### Fixed
 - Unhandled runtime error on exchange.ts
 
