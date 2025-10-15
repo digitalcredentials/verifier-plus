@@ -158,7 +158,7 @@ $ npm run dev
 >[!WARNING]
 >Make sure you run the right npm script. There are two sets of scripts, one in the package.json in the root directory and another in the .next/standalone/package.json directory. The latter is for running on the server, and if you run it locally it doesn't work properly. It is particularly easy to accidentally run the standalone script if you are working in Visual Code because the standalone scripts appear above the regular scripts in the VCode NPM Scripts tab. Make sure you run these:
 
-![image info](./docs/images/vplus_npm_scripts.png)
+<img src="./docs/images/vplus_npm_scripts.png" alt="drawing" width="300"/>
 
 The development server updates as you save changes to the underlying files.
 
