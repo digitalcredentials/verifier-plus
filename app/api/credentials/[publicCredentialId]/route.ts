@@ -35,7 +35,7 @@ function processError(thrownError: any) {
   const error = {
     status: thrownError.statusText || 'Invalid request',
     // @ts-ignore
-    error: err.message
+    error: thrownError.message
   }
   return Response.json(error, { status });
 }
