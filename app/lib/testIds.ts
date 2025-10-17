@@ -21,5 +21,6 @@ export enum TestId {
     IssuerName = "issuer-name",
     RegistryIssuerName = "registry-issuer-name",
     VerificationMessage = "verification_message",
-    VerifyIndicator = "verify-indicator"
+    VerifyIndicator = "verify-indicator",
+    Alignment = "alignment"
 }
