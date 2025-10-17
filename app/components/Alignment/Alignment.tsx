@@ -3,8 +3,9 @@ import styles from './Alignment.module.css'
 import type { Alignment as AlignmentType } from '@/types/credential.d'
 import { isValidHttpUrl } from '@/lib/url'
 import type { AlignmentProps } from './Alignment.d'
+import { TestId } from '@/lib/testIds'
 
-export function Alignment ({ alignment, headerClassName }: AlignmentProps) {
+export const Alignment = ({ alignment, headerClassName }: AlignmentProps) => {
   const alignmentsArray: AlignmentType[] = Array.isArray(alignment) ? alignment : (alignment ? [alignment] : [])
   const items = (alignmentsArray ?? [])
     .map(a => ({
@@ -16,7 +17,7 @@ export function Alignment ({ alignment, headerClassName }: AlignmentProps) {
   if (items.length === 0) return null
 
   return (
-    <section className={styles.container}>
+    <section className={styles.container} data-testid={TestId.Alignment}>
       <h3 className={headerClassName ?? styles.header}>Alignments</h3>
       <ul className={styles.list}>
         {items.map((a, idx) => (
