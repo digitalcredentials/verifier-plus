@@ -13,6 +13,7 @@ import ReactMarkdown from 'react-markdown';
 import { getExpirationDate, getIssuanceDate } from '@/lib/credentialValidityPeriod';
 import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifier';
 import { TestId } from '@/lib/testIds';
+import { Alignment } from '@/components/Alignment/Alignment';
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
@@ -115,6 +116,14 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
                   <ReactMarkdown >{displayValues.criteria}</ReactMarkdown>
                 </div>
               </div>
+            )}
+
+            {/* Alignments (Open Badges 3.0) */}
+            {credential?.credentialSubject?.achievement?.alignment && (
+              <Alignment
+                alignment={credential.credentialSubject.achievement.alignment as any}
+                headerClassName={styles.smallHeader}
+              />
             )}
 
 
