@@ -13,7 +13,7 @@ export const Alignment = ({ alignment, headerClassName }: AlignmentProps) => {
       targetName: (a?.targetName ?? '').trim(),
       targetUrl: (a?.targetUrl ?? '').trim()
     }))
-    .filter(a => !!a.targetName && (!a.targetUrl || isValidHttpUrl(a.targetUrl)))
+    .filter(a => !!a.targetName)
   if (items.length === 0) return null
 
   return (
@@ -22,12 +22,15 @@ export const Alignment = ({ alignment, headerClassName }: AlignmentProps) => {
       <ul className={styles.list}>
         {items.map((a, idx) => (
           <li key={`${a.targetUrl || a.targetName}-${idx}`} className={styles.item}>
-            {isValidHttpUrl(a.targetUrl) ? (
-              <p className={styles.name}>
-                <a href={a.targetUrl!} target="_blank" rel="noreferrer noopener">{a.targetName}</a>
+            <p className={styles.name}>{a.targetName}</p>
+            {a.targetUrl && (
+              <p className={styles.url}>
+                {isValidHttpUrl(a.targetUrl) ? (
+                  <a href={a.targetUrl} target="_blank" rel="noreferrer noopener">{a.targetUrl}</a>
+                ) : (
+                  a.targetUrl
+                )}
               </p>
-            ) : (
-              <p className={styles.name}>{a.targetName}</p>
             )}
             {a.targetDescription && (
               <p className={styles.description}>{a.targetDescription}</p>
@@ -40,5 +43,3 @@ export const Alignment = ({ alignment, headerClassName }: AlignmentProps) => {
 }
 
 export default Alignment
-
-
