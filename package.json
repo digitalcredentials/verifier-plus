@@ -5,7 +5,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "test": "playwright test --project=DesktopChrome --project=API"
+    "test": "playwright test --project=DesktopChrome"
   },
   "dependencies": {
     "@digitalbazaar/lru-memoize": "^4.0.0",
@@ -15,8 +15,9 @@
     "@digitalcredentials/vc": "^9.0.1",
     "@digitalcredentials/vc-bitstring-status-list": "^1.0.0",
     "@digitalcredentials/vc-status-list": "^9.0.0",
-    "@digitalcredentials/verifier-core": "^1.0.0-beta.7",
+    "@digitalcredentials/verifier-core": "^1.0.0-beta.10",
     "@digitalcredentials/vpqr": "^2.2.1",
+    "@floating-ui/react": "^0.27.16",
     "@types/luxon": "^3.7.1",
     "@zxing/library": "^0.21.3",
     "axios": "^1.7.7",
