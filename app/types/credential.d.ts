@@ -45,11 +45,22 @@ export type OpenBadgeAchievement = {
   readonly name?: string;
   readonly type?: string;
   readonly image?: achievementImage;
+  readonly alignment?: Alignment | Alignment[];
 }
 
 type achievementImage = {
   readonly id?: string;
   readonly type?: string;
+}
+
+export type Alignment = {
+  readonly type?: string | string[];
+  readonly targetName?: string;
+  readonly targetUrl?: string;
+  readonly targetDescription?: string;
+  readonly targetCode?: string;
+  readonly targetFramework?: string;
+  readonly targetType?: string;
 }
 
 type SubjectExtensions = {
