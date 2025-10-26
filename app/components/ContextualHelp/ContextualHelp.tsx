@@ -1,6 +1,8 @@
 import type { ContextualHelpProps } from './ContextualHelp.d';
 import {useFloating, useClick, useInteractions} from '@floating-ui/react';
 import { useState } from 'react';
+import HelpIcon from '@mui/icons-material/HelpOutlined';
+
 export const ContextualHelp = ({text}: ContextualHelpProps) => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +21,7 @@ export const ContextualHelp = ({text}: ContextualHelpProps) => {
   return (
     <>
       <div ref={refs.setReference} {...getReferenceProps()}>
-        <button ref={refs.setReference}>Help!</button>
+       <HelpIcon/>
        
       </div>
       {isOpen && (
