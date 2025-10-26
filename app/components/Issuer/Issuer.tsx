@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import type { IssuerProps } from './Issuer.d';
 import styles from './Issuer.module.css';
 import { TestId } from '@/lib/testIds';
+import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
 
 export const Issuer = ({ issuer, header, infoButtonPushed }: IssuerProps) => {
   const issuerImage = useRef<HTMLImageElement>(null);
@@ -29,6 +30,7 @@ export const Issuer = ({ issuer, header, infoButtonPushed }: IssuerProps) => {
               </div>
               <p className={styles.issuerAddress}>{issuer.address}</p>
               <a href={issuer.url}>{issuer.url}</a>
+              <ContextualHelp text="The issuer "/>
             </div>
           </div>
         </div>
