@@ -8,6 +8,7 @@
     "test": "playwright test --project=DesktopChrome"
   },
   "dependencies": {
+    "@base-ui-components/react": "^1.0.0-beta.4",
     "@digitalbazaar/lru-memoize": "^4.0.0",
     "@digitalcredentials/ed25519-signature-2020": "^6.0.0",
     "@digitalcredentials/issuer-registry-client": "^3.0.0",
@@ -19,7 +20,6 @@
     "@digitalcredentials/vpqr": "^2.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@floating-ui/react": "^0.27.16",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@types/luxon": "^3.7.1",
