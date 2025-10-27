@@ -17,7 +17,7 @@ export const Issuer = ({ issuer, header, infoButtonPushed }: IssuerProps) => {
     <div>
       {(issuer?.image || issuer?.name || issuer?.url) && (
         <div>
-          <h2 className={styles.header}>{header}</h2>
+          <h2 className={styles.header}>{header}<ContextualHelp text="The issuer "/></h2>
           <div className={styles.issuer}>
             {issuer.image && (
               <img src={issuer.image?.id || issuer.image} width={36} height={36} alt={`${issuer.name} logo`} ref={issuerImage} onError={handleonError} />
@@ -30,7 +30,7 @@ export const Issuer = ({ issuer, header, infoButtonPushed }: IssuerProps) => {
               </div>
               <p className={styles.issuerAddress}>{issuer.address}</p>
               <a href={issuer.url}>{issuer.url}</a>
-              <ContextualHelp text="The issuer "/>
+              
             </div>
           </div>
         </div>
