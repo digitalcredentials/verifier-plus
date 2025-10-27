@@ -2,6 +2,7 @@ import type { ContextualHelpProps } from './ContextualHelp.d';
 import {useFloating, useClick, useInteractions} from '@floating-ui/react';
 import { useState } from 'react';
 import HelpIcon from '@mui/icons-material/HelpOutlined';
+import styles from './ContextualHelp.module.css';
 
 export const ContextualHelp = ({text}: ContextualHelpProps) => {
 
@@ -20,17 +21,16 @@ export const ContextualHelp = ({text}: ContextualHelpProps) => {
  
   return (
     <>
-      <div ref={refs.setReference} {...getReferenceProps()}>
-       <HelpIcon/>
-       
-      </div>
+      <span className={styles.icon} ref={refs.setReference} {...getReferenceProps()}>
+       <HelpIcon fontSize='inherit' color='info'/>
+      </span>
       {isOpen && (
         <div
           ref={refs.setFloating}
           style={floatingStyles}
           {...getFloatingProps()}
         >
-          Floating element
+          {text}
         </div>
       )}
     </>
