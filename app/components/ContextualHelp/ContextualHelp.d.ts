@@ -1,5 +1,6 @@
-import React, { ReactElement } from "react"
+import React, { ReactElement, ReactNode } from "react"
 
 export type ContextualHelpProps = {
-  text: string;
+  title?: string;
+  children: ReactNode;
 }
