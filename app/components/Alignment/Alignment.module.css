@@ -19,11 +19,11 @@
 }
 
 .name {
-  margin: 0;
+  margin: 0 0 6px 0;
 }
 
 .url {
-  margin: 0;
+  margin: 0 0 6px 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
