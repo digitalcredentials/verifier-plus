@@ -1,5 +1,9 @@
 # verifier-plus Changelog
 
+## 2.0.1 
+### Added
+- Add Alignments to Open Badges 3.0 Display
+
 ## 2.0.0 
 ### Added
 - Updates to NextJS 15 - consequential major code rework to use latest NextJS and React
