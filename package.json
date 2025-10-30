@@ -3,6 +3,7 @@
   "version": "2.0.1",
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev-no-turbopack": "next dev",
     "build": "next build --turbopack",
     "start": "next start",
     "test": "playwright test --project=DesktopChrome"
@@ -15,6 +16,7 @@
     "@digitalcredentials/security-document-loader": "^8.0.0",
     "@digitalcredentials/vc": "^9.0.1",
     "@digitalcredentials/vc-bitstring-status-list": "^1.0.0",
+    "@digitalcredentials/vc-help-react": "file:../vc-help-react",
     "@digitalcredentials/vc-status-list": "^9.0.0",
     "@digitalcredentials/verifier-core": "^1.0.0-beta.10",
     "@digitalcredentials/vpqr": "^2.2.1",
