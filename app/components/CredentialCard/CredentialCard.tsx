@@ -15,6 +15,9 @@ import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifi
 import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
+import { ContextualHelp } from '../ContextualHelp/ContextualHelp'
+import { ExpirationDateHelp } from '@digitalcredentials/vc-help-react';
+
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
   // TODO: add back IssuerInfoModal
@@ -86,7 +89,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
                       : "N/A"
                   }
                   testId={TestId.ExpirationDate}
-                />
+                /><ContextualHelp title="Expiration"><ExpirationDateHelp/></ContextualHelp>
               </div>
               {credential?.credentialSubject?.hasCredential?.awardedOnCompletionOf && (
                 <CompletionDocumentSection completionDocument={credential.credentialSubject.hasCredential.awardedOnCompletionOf} />
