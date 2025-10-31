@@ -1,0 +1,12 @@
+.note {
+    color: blue;
+    font-size: 16px;
+    background-color: lightgray;
+    padding: 10px;
+    margin: 20px;
+}
+
+.list {
+    list-style-type: disc;
+    padding-left: 20px;
+}
