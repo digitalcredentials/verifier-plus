@@ -15,8 +15,8 @@ import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifi
 import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
-import { ContextualHelp } from '../ContextualHelp/ContextualHelp'
-import { ExpirationDateHelp } from '@digitalcredentials/vc-help-react';
+import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
+import { ExpirationDateHelp } from '@/components/Help';
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
@@ -83,13 +83,15 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
 
                 <InfoBlock
                   header="Expiration Date"
+                  HelpContent={ExpirationDateHelp}
+                  helpTitle="Expiration Date"
                   contents={
                     displayValues.expirationDate
                       ? DateTime.fromISO(displayValues.expirationDate).toLocaleString(DateTime.DATE_MED)
                       : "N/A"
                   }
                   testId={TestId.ExpirationDate}
-                /><ContextualHelp title="Expiration"><ExpirationDateHelp/></ContextualHelp>
+                />
               </div>
               {credential?.credentialSubject?.hasCredential?.awardedOnCompletionOf && (
                 <CompletionDocumentSection completionDocument={credential.credentialSubject.hasCredential.awardedOnCompletionOf} />

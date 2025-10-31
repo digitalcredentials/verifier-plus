@@ -2,8 +2,8 @@ import { useRef } from 'react';
 import type { IssuerProps } from './Issuer.d';
 import styles from './Issuer.module.css';
 import { TestId } from '@/lib/testIds';
-import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
-import { IssuerHelp } from '@digitalcredentials/vc-help-react';
+import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
+import { IssuerHelp } from '@/components/Help';
 
 export const Issuer = ({ issuer, header, infoButtonPushed }: IssuerProps) => {
   const issuerImage = useRef<HTMLImageElement>(null);
