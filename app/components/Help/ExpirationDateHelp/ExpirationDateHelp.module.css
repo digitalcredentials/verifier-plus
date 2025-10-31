@@ -1,12 +1,17 @@
 .note {
-    color: blue;
+    color: white;
     font-size: 16px;
-    background-color: lightgray;
+    background-color: gray;
     padding: 10px;
     margin: 20px;
+     display: inline-block;
 }
 
 .list {
     list-style-type: disc;
     padding-left: 20px;
+}
+
+.image {
+   display:inline-block
 }
