@@ -18,6 +18,7 @@ import { Alignment } from '@/components/Alignment/Alignment';
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
 import { ExpirationDateHelp } from '@/components/Help';
 import { IssuanceDateHelp } from '../Help/IssuanceDateHelp/IssuanceDateHelp';
+import { HolderHelp } from '../Help/HolderHelp/HolderHelp';
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
@@ -110,7 +111,12 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
 
           <div className={styles.primaryColumn}>
             {displayValues.issuedTo ?
-              <InfoBlock header="Issued To" contents={displayValues.issuedTo} testId={TestId.IssuedTo}/>
+              <InfoBlock 
+              header="Issued To" 
+              HelpContent={HolderHelp}
+              helpTitle="Issued To"
+              contents={displayValues.issuedTo} 
+              testId={TestId.IssuedTo}/>
               :
               null
             }

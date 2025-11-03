@@ -4,7 +4,7 @@
     background-color: gray;
     padding: 10px;
     margin: 20px;
-     display: inline-block;
+    display: inline-block;
 }
 
 .list {
@@ -14,4 +14,8 @@
 
 .image {
    display:inline-block
+}
+
+.title {
+    text-align: center;
 }
