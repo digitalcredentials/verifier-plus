@@ -17,6 +17,7 @@ import { Alignment } from '@/components/Alignment/Alignment';
 
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
 import { ExpirationDateHelp } from '@/components/Help';
+import { IssuanceDateHelp } from '../Help/IssuanceDateHelp/IssuanceDateHelp';
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
@@ -78,7 +79,12 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               <Issuer issuer={issuer} infoButtonPushed={infoButtonPushed} header='Issuer' />
               <div className={styles.headerRow}>
                 {displayValues.issuanceDate && (
-                  <InfoBlock header="Issuance Date" contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} testId={TestId.IssuanceDate} />
+                  <InfoBlock 
+                    header="Issuance Date" 
+                    HelpContent={IssuanceDateHelp}
+                    helpTitle="Issuance Date"
+                    contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} 
+                    testId={TestId.IssuanceDate} />
                 )}
 
                 <InfoBlock
