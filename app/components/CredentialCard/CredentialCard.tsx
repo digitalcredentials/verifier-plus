@@ -19,6 +19,7 @@ import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
 import { ExpirationDateHelp } from '@/components/Help';
 import { IssuanceDateHelp } from '../Help/IssuanceDateHelp/IssuanceDateHelp';
 import { HolderHelp } from '../Help/HolderHelp/HolderHelp';
+import { DescriptionHelp } from '../Help/DescriptionHelp/DescriptionHelp';
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
@@ -121,7 +122,12 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               null
             }
             {displayValues.credentialDescription ?
-              <InfoBlock header="Description" contents={displayValues.credentialDescription} testId={TestId.CredentialDescription}/>
+              <InfoBlock 
+              header="Description" 
+              HelpContent={DescriptionHelp}
+              helpTitle="Credential Description"
+              contents={displayValues.credentialDescription} 
+              testId={TestId.CredentialDescription}/>
               :
               null
             }
