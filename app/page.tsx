@@ -446,7 +446,7 @@ export default function Home() {
             {/*             <p>
               <a className={styles.lcwLink} target={'_blank'} rel={'noreferrer'} href={lcwRequestUrl}><h3>Mobile Link</h3></a>
             </p> */}
-            <div><h5 className={styles.lcwLink}>Open Request in wallet via QR Code:</h5></div>
+            <div><h5 className={styles.lcwLink}>Scan QR code with phone camera to open:</h5></div>
             <div className={styles.qrCode}>
               <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl}/>
             </div>
