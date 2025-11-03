@@ -20,6 +20,7 @@ import { ExpirationDateHelp } from '@/components/Help';
 import { IssuanceDateHelp } from '../Help/IssuanceDateHelp/IssuanceDateHelp';
 import { HolderHelp } from '../Help/HolderHelp/HolderHelp';
 import { DescriptionHelp } from '../Help/DescriptionHelp/DescriptionHelp';
+import { CriteriaHelp } from '../Help/CriteriaHelp/CriteriaHelp';
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
@@ -133,7 +134,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
             }
             {displayValues.criteria && (
               <div>
-                <h3 className={styles.smallHeader}>Criteria</h3>
+                <h3 className={styles.smallHeader}>Criteria<ContextualHelp title="Criteria"><CriteriaHelp/></ContextualHelp></h3>
                 {/* <div className={styles.credentialCriteria}>{displayValues.criteria}</div> */}
                 <div className={styles.markdownContainer} data-testid={TestId.CredentialCriteria}>
                   <ReactMarkdown >{displayValues.criteria}</ReactMarkdown>
