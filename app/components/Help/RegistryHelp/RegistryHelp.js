@@ -17,5 +17,7 @@ export const RegistryHelp = () => {
         </p>
         <p>A registry of keys controlled by the association of university registrars for a given coountry, for example,
             could be used to verify digital degrees from accredited universities </p>
+             <p>A slight nuance is that Verifiable Credentials are typically signed with a Decentralized Identifier which
+              is simply a more durable way to describe a signing key. So we look up DIDs in our registry. </p>
   </>
 }

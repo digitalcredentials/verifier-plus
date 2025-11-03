@@ -16,12 +16,7 @@ import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
-import { ExpirationDateHelp } from '@/components/Help';
-import { IssuanceDateHelp } from '../Help/IssuanceDateHelp/IssuanceDateHelp';
-import { HolderHelp } from '../Help/HolderHelp/HolderHelp';
-import { DescriptionHelp } from '../Help/DescriptionHelp/DescriptionHelp';
-import { CriteriaHelp } from '../Help/CriteriaHelp/CriteriaHelp';
-
+import { ExpirationDateHelp, IssuanceDateHelp, HolderHelp, DescriptionHelp, CriteriaHelp } from '@/components/Help';
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
   // TODO: add back IssuerInfoModal
