@@ -18,4 +18,15 @@
 
 .title {
     text-align: center;
+    font-size: 18px;
+    font-weight:500;
+}
+
+.criteria {
+    background-color:aliceblue;
+    padding: 5px
+}
+
+.preference {
+    padding-bottom: 5px;
 }

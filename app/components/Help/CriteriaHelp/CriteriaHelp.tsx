@@ -9,8 +9,8 @@ export const CriteriaHelp = () => {
     <p className={styles.note}><img src="./icons/info_24_lime.svg"></img>Note that the criteria field supports 
     Markdown syntax.
     </p>
-    <p><h1 className={styles.title}>How we determine the value of this field</h1>
-    In order of preference:
+    <p className={styles.criteria}><h1 className={styles.title}>How we determine the value of this field</h1>
+
       <ul className={styles.list}>
       <li>credential.credentialSubject.achievement.criteria (OBv3)</li>
     </ul>

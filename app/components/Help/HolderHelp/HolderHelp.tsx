@@ -24,8 +24,8 @@ export const HolderHelp = () => {
     belonging to the holder of the credential. The holder can later then use this DID to prove, using a cryptographic signature, that they
     <b>control</b> the credential.
     </p>
-    <p><h1 className={styles.title}>How we determine the value of this field</h1>
-    In order of preference:
+    <p className={styles.criteria}><h1 className={styles.title}>How we determine the value of this field</h1>
+        <div className={styles.preference}>In order of preference:</div>
       <ul className={styles.list}>
       <li>credential.credentialSubject.name</li>
       <li>Scredential.credentialSubject.identifiers[identityType=name].identityHash</li>

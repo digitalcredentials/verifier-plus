@@ -11,8 +11,8 @@ export const DescriptionHelp = () => {
     description field. To provide a more stylized presentation, consider using the 'Criteria' field, which does allow 
     Markdown syntax.
     </p>
-    <p><h1 className={styles.title}>How we determine the value of this field</h1>
-    In order of preference:
+    <p  className={styles.criteria}><h1 className={styles.title}>How we determine the value of this field</h1>
+        <div className={styles.preference}>In order of preference:</div>
       <ul className={styles.list}>
       <li>credential.credentialSubject.achievement.description (OBv3)</li>
       <li>credential.credentialSubject.hasCredential.description</li>

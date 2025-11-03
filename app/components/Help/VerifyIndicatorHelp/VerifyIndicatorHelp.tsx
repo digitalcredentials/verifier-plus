@@ -13,8 +13,8 @@ export const VerifyIndicatorHelp = () => {
     demonstration. A verification page for a university that verifies degrees would likely more strictly enforce 
     expiry, revocation, and would most certainly not accept credentials from an unknown issuer.
     </p>
-    <p><h1 className={styles.title}>How we determine the value of this field</h1>
-    In order of preference:
+    <p className={styles.criteria}><h1 className={styles.title}>How we determine the value of this field</h1>
+
       <ul className={styles.list}>
       <li><b>Verifying</b> if verification is still in progress.</li>
       <li><b>Verified</b> if nothing has been tampered with, the credential hasn't expired, hasn't been revoked, and is from a known issuer.</li>
