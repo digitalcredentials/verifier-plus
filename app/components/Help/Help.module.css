@@ -22,6 +22,18 @@
     font-weight:500;
 }
 
+.criteriaTitle {
+    text-align: center;
+    font-size: 16px;
+    font-weight:600;
+    padding-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 15px;
+    font-weight:500;
+    padding: 5px;
+}
 .criteria {
     background-color:aliceblue;
     padding: 5px
@@ -29,4 +41,9 @@
 
 .preference {
     padding-bottom: 5px;
+}
+
+.infoIcon {
+    display: inline-block;
+    padding-right: 6px;
 }
