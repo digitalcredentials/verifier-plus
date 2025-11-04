@@ -5,7 +5,7 @@ import type { ResultItem, ResultLogProps } from './ResultLog.d';
 import styles from './ResultLog.module.css';
 import { StatusPurpose, hasStatusPurpose } from '@/lib/credentialStatus';
 import { TestId } from "@/lib/testIds"
-import { CredentialFormatHelp } from '../Help';
+import { CredentialFormatHelp, SignatureHelp } from '../Help';
 import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
 
 export enum LogId {
@@ -197,8 +197,8 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
             positiveMessage={LogMessages.ValidSignature}
             negativeMessage={LogMessages.InvalidSignature}
             testId={TestId.SigningLogMsg}
-            HelpContent={CredentialFormatHelp}
-            helpTitle="Supported Credential Format"
+            HelpContent={SignatureHelp}
+            helpTitle="Valid Signature"
           />
           <ResultItem
             verified={logMap[LogId.IssuerDIDResolves] ?? true}
