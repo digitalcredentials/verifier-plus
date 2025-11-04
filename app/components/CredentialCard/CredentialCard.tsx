@@ -16,7 +16,8 @@ import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
-import { ExpirationDateHelp, IssuanceDateHelp, HolderHelp, DescriptionHelp, CriteriaHelp } from '@/components/Help';
+import { ExpirationDateHelp, IssuanceDateHelp, HolderHelp, DescriptionHelp, CriteriaHelp, TitleHelp } from '@/components/Help';
+
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
   // TODO: add back IssuerInfoModal
@@ -66,7 +67,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
           <div className={styles.achivementInfo}>
             {displayValues.achievementImage ? <img className={styles.achievementImage} src={displayValues.achievementImage} alt="achievement image" data-testid={TestId.AchievementImage}/> : null}
             <div>
-              <h1 id='title' className={styles.credentialName} data-testid={TestId.CredentialName}>{displayValues.credentialName}</h1>
+              <h1 id='title' className={styles.credentialName} data-testid={TestId.CredentialName}>{displayValues.credentialName}<ContextualHelp title="Credential Name"><TitleHelp/></ContextualHelp></h1>
               {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type : {displayValues.achievementType}</p> : null}
             </div>
           </div>
