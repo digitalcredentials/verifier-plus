@@ -83,11 +83,11 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               ? 'priority_high'
               : 'close'}
         </span>
-        <div data-testid={testId} style={{verticalAlign: 'bottom', display: 'inline-span'}}>
+        <div data-testid={testId} style={{maxHeight: '1.5em', height: '1.5em'}}>
           {status === 'positive' && positiveMessage}
           {status === 'warning' && warningMessage}
           {status === 'negative' && negativeMessage}
-          {HelpContent&&<span style={{verticalAlign: 'bottom'}}><ContextualHelp fontSize=".6em" title={helpTitle}><HelpContent/></ContextualHelp></span>}  
+          {HelpContent&&<div style={{verticalAlign: 'top', display: 'inline-block'}}> <ContextualHelp title={helpTitle}><HelpContent/></ContextualHelp> </div>}  
         </div>
       </div>
     );
