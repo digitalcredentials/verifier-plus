@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react';
 import { CredentialError } from '@/types/credential.d';
-import type { ResultLogProps } from './ResultLog.d';
+import type { ResultItem, ResultLogProps } from './ResultLog.d';
 import styles from './ResultLog.module.css';
 import { StatusPurpose, hasStatusPurpose } from '@/lib/credentialStatus';
 import { TestId } from "@/lib/testIds"
+import { CredentialFormatHelp } from '../Help';
+import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
 
 export enum LogId {
   ValidSignature = 'valid_signature',
@@ -20,7 +22,7 @@ export enum LogMessages {
   HasNotExpired = 'has not expired',
   GeneralError = 'There was an error verifing this credential.',
   UnknownError = 'There was an unknown error verifing this credential.',
-  WellFormed = 'is in a supported credential format',
+  WellFormed = 'is correctly formatted',
   MalFormed = 'is not a recognized credential type',
   ValidSignature = 'has a valid signature',
   InvalidSignature = 'has an invalid signature',
@@ -44,8 +46,10 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
     warningMessage = '',
     sourceLogId = '',
     testId = '',
+    helpTitle, 
+    HelpContent,
     issuer = false
-  }) => {
+  }: ResultItem) => {
     const isIssuerCheck = sourceLogId === LogId.IssuerDIDResolves;
     const isExpirationCheck = sourceLogId === LogId.Expiration;
     const status = verified
@@ -61,7 +65,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
     };
 
     return (
-      <div className={styles.resultItem}>
+      <div className={styles.resultItem} >
         <span
           role="img"
           aria-label={
@@ -79,10 +83,11 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               ? 'priority_high'
               : 'close'}
         </span>
-        <div data-testid={testId}>
+        <div data-testid={testId} style={{verticalAlign: 'bottom', display: 'inline-span'}}>
           {status === 'positive' && positiveMessage}
           {status === 'warning' && warningMessage}
           {status === 'negative' && negativeMessage}
+          {HelpContent&&<span style={{verticalAlign: 'bottom'}}><ContextualHelp fontSize=".6em" title={helpTitle}><HelpContent/></ContextualHelp></span>}  
         </div>
       </div>
     );
@@ -183,6 +188,8 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
             positiveMessage={LogMessages.WellFormed}
             negativeMessage={LogMessages.MalFormed}
             testId={TestId.MalformedLogMsg}
+            HelpContent={CredentialFormatHelp}
+            helpTitle="Supported Credential Format"
           />
 
           <ResultItem
@@ -190,6 +197,8 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
             positiveMessage={LogMessages.ValidSignature}
             negativeMessage={LogMessages.InvalidSignature}
             testId={TestId.SigningLogMsg}
+            HelpContent={CredentialFormatHelp}
+            helpTitle="Supported Credential Format"
           />
           <ResultItem
             verified={logMap[LogId.IssuerDIDResolves] ?? true}
