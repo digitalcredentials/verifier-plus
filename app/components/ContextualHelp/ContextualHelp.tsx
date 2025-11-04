@@ -2,7 +2,6 @@ import * as React from 'react';
 import type { ContextualHelpProps } from './ContextualHelp.d';
 import HelpIcon from '@mui/icons-material/HelpOutlined';
 import { Dialog } from '@base-ui-components/react/dialog';
-import styles from './ContextualHelp.module.css'
 
 
 export const ContextualHelp = ({title, fontSize = '12px', children}: ContextualHelpProps) => {
