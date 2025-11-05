@@ -3,8 +3,8 @@ export const RevocationHelp = () => {
  return <>
     <ul className={styles.list}>
       <li>A revoked credential is considered entirely invalid.</li>
-      <li>Optional - not required by Verifiable Credential data model or the OBv3 data model.</li>
-      <li>Applies only to the VC, not to the underlying credential.</li>
+      <li>Revocation is optional - not required by Verifiable Credential data model nor the OBv3 data model.</li>
+      <li>Revocation applies only to the VC, not to the underlying credential.</li>
       <li>The DCC uses the BitstringStatusList implementation.</li>
     </ul>
 
@@ -38,8 +38,8 @@ A bitstring
     "statusListIndex": "7"
   }`}
     </pre>
-      We retrieve the status list from the statusListCredential url and then check that the bit at the position indicated by 'statusListIndex' is 
-      '0', that is that it hasn't been 'flipped' to a '1' to indicate revocation.
+      We retrieve the status list from the 'statusListCredential' url and then check the bit at the position indicated by 'statusListIndex'.
+      If it is '1' the credential has been revoked. If it is '0' it hasn't.
     </div>
   </>
 }
