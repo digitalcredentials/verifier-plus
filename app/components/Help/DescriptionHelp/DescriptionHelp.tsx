@@ -7,7 +7,7 @@ export const DescriptionHelp = () => {
       <li>If no description is provided, nothing is shown, including the 'Description' title.</li>
     </ul>
 
-    <p className={styles.note}><img src="./icons/info_24_lime.svg"></img>Note that formatting is not accommodated in the 
+    <p className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>Note that formatting is not accommodated in the 
     description field. To provide a more stylized presentation, consider using the 'Criteria' field, which does allow 
     Markdown syntax.
     </p>
