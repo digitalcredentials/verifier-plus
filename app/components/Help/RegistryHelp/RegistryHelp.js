@@ -24,9 +24,11 @@ export const RegistryHelp = () => {
         were signed by a key that has been registered in one of our registries. We make no guarantees because our registries are 
         strictly for demonstration purposes. 
         </p>
-        <p className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>A 'real' verifier would use a registry whose entries have been vetted and approved. 
+        <p className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
+        A 'real' verifier would use a registry whose registered issuers had been vetted and approved to issue specific credentials. 
        A registry of keys controlled by the association of university registrars for a given coountry, for example,
-            could be used to verify digital degrees from accredited universities. </p>
+            could be used to verify digital degrees from accredited universities. In this case, it might then be more accurate
+            to say it was a registry of 'trusted' issuers, rather than simply 'known' issuers.</p>
 
              <p className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>A slight nuance is that Verifiable Credentials are typically signed with a Decentralized Identifier which
               is simply a more durable way to describe a signing key. So we look up DIDs in our registry. </p>

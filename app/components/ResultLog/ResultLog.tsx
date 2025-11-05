@@ -7,6 +7,7 @@ import { StatusPurpose, hasStatusPurpose } from '@/lib/credentialStatus';
 import { TestId } from "@/lib/testIds"
 import { CredentialFormatHelp, RegistryHelp, SignatureHelp } from '../Help';
 import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
+import { RevocationHelp } from '../Help/RevocationHelp/RevocationHelp';
 
 export enum LogId {
   ValidSignature = 'valid_signature',
@@ -217,6 +218,8 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               positiveMessage={LogMessages.NotRevoked}
               negativeMessage={verificationResult.hasStatusError ? LogMessages.UncheckedRevocation : LogMessages.Revoked}
               testId={TestId.RevocationLogMsg}
+              HelpContent={RevocationHelp}
+              helpTitle="Revocation"
             />
           }
           {/* </div> */}
