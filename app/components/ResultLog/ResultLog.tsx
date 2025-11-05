@@ -5,7 +5,7 @@ import type { ResultItem, ResultLogProps } from './ResultLog.d';
 import styles from './ResultLog.module.css';
 import { StatusPurpose, hasStatusPurpose } from '@/lib/credentialStatus';
 import { TestId } from "@/lib/testIds"
-import { CredentialFormatHelp, SignatureHelp } from '../Help';
+import { CredentialFormatHelp, RegistryHelp, SignatureHelp } from '../Help';
 import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
 
 export enum LogId {
@@ -207,6 +207,8 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
             sourceLogId={LogId.IssuerDIDResolves}
             testId={TestId.IssuerLogMsg}
             issuer={true}
+            HelpContent={RegistryHelp}
+            helpTitle="Known Issuer"
           />
 
           {
