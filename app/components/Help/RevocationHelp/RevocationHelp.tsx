@@ -27,17 +27,19 @@ A bitstring
           issuer which specific credential they are checking. This is often called 'herd-privacy'.
     </p>
 
-    <p  className={styles.criteria}><h1 className={styles.title}>How we determine if a credential has been revoked</h1>
+    <div  className={styles.criteria}><div className={styles.title}>How we determine if a credential has been revoked</div>
         <div className={styles.preference}>For a VC with a 'credentialStatus' entry like the following: </div>
-        <pre>{`"credentialStatus": {
-        "id": "https://example.com/list/e5Wmbrj#7",
-        "type": "BitstringStatusListEntry",
-        "statusPurpose": "revocation",
-        "statusListCredential": "https://example.com/list/e5Wmbrj",
-        "statusListIndex": "7"
-    }`}</pre>
+        <pre>
+          {`"credentialStatus": {
+    "id": "https://example.com/list/e5Wmbrj#7",
+    "type": "BitstringStatusListEntry",
+    "statusPurpose": "revocation",
+    "statusListCredential": "https://example.com/list/e5Wmbrj",
+    "statusListIndex": "7"
+  }`}
+    </pre>
       We retrieve the status list from the statusListCredential url and then check that the bit at the position indicated by 'statusListIndex' is 
       '0', that is that it hasn't been 'flipped' to a '1' to indicate revocation.
-    </p>
+    </div>
   </>
 }
