@@ -2,7 +2,7 @@ import styles from '../Help.module.css';
 export const RevocationHelp = () => {
  return <>
     <ul className={styles.list}>
-      <li>Indicates if the credential has been revoked.</li>
+      <li>A revoked credential is considered entirely invalid.</li>
       <li>Optional - not required by Verifiable Credential data model or the OBv3 data model.</li>
       <li>Applies only to the VC, not to the underlying credential.</li>
       <li>The DCC uses the BitstringStatusList implementation.</li>
