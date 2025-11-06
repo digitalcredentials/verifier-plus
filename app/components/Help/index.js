@@ -1,4 +1,5 @@
-export * from './IssuerHelp/IssuerHelp';
+export * from './IssuerDetailsHelp/IssuerDetailsHelp';
+export * from './KnownIssuerHelp/KnownIssuerHelp';
 export * from './ExpirationDateHelp/ExpirationDateHelp';
 export * from './IssuanceDateHelp/IssuanceDateHelp';
 export * from './RegistryHelp/RegistryHelp';
