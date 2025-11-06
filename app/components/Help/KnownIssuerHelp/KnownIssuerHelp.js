@@ -17,25 +17,21 @@ export const KnownIssuerHelp = () => {
       then we cannot trust the credential - it could have been faked and signed by anyone.
       </div>
 
-      <p className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
+      <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
       We look up DIDs in a registry controlled by the Digital Credentials Consortium.
         We don't, however, make any guarantees about the trustworthiness or legitimacy of the credentials - only that they
         were signed by a key that has been registered as a DID in one of our registries. We make no guarantees because our registries are 
         strictly for demonstration purposes. 
-        </p>
+        </div>
 
 <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
       If we can't find an issuer's DID in one of our registries we only provide a warning, rather than declare the 
       credential completely invalid, because VerifierPlus is educational and we expect that people
-      will use our verification for demonstration and testing.
-      </div>
-
-
-        <p className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
+      will use our verification for demonstration and testing.<br/><br/>
         A 'real' verifier would use a registry whose registered issuers had been vetted and approved to issue specific credentials. 
        A registry of DIDs controlled by the association of university registrars for a given coountry, for example,
             could be used to verify digital degrees from accredited universities. In this case, it might then be more accurate
-            to say it was a registry of 'trusted' issuers, rather than simply 'known' issuers.</p>
+            to say it was a registry of 'trusted' issuers, rather than simply 'known' issuers.</div>
 
   </>
 }
