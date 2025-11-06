@@ -47,4 +47,7 @@
 .infoIcon {
     display: inline-block;
     padding-right: 6px;
+    width: 22px;
+    height: 22px;
+    vertical-align: top;
 }
