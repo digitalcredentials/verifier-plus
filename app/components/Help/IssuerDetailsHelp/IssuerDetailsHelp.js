@@ -10,27 +10,21 @@ export const IssuerDetailsHelp = () => {
         <li>An issuer's DID <b>MUST</b> be listed in a trusted registry in order for VCs issued with that DID to be trusted.</li>
       </ul>
       <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
-      Fundmentally important is that to trust anything signed by an issuer,
-      the DID (Decentralized Identififer) used to
-      sign the credential must be known to us in some way. That might be because
-      we keep a list of DIDs in our verifier that we know about (an internal registry), or it might that we look up
-      the DID in some kind of shared registry that we in turn trust. Both are effectively lists
-      of DIDs that we trust. If a credential has not been signed by a DID that we know about
-      then we cannot trust the credential - it could have been faked and signed by anyone.
+      We always show issuer details from the registry (when available) rather than from the credential itself as a safeguard against the possibility that someone used the signing key to issue
+      credentials in which they've claimed to be a different issuer.
       </div>
 
-<div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
-      If we can't find an issuer in one of our registries we only provide a warning, rather than declare the 
-      credential completely invalid, because VerifierPlus is educational and we expect that people
-      will use our verification for demonstration and testing.
-      </div>
-
-          <div  className={styles.criteria}><div className={styles.criteriaTitle}>How we determine the issuer details.</div> 
+          <div  className={styles.criteria}><div className={styles.criteriaTitle}>How we determine the issuer details.</div>
            <div className={styles.preference}>In order of preference:</div>
             <ul className={styles.list}>
             <li>If the issuer is listed in a registry, we pull the issuer name, logo, and url from the registry.</li>
             <li>If the issuer is listed in more than one registry we use the first registry in our ordered list of registries.</li>
-            <li>If the issuer is not in a registry we</li>
+            <li>If the issuer is not in a registry we use:</li>
+              <ul>
+                <li>Logo: issuer.image.id otherwise issuer.image</li>
+                <li>Name: issuer.name</li>
+                <li>URL: issuer.url</li>
+              </ul>
           </ul>
           </div>
   </>
