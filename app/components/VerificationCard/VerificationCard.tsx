@@ -6,6 +6,8 @@ import { VerifyResponse } from '@/types/credential';
 import styles from './VerificationCard.module.css';
 import { RegistryCard } from '@/components/RegistryCard/RegistryCard';
 import { TestId } from '@/lib/testIds';
+import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
+import { RegistryListHelp } from '../Help';
 
 export const UNSUCCESSFUL_VERIFICATION_MSG = 'This credential was not verified successfully.';
 export const VERIFICATION_WARNING_MSG = 'There is a warning about this credential.'
@@ -100,7 +102,7 @@ export const VerificationCard = () => {
                   return (
                     <>
                       <p className={styles.registryName}>
-                        <strong>Issuer Registration</strong>
+                        <strong>Issuer Registration</strong><ContextualHelp title="Registry List"><RegistryListHelp/></ContextualHelp>
                       </p>
                       {matchingIssuers.map((match: any, index: number) => {
                         const registryName =
