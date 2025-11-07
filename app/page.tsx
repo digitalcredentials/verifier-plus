@@ -20,6 +20,8 @@ import Link from 'next/link'
 import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
+import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
+import { LcwRequestHelp, RegistryListHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -437,6 +439,7 @@ export default function Home() {
         )}
 
         <div className={styles.lcwContainer} data-testid="lcw-request-btn">
+          
           <Accordion
             iconClosed={lcwIcon}
             iconOpen={spinner}
@@ -451,6 +454,7 @@ export default function Home() {
               <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl}/>
             </div>
           </Accordion>
+          <span className={styles.vprHelpIcon}> <ContextualHelp title="LCW Request "><LcwRequestHelp/></ContextualHelp></span>
         </div>
 
         <div className={styles.textAreaContainer}>

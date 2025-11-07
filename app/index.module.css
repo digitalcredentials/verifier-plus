@@ -384,6 +384,13 @@
   margin-bottom: 8px;
   border: 2px solid var(--border);
   border-radius: 10px;
+  position: relative;
+}
+
+.vprHelpIcon {
+   position: absolute;
+        top: 0;
+        right: 0;
 }
 
 .lcwLink {
