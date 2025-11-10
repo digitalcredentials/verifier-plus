@@ -184,6 +184,7 @@
   text-align: center;
   justify-content: center;
   margin-top: 24px;
+  position: relative;
 }
 
 .dndUploadText {
@@ -395,6 +396,13 @@
 
 .pasteHelpIcon {
    position: absolute;
+        top: 5;
+        right: 2;
+}
+
+.dragHelpIcon {
+  position: absolute;
+  z-index: 999; /* A high value to ensure it's on top */
         top: 5;
         right: 2;
 }

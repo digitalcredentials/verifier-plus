@@ -5,7 +5,7 @@ export const PasteJsonUrlHelp = () => {
         <li>This is where you provide the Verifiable Credential you'd like to verify.</li>
         <li>You can either paste in the credential itself, which is a text file containing the credential encoded as JSON, or provide a URL that links to the file.</li>    
          <li>JSON (Javascript Object Notation) is a simple way to structure data in a parent/child hierachy.</li>  
-          <li>You can also upload the file directly from your computer using the text area just below labelled 'Drag and drop a file here or browse'.</li>   
+          <li>You can alternatively upload the file directly from your computer using the text area just below labelled 'Drag and drop a file here or browse'.</li>   
   </ul>
   
      <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>

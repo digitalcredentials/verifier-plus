@@ -21,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { LcwRequestHelp, PasteJsonUrlHelp, RegistryListHelp } from './components/Help'
+import { DragAndDropHelp, LcwRequestHelp, PasteJsonUrlHelp, RegistryListHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -489,7 +489,7 @@ export default function Home() {
           onDragOver={(e) => {
             e.preventDefault();
           }}
-        >
+        ><span className={styles.dragHelpIcon}><ContextualHelp title="JSON or URL?"><DragAndDropHelp/></ContextualHelp></span>
           <div className={styles.dndUploadText}>
             Drag and drop a file here or <label className={styles.fileUpload}>
               <input type='file' onChange={handleBrowse} />
@@ -514,7 +514,7 @@ export default function Home() {
               warning
             </span>
             <p className={styles.error}>
-              Json cannot be parsed
+              JSON cannot be parsed
             </p>
           </div>
         )}
