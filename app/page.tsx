@@ -21,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { DragAndDropHelp, LcwRequestHelp, PasteJsonUrlHelp, RegistryListHelp } from './components/Help'
+import { DragAndDropHelp, LcwRequestHelp, PasteJsonUrlHelp, RegistryListHelp, ScanQRHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -489,7 +489,7 @@ export default function Home() {
           onDragOver={(e) => {
             e.preventDefault();
           }}
-        ><span className={styles.dragHelpIcon}><ContextualHelp title="JSON or URL?"><DragAndDropHelp/></ContextualHelp></span>
+        ><span className={styles.pasteHelpIcon}><ContextualHelp title="Drag and Drop or Upload"><DragAndDropHelp/></ContextualHelp></span>
           <div className={styles.dndUploadText}>
             Drag and drop a file here or <label className={styles.fileUpload}>
               <input type='file' onChange={handleBrowse} />
@@ -499,13 +499,13 @@ export default function Home() {
           <span className={styles.supportText}>Supports JSON</span>
         </div>
 
-        <div style={{ marginTop: '1em' }}>
+        <div style={{ marginTop: '1em', paddingLeft: '1.5em', paddingRight:'1.5em', position:'relative' }}>
           <Button
             icon={<span className="material-icons">qr_code_scanner</span>}
             className={styles.scan}
             text='Scan QR Code'
             onClick={ScanButtonOnClick}
-          />
+          /><span className={styles.scanQRHelpIcon}><ContextualHelp title="Scan Verifiable Credential from QR" ><ScanQRHelp/></ContextualHelp></span>
         </div>
 
         {fileError && (

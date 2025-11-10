@@ -4,4 +4,6 @@ export type ContextualHelpProps = {
   title?: string;
   children: ReactNode;
   fontSize?: string;
+  color?: string;
+  style?: string;
 }

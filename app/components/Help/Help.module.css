@@ -70,3 +70,9 @@
     white-space: nowrap;
 }
 
+.qrCode {
+        display: block;
+        margin: 0 auto; /* Centers horizontally */
+        width: 30%; /* Or any specific width */
+        padding: 20px
+}

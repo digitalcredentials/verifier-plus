@@ -1,14 +1,15 @@
 import * as React from 'react';
 import type { ContextualHelpProps } from './ContextualHelp.d';
 import HelpIcon from '@mui/icons-material/HelpOutlined';
+import HelpTwoToneIcon from '@mui/icons-material/HelpTwoTone';
 import { Dialog } from '@base-ui-components/react/dialog';
 import { ScrollArea } from '@base-ui-components/react/scroll-area';
 
 
-export const ContextualHelp = ({ title, fontSize = '12px', children }: ContextualHelpProps) => {
+export const ContextualHelp = ({ title, fontSize = '12px', children, color='info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
   return (
     <Dialog.Root>
-      <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className="align-top mx-1 inline m-h-1"><HelpIcon sx={{ fontSize }} color='info' /></span>}>
+      <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={style}><HelpIcon sx={{ fontSize }} htmlColor={color} /></span>}>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />

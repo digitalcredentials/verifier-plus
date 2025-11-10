@@ -230,6 +230,7 @@
   flex-shrink: 1;
   flex-wrap: 1;
   margin-top: 24px;
+  position: relative;
 }
 
 .trustLink {
@@ -400,11 +401,10 @@
         right: 2;
 }
 
-.dragHelpIcon {
+.scanQRHelpIcon {
   position: absolute;
-  z-index: 999; /* A high value to ensure it's on top */
-        top: 5;
-        right: 2;
+        top: 1.5em;
+        right: 0;
 }
 
 .lcwLink {
