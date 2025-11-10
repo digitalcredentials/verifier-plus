@@ -3,12 +3,13 @@ export const PasteJsonUrlHelp = () => {
   return <>
   <ul className={styles.list}>
         <li>This is where you provide the Verifiable Credential you'd like to verify.</li>
-        <li>You can either paste in the credential itself, which is a text file containing the credential as JSON, or provide a URL that links to the file.</li>    
-         <li>JSON (Javascript Object Notation) is a simple way to structure data in a parent/child hierachy.</li>   
+        <li>You can either paste in the credential itself, which is a text file containing the credential encoded as JSON, or provide a URL that links to the file.</li>    
+         <li>JSON (Javascript Object Notation) is a simple way to structure data in a parent/child hierachy.</li>  
+          <li>You can also upload the file directly from your computer using the text area just below labelled 'Drag and drop a file here or browse'.</li>   
   </ul>
   
      <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
-      A simple Verifiable Credential (and more specifically an Open Badge version 3 Verifiable Creential) looks like so (you can copy/paste this into the text area if you like):
+      A simple example of a Verifiable Credential (and more specifically an Open Badge version 3 Verifiable Creential) that you can copy/paste into the text area if you like:
 
      <pre className={styles.scrollableCode}>{`{
     "@context": [
@@ -55,15 +56,11 @@ export const PasteJsonUrlHelp = () => {
         "proofValue": "z3jqgQq2WpjsvHQp9XWxKcMvcehyTurrWawo33jvQk8CvbjQRvAgtsw9P2u2fXqY7iABSuBQdtt9UQyHsN82LRuq7"
     }
 }`}</pre>
-      </div>
 
-      <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
       A copy of that same Verifiable Credential is available at this URL:
-      <div>
+      <div className={styles.scrollableLink}>
         <a href="https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/dataIntegrityProof/didKey/legacyRegistry-noStatus-noExpiry-basicOBv3.json"><div className={styles.scrollableLink}>https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/dataIntegrityProof/didKey/legacyRegistry-noStatus-noExpiry-basicOBv3.json</div></a>
-      </div> You can also copy that URL and paste it into the text area. VerifierPlus will then retrieve the json from the URL and then run verification.</div>
-
-
+      </div> You can also copy that URL and paste it into the text area. VerifierPlus will fetch the json from the URL and run verification.</div>
 
   </>
 }

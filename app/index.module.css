@@ -389,8 +389,14 @@
 
 .vprHelpIcon {
    position: absolute;
-        top: 0;
+        top: 2;
         right: 0;
+}
+
+.pasteHelpIcon {
+   position: absolute;
+        top: 5;
+        right: 2;
 }
 
 .lcwLink {

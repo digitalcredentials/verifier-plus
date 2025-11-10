@@ -457,8 +457,8 @@ export default function Home() {
           <span className={styles.vprHelpIcon}> <ContextualHelp title="LCW Request "><LcwRequestHelp/></ContextualHelp></span>
         </div>
 
-        <div className={styles.textAreaContainer}><ContextualHelp title="JSON or URL?"><PasteJsonUrlHelp/></ContextualHelp>
-          <div className={styles.floatingTextarea}>
+        <div className={styles.textAreaContainer}>
+          <div className={styles.floatingTextarea}><span className={styles.pasteHelpIcon}><ContextualHelp title="JSON or URL?"><PasteJsonUrlHelp/></ContextualHelp></span>
             <textarea
               aria-labelledby='textarea-label'
               placeholder=' '
