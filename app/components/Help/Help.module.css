@@ -53,3 +53,16 @@
     height: 22px;
     vertical-align: top;
 }
+
+.scrollableCode {
+    overflow-x: scroll;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.scrollableLink {
+    overflow-x: scroll;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color:black
+}

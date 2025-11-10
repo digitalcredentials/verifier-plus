@@ -7,9 +7,9 @@ export const LcwRequestHelp = () => {
       <li>Primarily here to demonstrate how the request might work in other applications.</li>
     </ul>
 
-    <div className={styles.note}><img src="./icons/info_24_lime.svg"></img>We've included this feature in VerifierPlus as a working demonstration
-    of how an application might request credentials from a wallet like the Learner Credential Wallet. In our case once we've gotten the 
-    credential we run the verification process on the credential, but others might request a credential for other reasons, for example, to 
+    <div className={styles.note}><img className={styles.infoIcon}  src="./icons/info_24_lime.svg"></img>We've included this feature in VerifierPlus as a working demonstration
+    of how an application might request credentials from a wallet like the Learner Credential Wallet. In this demonstration, 
+    once VerifierPlus has gotten the credential, it verifies it, but other applications might request a credential for other reasons, for example, to 
     obtain structured and verified data, say when applying for a job.
     </div>
 

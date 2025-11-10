@@ -21,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { LcwRequestHelp, RegistryListHelp } from './components/Help'
+import { LcwRequestHelp, PasteJsonUrlHelp, RegistryListHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -457,7 +457,7 @@ export default function Home() {
           <span className={styles.vprHelpIcon}> <ContextualHelp title="LCW Request "><LcwRequestHelp/></ContextualHelp></span>
         </div>
 
-        <div className={styles.textAreaContainer}>
+        <div className={styles.textAreaContainer}><ContextualHelp title="JSON or URL?"><PasteJsonUrlHelp/></ContextualHelp>
           <div className={styles.floatingTextarea}>
             <textarea
               aria-labelledby='textarea-label'
@@ -467,7 +467,7 @@ export default function Home() {
               id='textarea'
               data-testid="vc-text-area"
             />
-            <label id='textarea-label' htmlFor='textarea'>Paste JSON or URL</label>
+            <label id='textarea-label' htmlFor='textarea'>Paste JSON or URL </label>
           </div>
           <Button data-testid="verify-btn" className={styles.verifyTextArea} text='Verify' onClick={verifyTextArea}/>
         </div>
