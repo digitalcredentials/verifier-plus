@@ -5,4 +5,6 @@ export type TopBarProps = {
   hasLogo?: boolean;
   setIsDark: function;
   setCredential?: function;
+  isHelpEnabled: boolean;
+  setIsHelpEnabled: function;
 }

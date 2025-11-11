@@ -8,6 +8,7 @@ import { CredentialCard } from '@/components/CredentialCard/CredentialCard'
 import { Container } from '@/components/Container/Container'
 import { VerificationCard } from '@/components/VerificationCard/VerificationCard'
 import { VerificationContext } from '@/lib/verificationContext'
+import { HelpContext } from '@/lib/HelpContext'
 import { VerifiableCredential } from '@/types/credential'
 import { useVerification } from '@/lib/useVerification'
 import { credentialsFromQrText } from '@/lib/decode';
@@ -32,6 +33,7 @@ const randomPageId = uuidv4();
 export default function Home() {
   const [textArea, setTextArea] = useState('');
   const [isDark, setIsDark] = useState(false);
+  const [isHelpEnabled, setIsHelpEnabled] = useState(true);
   const [file, setFile] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [textAreaError, setTextAreaError] = useState(false);
@@ -349,17 +351,20 @@ export default function Home() {
   if (credential !== undefined) {
     return (
       <main className={styles.container}>
-        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
-        <div className={styles.verifyContainer}>
-          <VerificationContext.Provider value={credentialContext}>
-            <Container>
-              <CredentialCard credential={credential} wasMulti={wasMulti} />
-              <VerificationCard />
-            </Container>
-          </VerificationContext.Provider>
-        </div>
+        <HelpContext.Provider value={isHelpEnabled}>
+          <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} isHelpEnabled={isHelpEnabled} setIsHelpEnabled={setIsHelpEnabled} />
+          <div className={styles.verifyContainer}>
 
-        <BottomBar isDark={isDark} />
+            <VerificationContext.Provider value={credentialContext}>
+              <Container>
+                <CredentialCard credential={credential} wasMulti={wasMulti} />
+                <VerificationCard />
+              </Container>
+            </VerificationContext.Provider>
+
+          </div>
+          <BottomBar isDark={isDark} />
+        </HelpContext.Provider>
       </main>
     );
   }
@@ -410,127 +415,131 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
-      <TopBar isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
-      <div className={styles.contentContainer}>
-        <div>
-          <h1 className={styles.title}>
-            VerifierPlus
-          </h1>
-          <p className={styles.version}>Version {version}</p>
-          <p className={styles.descriptionBlock}>
-            VerifierPlus allows users to verify any <Link href='faq#supported'>supported</Link> digital academic
-            credential.
-            This site is hosted by
-            the <a href='https://digitalcredentials.mit.edu/'>Digital Credentials Consortium</a>
-            , a network of leading international universities designing an open
-            infrastructure for digital academic credentials. <Link href='faq#trust'>Why trust us?</Link>
-          </p>
-        </div>
-
-        {scanError && (
-          <div className={styles.errorContainer}>
-            <span className="material-icons-outlined">
-              warning
-            </span>
-            <p className={styles.error}>
-              Invalid QR code
+      <HelpContext.Provider value={isHelpEnabled}>
+        <TopBar isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} isHelpEnabled={isHelpEnabled} setIsHelpEnabled={setIsHelpEnabled} />
+        <div className={styles.contentContainer}>
+          <div>
+            <h1 className={styles.title}>
+              VerifierPlus
+            </h1>
+            <p className={styles.version}>Version {version}</p>
+            <p className={styles.descriptionBlock}>
+              VerifierPlus allows users to verify any <Link href='faq#supported'>supported</Link> digital academic
+              credential.
+              This site is hosted by
+              the <a href='https://digitalcredentials.mit.edu/'>Digital Credentials Consortium</a>
+              , a network of leading international universities designing an open
+              infrastructure for digital academic credentials. <Link href='faq#trust'>Why trust us?</Link>
             </p>
           </div>
-        )}
 
-        <div className={styles.lcwContainer} data-testid="lcw-request-btn">
-          
-          <Accordion
-            iconClosed={lcwIcon}
-            iconOpen={spinner}
-            onOpen={startPolling}
-            onClose={() => stopPolling(undefined)}
-            title="Request credentials from LCW" >
-            {/*             <p>
+          {scanError && (
+            <div className={styles.errorContainer}>
+              <span className="material-icons-outlined">
+                warning
+              </span>
+              <p className={styles.error}>
+                Invalid QR code
+              </p>
+            </div>
+          )}
+
+          <div className={styles.lcwContainer} data-testid="lcw-request-btn">
+
+            <Accordion
+              iconClosed={lcwIcon}
+              iconOpen={spinner}
+              onOpen={startPolling}
+              onClose={() => stopPolling(undefined)}
+              title="Request credentials from LCW" >
+              {/*             <p>
               <a className={styles.lcwLink} target={'_blank'} rel={'noreferrer'} href={lcwRequestUrl}><h3>Mobile Link</h3></a>
             </p> */}
-            <div><h5 className={styles.lcwLink}>Scan QR code with phone camera to open:</h5></div>
-            <div className={styles.qrCode}>
-              <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl}/>
+
+              <div><h5 className={styles.lcwLink}>Scan QR code with phone camera to open:</h5></div>
+              <div className={styles.qrCode}>
+                <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl} />
+              </div>
+            </Accordion>
+            <span className={styles.vprHelpIcon}> <ContextualHelp title="LCW Request "><LcwRequestHelp /></ContextualHelp></span>
+          </div>
+
+          <div className={styles.textAreaContainer}>
+            <div className={styles.floatingTextarea}><span className={styles.pasteHelpIcon}><ContextualHelp title="JSON or URL?"><PasteJsonUrlHelp /></ContextualHelp></span>
+              <textarea
+                aria-labelledby='textarea-label'
+                placeholder=' '
+                value={textArea}
+                onChange={(e) => setTextArea(e.target.value)}
+                id='textarea'
+                data-testid="vc-text-area"
+              />
+              <label id='textarea-label' htmlFor='textarea'>Paste JSON or URL </label>
             </div>
-          </Accordion>
-          <span className={styles.vprHelpIcon}> <ContextualHelp title="LCW Request "><LcwRequestHelp/></ContextualHelp></span>
-        </div>
+            <Button data-testid="verify-btn" className={styles.verifyTextArea} text='Verify' onClick={verifyTextArea} />
+          </div>
 
-        <div className={styles.textAreaContainer}>
-          <div className={styles.floatingTextarea}><span className={styles.pasteHelpIcon}><ContextualHelp title="JSON or URL?"><PasteJsonUrlHelp/></ContextualHelp></span>
-            <textarea
-              aria-labelledby='textarea-label'
-              placeholder=' '
-              value={textArea}
-              onChange={(e) => setTextArea(e.target.value)}
-              id='textarea'
-              data-testid="vc-text-area"
+          {textAreaError && (
+            <div className={styles.errorContainer}>
+              <span className="material-icons-outlined">
+                warning
+              </span>
+              <p className={styles.error}>
+                The JSON is not a Verifiable Credential or an Open Badge 3.0
+              </p>
+            </div>
+          )}
+
+          <div
+            className={styles.dndUpload}
+            onDrop={handleFileDrop}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+          ><span className={styles.pasteHelpIcon}><ContextualHelp title="Drag and Drop or Upload"><DragAndDropHelp /></ContextualHelp></span>
+            <div className={styles.dndUploadText}>
+              Drag and drop a file here or <label className={styles.fileUpload}>
+                <input type='file' onChange={handleBrowse} />
+                <span className={styles.browseLink}>browse</span>
+              </label>
+            </div>
+            <span className={styles.supportText}>Supports JSON</span>
+          </div>
+
+          <div style={{ marginTop: '1em', paddingLeft: '1.5em', paddingRight: '1.5em', position: 'relative' }}>
+            <Button
+              icon={<span className="material-icons">qr_code_scanner</span>}
+              className={styles.scan}
+              text='Scan QR Code'
+              onClick={ScanButtonOnClick}
+            /><span className={styles.scanQRHelpIcon}><ContextualHelp title="Scan Verifiable Credential from QR" ><ScanQRHelp /></ContextualHelp></span>
+          </div>
+
+          {fileError && (
+            <div className={styles.errorContainer}>
+              <span className="material-icons-outlined">
+                warning
+              </span>
+              <p className={styles.error}>
+                JSON cannot be parsed
+              </p>
+            </div>
+          )}
+
+          <div>
+            <Button
+              icon={<span className="material-icons">wallet</span>}
+              className={styles.scan}
+              text='Request from web wallet via CHAPI'
+              onClick={requestVcOnClick}
             />
-            <label id='textarea-label' htmlFor='textarea'>Paste JSON or URL </label>
           </div>
-          <Button data-testid="verify-btn" className={styles.verifyTextArea} text='Verify' onClick={verifyTextArea}/>
+
+          <ScanModal isOpen={isOpen} setIsOpen={setIsOpen} onScan={onScan} setErrorMessage={setScanError} />
         </div>
 
-        {textAreaError && (
-          <div className={styles.errorContainer}>
-            <span className="material-icons-outlined">
-              warning
-            </span>
-            <p className={styles.error}>
-              The JSON is not a Verifiable Credential or an Open Badge 3.0
-            </p>
-          </div>
-        )}
-
-        <div
-          className={styles.dndUpload}
-          onDrop={handleFileDrop}
-          onDragOver={(e) => {
-            e.preventDefault();
-          }}
-        ><span className={styles.pasteHelpIcon}><ContextualHelp title="Drag and Drop or Upload"><DragAndDropHelp/></ContextualHelp></span>
-          <div className={styles.dndUploadText}>
-            Drag and drop a file here or <label className={styles.fileUpload}>
-              <input type='file' onChange={handleBrowse} />
-              <span className={styles.browseLink}>browse</span>
-            </label>
-          </div>
-          <span className={styles.supportText}>Supports JSON</span>
-        </div>
-
-        <div style={{ marginTop: '1em', paddingLeft: '1.5em', paddingRight:'1.5em', position:'relative' }}>
-          <Button
-            icon={<span className="material-icons">qr_code_scanner</span>}
-            className={styles.scan}
-            text='Scan QR Code'
-            onClick={ScanButtonOnClick}
-          /><span className={styles.scanQRHelpIcon}><ContextualHelp title="Scan Verifiable Credential from QR" ><ScanQRHelp/></ContextualHelp></span>
-        </div>
-
-        {fileError && (
-          <div className={styles.errorContainer}>
-            <span className="material-icons-outlined">
-              warning
-            </span>
-            <p className={styles.error}>
-              JSON cannot be parsed
-            </p>
-          </div>
-        )}
-
-        <div>
-          <Button
-            icon={<span className="material-icons">wallet</span>}
-            className={styles.scan}
-            text='Request from web wallet via CHAPI'
-            onClick={requestVcOnClick}
-          />
-        </div>
-
-        <ScanModal isOpen={isOpen} setIsOpen={setIsOpen} onScan={onScan} setErrorMessage={setScanError} />
-      </div>
-      <BottomBar isDark={isDark} />
+        <BottomBar isDark={isDark} />
+      </HelpContext.Provider>
     </main>
   )
 }

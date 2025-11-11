@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useCallback, useEffect } from "react"
 import styles from './TopBar.module.css'
 
-export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential}: TopBarProps) => {
+export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential, isHelpEnabled, setIsHelpEnabled}: TopBarProps) => {
+
 
   const enableDarkMode = useCallback(() => {
     document.body.classList.add('darkmode');
@@ -20,6 +21,12 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential}: TopB
     else { setIsDark(false); }
   },[setIsDark, enableDarkMode]);
 
+ // get local storage value for help mode on mount
+  useEffect(() => {
+    let helpMode = localStorage.getItem('helpMode');
+    if (helpMode === 'true') { setIsHelpEnabled(true); }
+    else { setIsHelpEnabled(false); }
+  },[]);
 
   const disableDarkMode = () => {
     document.body.classList.remove('darkmode');
@@ -34,6 +41,11 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential}: TopB
     else {
       enableDarkMode();
     }
+  }
+
+  const handleHelpToggle = () => {
+      setIsHelpEnabled(!isHelpEnabled);
+      localStorage.setItem('helpMode', isHelpEnabled.toString());
   }
 
   const clearCredential = () => {
@@ -59,6 +71,15 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential}: TopB
           isOn={isDark}
           handleToggle={handleToggle}
           icon={ <span aria-hidden className={`material-icons ${styles.darkmodeIcon}`}> dark_mode </span> }
+          ariaLabel='Dark mode'
+          name="darkToggle"
+        />
+         <ToggleSwitch
+          isOn={isHelpEnabled}
+          handleToggle={handleHelpToggle}
+          icon={ <span aria-hidden className={`material-icons ${styles.darkmodeIcon}`}> help </span> }
+          ariaLabel='Help mode'
+          name="helpToggle"
         />
         {/* <button className={styles.loginButton} type='button'>
           <span aria-hidden className={`material-icons ${styles.loginIcon}`}> login </span>
