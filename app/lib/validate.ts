@@ -70,7 +70,11 @@ export async function verifyCredential(credential: VerifiableCredential): Promis
       ? result.log.every((check: { valid: any; }) => check.valid)
       : false;
     if (result?.errors) {
-      return createFatalErrorResult(credential, CredentialErrorTypes.CouldNotBeVerified);
+      // Extract error message from errors array (e.g., did_web_unresolved error)
+      const errorMessage = Array.isArray(result.errors) && result.errors.length > 0
+        ? result.errors[0].message || CredentialErrorTypes.CouldNotBeVerified
+        : CredentialErrorTypes.CouldNotBeVerified;
+      return createFatalErrorResult(credential, errorMessage);
     }
     if (!result.results) {
       result.results = [{
@@ -78,6 +82,13 @@ export async function verifyCredential(credential: VerifiableCredential): Promis
         log: result.log,
         credential: result.credential
       }];
+    }
+    // Also check if errors are in result.results[0] (alternative structure from verifier-core)
+    if (result.results?.[0]?.errors) {
+      const errorMessage = Array.isArray(result.results[0].errors) && result.results[0].errors.length > 0
+        ? result.results[0].errors[0].message || CredentialErrorTypes.CouldNotBeVerified
+        : CredentialErrorTypes.CouldNotBeVerified;
+      addErrorToResult(result, errorMessage, true);
     }
 
     if (result?.verified === false) {
