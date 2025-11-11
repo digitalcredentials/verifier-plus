@@ -17,15 +17,22 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential, isHel
   // get local storage value for darkmode on mount
   useEffect(() => {
     let darkMode = localStorage.getItem('darkMode');
-    if (darkMode === 'true') { setIsDark(true); enableDarkMode(); }
-    else { setIsDark(false); }
+    if (darkMode === 'true') { 
+      setIsDark(true); 
+      enableDarkMode(); 
+    } else { 
+      setIsDark(false);
+    }
   },[setIsDark, enableDarkMode]);
 
  // get local storage value for help mode on mount
   useEffect(() => {
     let helpMode = localStorage.getItem('helpMode');
-    if (helpMode === 'true') { setIsHelpEnabled(true); }
-    else { setIsHelpEnabled(false); }
+    if (helpMode === 'true') { 
+      setIsHelpEnabled(true); 
+    } else { 
+      setIsHelpEnabled(false); 
+    }
   },[]);
 
   const disableDarkMode = () => {
@@ -44,8 +51,14 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential, isHel
   }
 
   const handleHelpToggle = () => {
-      setIsHelpEnabled(!isHelpEnabled);
-      localStorage.setItem('helpMode', isHelpEnabled.toString());
+    if (isHelpEnabled) {
+      setIsHelpEnabled(false);
+      localStorage.setItem('helpMode', 'false');
+    } else {
+      setIsHelpEnabled(true);
+      localStorage.setItem('helpMode', 'true');
+    }
+      
   }
 
   const clearCredential = () => {
