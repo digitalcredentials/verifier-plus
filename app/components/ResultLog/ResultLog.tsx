@@ -148,12 +148,11 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
       return (
         <div>
           <p data-testid={TestId.GeneralErrorMsg} className={styles.error}>{LogMessages.GeneralError}</p>
-          {/* <p className={styles.error}>There was an error verifing this credential. <span className={styles.moreInfoLink} onClick={() => setMoreInfo(!moreInfo)}>More Info</span> </p> */}
-          {/* {moreInfo && (
+          {error?.message && (
             <div className={styles.errorContainer}>
               <p>{error.message}</p>
             </div>
-          )} */}
+          )}
         </div>
       )
     } else if (hasSigningError) {
