@@ -243,6 +243,7 @@
   padding-left: 8px;
   padding-block: 4px;
   display: flex;
+  justify-content: center;
   border-radius: 5px;
   margin-top: 4px;
   max-width: 500px;

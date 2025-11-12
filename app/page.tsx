@@ -22,7 +22,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { ChapiHelp, DragAndDropHelp, LcwRequestHelp, PasteJsonUrlHelp, RegistryListHelp, ScanQRHelp } from './components/Help'
+import { ChapiHelp, DragAndDropHelp, LcwRequestHelp, NotVCHelp, PasteJsonUrlHelp, RegistryListHelp, ScanQRHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -485,8 +485,9 @@ export default function Home() {
                 warning
               </span>
               <p className={styles.error}>
-                The JSON is not a Verifiable Credential or an Open Badge 3.0
+                Not a Verifiable Credential or an Open Badge 3.0
               </p>
+              <span><ContextualHelp color='black' title="Not a Verifiable Credential"><NotVCHelp /></ContextualHelp> </span>
             </div>
           )}
 
