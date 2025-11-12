@@ -7,7 +7,7 @@ import styles from './VerificationCard.module.css';
 import { RegistryCard } from '@/components/RegistryCard/RegistryCard';
 import { TestId } from '@/lib/testIds';
 import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
-import { RegistryListHelp, WarningMessageHelp } from '../Help';
+import { NotVerifiedMessageHelp, RegistryListHelp, WarningMessageHelp } from '../Help';
 
 export const UNSUCCESSFUL_VERIFICATION_MSG = 'This credential was not verified successfully.';
 export const VERIFICATION_WARNING_MSG = 'There is a warning about this credential.'
@@ -41,7 +41,7 @@ export const VerificationCard = () => {
 
     if (hasFailure) {
       return <div className={`${styles.error} ${styles.message}`} data-testid={TestId.VerificationMessage}>
-              {UNSUCCESSFUL_VERIFICATION_MSG}
+              {UNSUCCESSFUL_VERIFICATION_MSG} <ContextualHelp title="Registry List"><NotVerifiedMessageHelp/></ContextualHelp>
         </div>
 
     } else if (hasWarning) {
