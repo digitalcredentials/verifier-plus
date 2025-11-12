@@ -8,16 +8,16 @@ export const ExpirationDateHelp = () => {
       <li>Version 2 Verifiable Credentials set the date like so: <b>"validUntil": "2025-01-09T16:23:24Z"</b></li>
       <li>A credential is considered 'expired' after the given date.</li>
     </ul>
-    <p className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>Note that sometimes a credential is still useful even though it has expired. An expired driver's licence, for
+    <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>Note that sometimes a credential is still useful even though it has expired. An expired driver's licence, for
       example, can still be used to prove our age. Or to prove that we were authorized to drive during a given period,
       which might be useful when applying for car insurance.
-    </p>
-    <p className={styles.criteria}><div className={styles.title}>How we determine the expiration date</div>
+    </div>
+    <div className={styles.criteria}><div className={styles.title}>How we determine the expiration date</div>
         <div className={styles.preference}>According to the version of Verifiable Credentials data model:</div>
       <ul className={styles.list}>
       <li>credential.expirationDate (v1)</li>
       <li>credential.validUntil (v2)</li>
     </ul>
-    </p>
+    </div>
  </>
 }
