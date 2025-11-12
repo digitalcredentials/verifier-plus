@@ -83,13 +83,6 @@ export async function verifyCredential(credential: VerifiableCredential): Promis
         credential: result.credential
       }];
     }
-    // Also check if errors are in result.results[0] (alternative structure from verifier-core)
-    if (result.results?.[0]?.errors) {
-      const errorMessage = Array.isArray(result.results[0].errors) && result.results[0].errors.length > 0
-        ? result.results[0].errors[0].message || CredentialErrorTypes.CouldNotBeVerified
-        : CredentialErrorTypes.CouldNotBeVerified;
-      addErrorToResult(result, errorMessage, true);
-    }
 
     if (result?.verified === false) {
       const revocationIndex = (result.log as ResultLog[]).findIndex(
