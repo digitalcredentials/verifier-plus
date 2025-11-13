@@ -1,12 +1,14 @@
 'use client'
 import type { TopBarProps } from "./TopBar.d"
-import { ToggleSwitch } from "@/components/ToggleSwitch/ToggleSwitch";
-import Link from "next/link";
-import { useCallback, useEffect } from "react"
+import { ToggleSwitch } from "@/components/ToggleSwitch/ToggleSwitch"
+import Link from "next/link"
+import { useCallback, useEffect,  } from "react"
+import { useHelpContext } from '@/lib/HelpContext'
 import styles from './TopBar.module.css'
 
-export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential, isHelpEnabled, setIsHelpEnabled}: TopBarProps) => {
+export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential}: TopBarProps) => {
 
+   let {isHelpEnabled, toggleHelp} = useHelpContext();
 
   const enableDarkMode = useCallback(() => {
     document.body.classList.add('darkmode');
@@ -25,15 +27,7 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential, isHel
     }
   },[setIsDark, enableDarkMode]);
 
- // get local storage value for help mode on mount
-  useEffect(() => {
-    let helpMode = localStorage.getItem('helpMode');
-    if (helpMode === 'true') { 
-      setIsHelpEnabled(true); 
-    } else { 
-      setIsHelpEnabled(false); 
-    }
-  },[]);
+
 
   const disableDarkMode = () => {
     document.body.classList.remove('darkmode');
@@ -50,16 +44,7 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential, isHel
     }
   }
 
-  const handleHelpToggle = () => {
-    if (isHelpEnabled) {
-      setIsHelpEnabled(false);
-      localStorage.setItem('helpMode', 'false');
-    } else {
-      setIsHelpEnabled(true);
-      localStorage.setItem('helpMode', 'true');
-    }
-      
-  }
+
 
   const clearCredential = () => {
     if (setCredential) {
@@ -89,7 +74,7 @@ export const TopBar = ({hasLogo = false, isDark, setIsDark, setCredential, isHel
         />
          <ToggleSwitch
           isOn={isHelpEnabled}
-          handleToggle={handleHelpToggle}
+          handleToggle={toggleHelp}
           icon={ <span aria-hidden className={`material-icons ${styles.darkmodeIcon}`}> help </span> }
           ariaLabel='Help mode'
           name="helpToggle"

@@ -1,13 +1,16 @@
 'use client'
 import { createContext, useContext } from "react";
 
-/* boolean to indicate if help is on or off, i.e,
-if the help icons should be shown or not.
-We use a react context here, rather than a global,
-because react contexts automagically refresh
-any react elements that are using them.*/
+export type HelpContextType = {
+  isHelpEnabled: boolean;
+  toggleHelp: () => void;
+}
 
-export const HelpContext = createContext<boolean>(true)
+/* We use a react context here, rather than a global,
+because react contexts automagically refresh
+any react elements that are using them when the context changes.*/
+
+export const HelpContext = createContext<HelpContextType>({isHelpEnabled:true,toggleHelp:()=>{}})
 
 export const useHelpContext = () => {
   return useContext(HelpContext)

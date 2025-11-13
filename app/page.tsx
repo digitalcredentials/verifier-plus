@@ -8,7 +8,6 @@ import { CredentialCard } from '@/components/CredentialCard/CredentialCard'
 import { Container } from '@/components/Container/Container'
 import { VerificationCard } from '@/components/VerificationCard/VerificationCard'
 import { VerificationContext } from '@/lib/verificationContext'
-import { HelpContext } from '@/lib/HelpContext'
 import { VerifiableCredential } from '@/types/credential'
 import { useVerification } from '@/lib/useVerification'
 import { credentialsFromQrText } from '@/lib/decode';
@@ -22,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { ChapiHelp, DragAndDropHelp, LcwRequestHelp, NotVCHelp, PasteJsonUrlHelp, RegistryListHelp, ScanQRHelp } from './components/Help'
+import { ChapiHelp, DragAndDropHelp, LcwRequestHelp, NotVCHelp, PasteJsonUrlHelp, ScanQRHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -33,7 +32,6 @@ const randomPageId = uuidv4();
 export default function Home() {
   const [textArea, setTextArea] = useState('');
   const [isDark, setIsDark] = useState(false);
-  const [isHelpEnabled, setIsHelpEnabled] = useState(true);
   const [file, setFile] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [textAreaError, setTextAreaError] = useState(false);
@@ -351,8 +349,7 @@ export default function Home() {
   if (credential !== undefined) {
     return (
       <main className={styles.container}>
-        <HelpContext.Provider value={isHelpEnabled}>
-          <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} isHelpEnabled={isHelpEnabled} setIsHelpEnabled={setIsHelpEnabled} />
+          <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
           <div className={styles.verifyContainer}>
 
             <VerificationContext.Provider value={credentialContext}>
@@ -364,7 +361,6 @@ export default function Home() {
 
           </div>
           <BottomBar isDark={isDark} />
-        </HelpContext.Provider>
       </main>
     );
   }
@@ -415,8 +411,8 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
-      <HelpContext.Provider value={isHelpEnabled}>
-        <TopBar isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} isHelpEnabled={isHelpEnabled} setIsHelpEnabled={setIsHelpEnabled} />
+    
+        <TopBar isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
         <div className={styles.contentContainer}>
           <div>
             <h1 className={styles.title}>
@@ -540,7 +536,6 @@ export default function Home() {
         </div>
 
         <BottomBar isDark={isDark} />
-      </HelpContext.Provider>
     </main>
   )
 }

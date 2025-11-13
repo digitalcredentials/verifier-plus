@@ -7,9 +7,9 @@ import { useHelpContext } from '@/lib/HelpContext';
 
 
 export const ContextualHelp = ({ title, fontSize = '12px', children, color = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
-  let shouldShowHelp = useHelpContext();
+  let {isHelpEnabled} = useHelpContext();
 
-  if (shouldShowHelp) {
+  if (isHelpEnabled) {
     return (
       <Dialog.Root>
         <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={style}><HelpIcon sx={{ fontSize }} htmlColor={color} /></span>}>
