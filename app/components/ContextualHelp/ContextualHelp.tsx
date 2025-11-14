@@ -6,13 +6,13 @@ import { ScrollArea } from '@base-ui-components/react/scroll-area';
 import { useHelpContext } from '@/lib/HelpContext';
 
 
-export const ContextualHelp = ({ title, fontSize = '12px', children, color = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
+export const ContextualHelp = ({ title, fontSize = '.9em', children, color = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
   let {isHelpEnabled} = useHelpContext();
 
   if (isHelpEnabled) {
     return (
       <Dialog.Root>
-        <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={style}><HelpIcon sx={{ fontSize }} htmlColor={color} /></span>}>
+        <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={`${style} hover:cursor-pointer`}><HelpIcon sx={{ fontSize }} htmlColor={color} /></span>}>
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
