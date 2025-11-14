@@ -1,0 +1,78 @@
+.note {
+    color: white;
+    font-size: 16px;
+    background-color: gray;
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    display: inline-block;
+}
+
+.list {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.image {
+   display:inline-block
+}
+
+.title {
+    text-align: center;
+    font-size: 18px;
+    font-weight:500;
+}
+
+.criteriaTitle {
+    text-align: center;
+    font-size: 16px;
+    font-weight:600;
+    margin-bottom: 15px;
+}
+
+.subtitle {
+    font-size: 15px;
+    font-weight:500;
+    padding: 5px;
+}
+.criteria {
+    background-color:aliceblue;
+    padding: 5px
+}
+
+.preference {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.infoIcon {
+    display: inline-block;
+    padding-right: 6px;
+    width: 22px;
+    height: 22px;
+    vertical-align: top;
+}
+
+.scrollableCode {
+    overflow-x: scroll;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.scrollableLink {
+    overflow-x: scroll;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color:black;
+    display:block;
+    white-space: nowrap;
+}
+
+.qrCode {
+        display: block;
+        margin: 0 auto; /* Centers horizontally */
+        width: 30%; /* Or any specific width */
+        padding: 20px
+}

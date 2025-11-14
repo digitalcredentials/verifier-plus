@@ -10,15 +10,14 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
 
-    const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   return (
-
-        <main className={styles.container}>
-             <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} />
-                  {children}
-            <BottomBar isDark={isDark} />
-           </main>
+    <main className={styles.container}>
+      <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} />
+      {children}
+      <BottomBar isDark={isDark} />
+    </main>
 
   )
 }

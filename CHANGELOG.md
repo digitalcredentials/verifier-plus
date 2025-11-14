@@ -1,5 +1,11 @@
 # verifier-plus Changelog
 
+## 2.0.2
+### Added
+- Contextual Help
+### Fixed
+- browser title
+
 ## 2.0.1 
 ### Added
 - Add Alignments to Open Badges 3.0 Display

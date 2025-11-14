@@ -3,8 +3,8 @@ import { LogMessages } from "@/components/ResultLog/ResultLog";
 
 /* note that these tests retrieve the text of the VC to be tested
 and then paste it into the verification input field.
-The tests in verifyURL.spec.ts instead test by pasting the URL and
-letting V+ go get the text of the VC*/
+The tests in verifyURL.spec.ts instead retrieve the text 
+from the URL */
 
 const testVCs =
   [
@@ -57,5 +57,5 @@ test('invalid', async ({ page }) => {
     await page.goto("/")
     await page.getByTestId('vc-text-area').fill('blah')
     await page.getByRole('button', { name: 'Verify' }).click()
-    await expect(page.getByText('The JSON is not a Verifiable Credential')).toBeVisible()
+    await expect(page.getByText('Not a Verifiable Credential or an Open Badge 3.0')).toBeVisible()
 })

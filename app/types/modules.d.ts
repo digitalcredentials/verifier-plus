@@ -11,3 +11,4 @@ declare module '@digitalcredentials/vc-status-list';
 declare module 'jsonld-signatures';
 declare module 'uuid';
 declare module 'credential-handler-polyfill';
+declare module '@digitalcredentials/vc-help-react';

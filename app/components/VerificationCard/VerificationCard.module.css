@@ -50,3 +50,20 @@
   height: 100%;
   align-items: center;
 }
+
+.message {
+  height: 60px; /* Sets the height of the box */
+  border: 2px solid black; /* Adds a border around the box */
+  padding: 15px; /* Adds space between the content and the border */
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 20px; /* Adds space outside the border, between this box and other elements */
+}
+
+.error {
+  background-color: darkorange; /* Sets the background color of the box */
+}
+
+.warning {
+  background-color: lightgreen; /* Sets the background color of the box */
+}
