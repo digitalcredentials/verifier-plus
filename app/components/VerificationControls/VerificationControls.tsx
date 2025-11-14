@@ -6,12 +6,14 @@ import { VerifyResponse } from '@/types/credential';
 
 export const VerificationControls = ({ verificationResult, verifyCredential }: VerificationControlsProps ) => {
   //const { verified } = verificationResult;
+  const hasFatalError = verificationResult?.results?.[0]?.error?.isFatal;
+  
   return (
     <div>
       
       <div className={styles.result}>
       <div className={styles.title}> Credential Verification and Validation</div>
-      <div className={styles.subTitle}> This credential:</div>
+      {!hasFatalError && <div className={styles.subTitle}> This credential:</div>}
         {/* <span className={`material-icons ${verified ? styles.verified : styles.notVerified}`}>
           {verified ? 'check_circle' : 'cancel'}
         </span> */}
