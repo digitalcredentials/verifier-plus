@@ -3,6 +3,8 @@ import { getTamperedVCAsString } from "@/tests/fixtures/minimalVCv2";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds"
 
+const badDiDWebErrorMessage = "The signature could not be checked because the public signing key could not be retrieved from https://digitalcredentials.github.io/dcc-did-web-bad/did.json";
+
 const baseExpectedLogMessages = {
     expiry: LogMessages.HasNotExpired,
     revocation: LogMessages.NotRevoked,
@@ -12,6 +14,9 @@ const baseExpectedLogMessages = {
 }
 
 const logTests = [
+
+///He is also going to add a commit to remove the 'This Credential:' label when there is no log.
+
     {
         name: 'legacy-noStatus-noExpiry',
         vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',
@@ -42,6 +47,7 @@ const logTests = [
         vc: 'https://github.com/digitalcredentials/vc-test-fixtures/raw/refs/heads/main/verifiableCredentials/v2/dataIntegrityProof/didKey/twoOIDF-validStatus-expired.json',
         expected: { expiry: LogMessages.HasExpired, revocation: LogMessages.NotRevoked }
     }
+    
 ]
     
 
@@ -84,3 +90,11 @@ test('tampered', async ({ page }) => {
     await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError);
 })
 
+test('unresolvable did document', async ({ page }) => {
+    const badVC = 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didWeb/badDidWeb.json'
+    await page.goto("/")
+    await page.getByTestId('vc-text-area').fill(badVC)
+    await page.getByRole('button', { name: 'Verify' }).click()
+    await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError);
+    await expect(page.getByTestId(TestId.ReturnedErrorMsg)).toHaveText(badDiDWebErrorMessage);
+})

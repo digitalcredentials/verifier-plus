@@ -4,6 +4,7 @@ import { CredentialError } from '@/types/credential.d';
 import type { ResultLogProps } from './ResultLog.d';
 import styles from './ResultLog.module.css';
 import { StatusPurpose, hasStatusPurpose } from '@/lib/credentialStatus';
+import { TestId } from "@/lib/testIds"
 
 export enum LogId {
   ValidSignature = 'valid_signature',
@@ -11,20 +12,6 @@ export enum LogId {
   IssuerDIDResolves = 'registered_issuer',
   RevocationStatus = 'revocation_status',
   SuspensionStatus = 'suspension_status'
-}
-
-export enum TestId {
-  MalformedLogMsg = 'malformed-log-msg',
-  SigningLogMsg = 'signing-log-msg',
-  IssuerLogMsg = 'issuer-log-msg',
-  ExpirationLogMsg = 'expiration-log-msg',
-  RevocationLogMsg = 'revocation-log-msg',
-  SuspensionLogMsg = 'suspension-log-msg',
-  GeneralErrorMsg = 'general-error-msg',
-  UnknownErrorMsg = 'unknown-error-msg',
-  SigningErrorMsg = 'signing-error-msg',
-  MalformedErrorMsg = 'malformed-error-msg',
-  ResultLog = "result-log"
 }
 
 export enum LogMessages {
@@ -150,7 +137,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
           <p data-testid={TestId.GeneralErrorMsg} className={styles.error}>{LogMessages.GeneralError}</p>
           {error?.message && (
             <div className={styles.errorContainer}>
-              <p>{error.message}</p>
+              <p data-testid={TestId.ReturnedErrorMsg}>{error.message}</p>
             </div>
           )}
         </div>
