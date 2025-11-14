@@ -9,6 +9,7 @@ export enum TestId {
     UnknownErrorMsg = 'unknown-error-msg',
     SigningErrorMsg = 'signing-error-msg',
     MalformedErrorMsg = 'malformed-error-msg',
+    ReturnedErrorMsg = "returned-error-msg",
     ResultLog = "result-log",
     IssuedTo = "issued-to",
     IssuanceDate = "issuance-date",
