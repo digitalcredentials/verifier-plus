@@ -46,11 +46,13 @@ const NotesSection = () => {
   )
 }
 
-export const DescriptionSection = () => {
+const ExpirationDateDescriptionSection = () => {
   return (
     <div className={styles.note}> The date until which the credential is considered valid.</div>
   )
 }
+
+export const expirationDateHelpDescription = ExpirationDateDescriptionSection()
 
 export const expirationDateHelpSections  = [
   { sectionTitle: 'Details', content: DetailsSection() },

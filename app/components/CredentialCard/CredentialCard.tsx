@@ -16,7 +16,7 @@ import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
-import { ExpirationDateHelp, IssuanceDateHelp, HolderHelp, DescriptionHelp, CriteriaHelp, TitleHelp, AchievementTypeHelp, expirationDateHelpSections } from '@/components/Help';
+import { IssuanceDateHelp, HolderHelp, DescriptionHelp, CriteriaHelp, TitleHelp, AchievementTypeHelp, expirationDateHelpSections, expirationDateHelpDescription } from '@/components/Help';
 import { CollapsibleSectionProps } from '../ContextualHelp/ContextualHelp.d';
 
 
@@ -89,7 +89,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
 
                 <InfoBlock
                   header="Expiration Date"
-                 
+                  helpDescription={expirationDateHelpDescription}
                   helpSections={expirationDateHelpSections}
                   helpTitle="Expiration Date"
                   contents={

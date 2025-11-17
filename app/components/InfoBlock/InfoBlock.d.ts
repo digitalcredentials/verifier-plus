@@ -6,5 +6,6 @@ export type InfoBlockProps = {
   testId?: string;
   HelpContent?: ReactElement;
   helpTitle?:string;
+  helpDescription?: ReactNode;
   helpSections?: CollapsibleSectionProps[]
 }

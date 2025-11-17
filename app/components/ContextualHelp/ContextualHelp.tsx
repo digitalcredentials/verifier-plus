@@ -28,10 +28,12 @@ const CollapsibleSection = ({ sectionTitle, content }: CollapsibleSectionProps) 
       </Collapsible.Panel>
     </Collapsible.Root>)
 }
-export const ContextualHelp = ({ title, iconSize = '12px', children, sections, iconColor = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
+export const ContextualHelp = ({ title, description, iconSize = '12px', children, sections, iconColor = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
   let {isHelpEnabled} = useHelpContext();
   if (isHelpEnabled) {
     return (
+
+     
       <Dialog.Root>
         <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={`${style} hover:cursor-pointer`}><HelpIcon sx={{ fontSize: iconSize }} htmlColor={iconColor} /></span>}>
         </Dialog.Trigger>
@@ -43,6 +45,7 @@ export const ContextualHelp = ({ title, iconSize = '12px', children, sections, i
             <ScrollArea.Root className="w-full">
               <ScrollArea.Viewport className="max-h-[75dvh] overscroll-contain rounded-md outline -outline-offset-1 outline-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-800">
                 <div className="flex flex-col gap-4 py-5 pr-1 pl-1 md:pr-5 md:pl-5 text-sm leading-[1.375rem] text-gray-900">
+                  {description}
                   {children}
                   {
                     sections && sections.map((section : CollapsibleSectionProps) => (
