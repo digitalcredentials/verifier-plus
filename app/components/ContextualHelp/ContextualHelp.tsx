@@ -6,7 +6,7 @@ import { ScrollArea } from '@base-ui-components/react/scroll-area';
 import { useHelpContext } from '@/lib/HelpContext';
 
 
-export const ContextualHelp = ({ title, fontSize = '.9em', children, color = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
+export const ContextualHelp = ({ title, fontSize = '12px', children, color = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
   let {isHelpEnabled} = useHelpContext();
 
   if (isHelpEnabled) {
