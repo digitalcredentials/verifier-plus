@@ -21,6 +21,7 @@
     "@digitalcredentials/vpqr": "^2.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@microlink/react-json-view": "^1.27.0",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@types/luxon": "^3.7.1",
@@ -39,6 +40,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-markdown": "^10.1.0",
+    "react-responsive": "^10.0.1",
     "uuid": "^9.0.0",
     "validator": "^13.15.15"
   },

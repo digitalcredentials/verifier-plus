@@ -1,21 +1,7 @@
+import { VcDisplay } from '@/components/VcDisplay/VcDisplay';
 import styles from '../Help.module.css';
-export const ExpirationDateHelp = () => {
-  return <>
-    <DetailsSection />
-    <DeterminationSection />
-    <ExampleV1Section />
-    <ExampleV2Section />
-    <NotesSection />
-  </>
-}
 
-const ExampleV1Section = () => {
-  return (
-    <div>
-      <div>This is a working example that you can copy and paste into VerifierPlus.</div>
-
-      <pre>
-        {`   {
+const v1Example = {
     "@context": [
         "https://www.w3.org/2018/credentials/v1",
         "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.2.json",
@@ -68,15 +54,26 @@ const ExampleV1Section = () => {
         "proofPurpose": "assertionMethod",
         "proofValue": "z44bwcZ2bQftiyUGKY6L7Gmg7iYfi9k6Va15osdm3KaKVnSW2DscpAMJVSs4UBf9riYReQ8VbZRf2qCY8W1rq2k3z"
     }
-}`}
-</pre>
-</div>
-)}
+}
+
+export const ExpirationDateHelp = () => {
+  return <>
+    <DetailsSection />
+    <DeterminationSection />
+    <ExampleV1Section />
+    <ExampleV2Section />
+    <NotesSection />
+  </>
+}
 
 const ExampleV2Section = () => {
+  return <VcDisplay link={'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-expired.json'}/>
+}
+
+const ExampleV1Section = () => {
 return (
     <div>
-      <div>This is a working example that you can copy and paste into VerifierPlus.</div>
+      <div>needs to be changed to V1</div>
 
     
      <pre>{`   {
