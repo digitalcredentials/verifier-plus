@@ -483,7 +483,7 @@ export default function Home() {
               <p className={styles.error}>
                 Not a Verifiable Credential or an Open Badge 3.0
               </p>
-              <span><ContextualHelp color='black' title="Not a Verifiable Credential"><NotVCHelp /></ContextualHelp> </span>
+              <span><ContextualHelp iconColor='black' title="Not a Verifiable Credential"><NotVCHelp /></ContextualHelp> </span>
             </div>
           )}
 
