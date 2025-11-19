@@ -7,8 +7,7 @@ import type { CollapsibleSectionProps, JsonViewProps, VcDisplayProps, JSONLinkPr
 import dynamic from 'next/dynamic';
 const ReactJsonView = dynamic(() => import('@microlink/react-json-view'), { ssr: false });
 
-//import from '@microlink/react-json-view'
-//import { useMediaQuery } from 'react-responsive'
+import { useMediaQuery } from 'react-responsive'
 import { Collapsible } from '@base-ui-components/react/collapsible';
 import styles from './VcDisplay.module.css'
 import { useEffect, useState } from 'react';
@@ -40,7 +39,7 @@ const VerifierPlusLink = ({ link }: VerifierPlusLinkProps) => {
 
 const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
 
- // const isMobile = useMediaQuery({ query: '(max-width: 1279px)' })
+  const isMobile = useMediaQuery({ query: '(max-width: 1279px)' })
 
   const [json, setJson] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,8 +47,8 @@ const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
 
   const shouldCollapse =
     ({ namespace }: any) => {
-      //  not we add 'false' to the list of nodes to expand because 'false' is the root name (when
-      // a root name isn't shown)
+      //  we add 'false' to the list of nodes to expand (i.e, the 'concat('false')), because 'false' is the root name when
+      // a root name isn't to be shown in the display
       return nodesToExpand.map(node => `${'false.'}${node}`).concat('false').includes(namespace.join('.')) ? false : true
     }
 
@@ -82,7 +81,7 @@ const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
         <div style={{ paddingBottom: '1em' }}>Click the arrows to expand nodes, and ellipses to expand text.</div>
         <ReactJsonView
           src={json}
-          collapseStringsAfterLength={10} //{isMobile ? 10 : 40}
+          collapseStringsAfterLength={isMobile ? 10 : 40}
           enableClipboard={false}
           displayDataTypes={false}
           displayArrayKey={false}
