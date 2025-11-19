@@ -3,6 +3,7 @@ import React, { ReactElement, ReactNode } from "react"
 export type VcDisplayProps = {
   title?: string;
   link: string;
+  nodesToExpand?: string[]
 }
 
 export type CollapsibleSectionProps = {
@@ -12,6 +13,7 @@ export type CollapsibleSectionProps = {
 
 export type JsonViewProps = {
   link: string;
+  nodesToExpand?: string[]
 }
 
 export type JSONLinkProps = {

@@ -14,22 +14,22 @@ export const ExpirationDateHelp = () => {
 }
 
 const ExampleV2Section = () => {
-  return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-expired.json'/>
+  return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-expired.json' nodesToExpand={['validUntil']}/>
 }
 
 const ExampleV1Section = () => {
-return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/ed25519/didKey/legacy-noStatus-expired.json'/>
+return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/ed25519/didKey/legacy-noStatus-expired.json' nodesToExpand={['expirationDate']}/>
    
 }
 const DeterminationSection = () => {
   return (
-    <div className={styles.criteria}><div className={styles.title}>How we determine the expiration date</div>
+    <div>
       <div className={styles.preference}>According to the version of the Verifiable Credentials data model:</div>
       <ul className={styles.list}>
-        <li>Version 1: expirationDate</li>
-        <li>Version 2: validUntil</li>
+        <li>Version 1: <span style={{fontWeight:700}}>expirationDate</span></li>
+        <li>Version 2: <span style={{fontWeight:700}}>validUntil</span></li>
       </ul>
-      <div className={styles.preference}>See the example sections for working examples.</div>
+      <div className={styles.preference}>See the example sections for working examples of each.</div>
     </div>)
 }
 
@@ -62,7 +62,7 @@ export const expirationDateHelpDescription = ExpirationDateDescriptionSection()
 export const expirationDateHelpSections  = [
   { sectionTitle: 'Details', content: DetailsSection() },
   { sectionTitle: 'How We Determine the Expiration Date', content: DeterminationSection() },
-  { sectionTitle: 'Verifiable Credential Version 1 Example', content: ExampleV1Section() },
-  { sectionTitle: 'Verifiable Credential Version 2 Example', content: ExampleV2Section() },
+  { sectionTitle: 'Example - Verifiable Credential v1', content: ExampleV1Section() },
+  { sectionTitle: 'Example - Verifiable Credential v2', content: ExampleV2Section() },
   { sectionTitle: 'Notes', content: NotesSection( )}
 ]
