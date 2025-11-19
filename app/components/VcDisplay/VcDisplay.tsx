@@ -1,7 +1,14 @@
 import * as React from 'react';
 import type { CollapsibleSectionProps, JsonViewProps, VcDisplayProps, JSONLinkProps, VerifierPlusLinkProps } from './VcDisplay.d';
-import ReactJsonView from '@microlink/react-json-view'
-import { useMediaQuery } from 'react-responsive'
+
+// tell nextjs not to load react-json-view on the server because
+// react-json-view needs access to the document object, which
+// doesn't yet exist with ssr
+import dynamic from 'next/dynamic';
+const ReactJsonView = dynamic(() => import('@microlink/react-json-view'), { ssr: false });
+
+//import from '@microlink/react-json-view'
+//import { useMediaQuery } from 'react-responsive'
 import { Collapsible } from '@base-ui-components/react/collapsible';
 import styles from './VcDisplay.module.css'
 import { useEffect, useState } from 'react';
@@ -33,7 +40,7 @@ const VerifierPlusLink = ({ link }: VerifierPlusLinkProps) => {
 
 const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
 
-  const isMobile = useMediaQuery({ query: '(max-width: 1279px)' })
+ // const isMobile = useMediaQuery({ query: '(max-width: 1279px)' })
 
   const [json, setJson] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,14 +82,13 @@ const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
         <div style={{ paddingBottom: '1em' }}>Click the arrows to expand nodes, and ellipses to expand text.</div>
         <ReactJsonView
           src={json}
-          collapseStringsAfterLength={isMobile ? 10 : 40}
+          collapseStringsAfterLength={10} //{isMobile ? 10 : 40}
           enableClipboard={false}
           displayDataTypes={false}
           displayArrayKey={false}
           displayObjectSize={false}
           name={false}
           shouldCollapse={shouldCollapse}
-          collapsed={isMobile ? 1 : false}
         />
       </>
     }
