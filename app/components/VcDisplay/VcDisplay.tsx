@@ -63,7 +63,7 @@ function ChevronIcon(props: React.ComponentProps<'svg'>) {
 const JSONLink = ({ link }: JSONLinkProps) => {
 
   return (<div>
-    <div style={{ paddingBottom: '1em' }}>Link to the JSON:</div>
+    <div >Link to the JSON:</div>
     <div className={styles.scrollableLink}>
       <a href={link}><div className={styles.scrollableLink}>{link}</div></a>
     </div>
@@ -73,9 +73,8 @@ const JSONLink = ({ link }: JSONLinkProps) => {
 const VerifierPlusLink = ({ link }: VerifierPlusLinkProps) => {
 
   return (<div>
-    <div style={{ paddingBottom: '1em' }}>Opens the credential in VerifierPlus:</div>
     <div>
-      <a target="_blank" style={{ color: "black" }} href={`https://verifierplus.org#verify?vc=${link}`}>Open</a>the credential in VerifierPlus.
+      <a target="_blank" style={{ color: "black", fontWeight: 800, textDecoration: 'underline' }} href={`https://verifierplus.org#verify?vc=${link}`}>Open</a> the credential directly in VerifierPlus.
     </div>
   </div>)
 }
