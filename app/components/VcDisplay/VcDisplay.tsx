@@ -73,13 +73,14 @@ const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
   }, [link]);
 
   if (loading) return <div>Loading the credential...</div>;
-  if (error) return <div>Sorry, we couldn't load the credential, but here is where it should be: </div>;
+  if (error) return <div>{`Sorry, we couldn't load the credential, but here is where it should be: ${link}`}</div>;
 
 
 
-  return (<div>
+  return (<>
     {json &&
-      <>
+      <div>
+        <div style={{ paddingBottom: '1em'}}><CopyToClipboard  buttonText={"Copy VC To Clipboard"} text={JSON.stringify(json,null,2)} /></div>
         <div style={{ paddingBottom: '1em' }}>Click the arrows to expand nodes, and ellipses to expand text.</div>
         <ReactJsonView
           src={json}
@@ -91,9 +92,9 @@ const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
           name={false}
           shouldCollapse={shouldCollapse}
         />
-      </>
+      </div>
     }
-  </div>)
+  </>)
 }
 
 const CollapsibleSection = ({ sectionTitle, content }: CollapsibleSectionProps) => {
