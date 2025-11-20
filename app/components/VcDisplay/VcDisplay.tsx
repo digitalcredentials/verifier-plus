@@ -11,6 +11,7 @@ import { useMediaQuery } from 'react-responsive'
 import { Collapsible } from '@base-ui-components/react/collapsible';
 import styles from './VcDisplay.module.css'
 import { useEffect, useState } from 'react';
+import { CopyToClipboard } from '../CopyToClipboard/CopyToClipboard';
 
 function ChevronIcon(props: React.ComponentProps<'svg'>) {
   return (
@@ -25,6 +26,7 @@ const JSONLink = ({ link }: JSONLinkProps) => {
     <div >Link to the JSON:</div>
     <div className={styles.scrollableLink}>
       <a href={link}><div className={styles.scrollableLink}>{link}</div></a>
+                <CopyToClipboard buttonText={"Copy Link To Clipboard"} text={link} />
     </div>
   </div>)
 }
