@@ -6,15 +6,16 @@ import { VerifyResponse } from '@/types/credential';
 import styles from './VerificationCard.module.css';
 import { RegistryCard } from '@/components/RegistryCard/RegistryCard';
 import { TestId } from '@/lib/testIds';
+import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
+import { NotVerifiedMessageHelp, RegistryListHelp, WarningMessageHelp } from '../Help';
 
 export const UNSUCCESSFUL_VERIFICATION_MSG = 'This credential was not verified successfully.';
 export const VERIFICATION_WARNING_MSG = 'There is a warning about this credential.'
-export const SUCCESSFUL_VERIFICATION_MSG = 'This credential was verified successfully'
 
 export const VerificationCard = () => {
   const { loading, verificationResult, verifyCredential } = useVerificationContext();
 
-  const resultMessage = () => {
+  const ErrorMessage = () => {
     const result = (verificationResult as VerifyResponse)?.results?.[0];
     const log = result?.log ?? [];
     // Build a lookup of log validity
@@ -39,24 +40,19 @@ export const VerificationCard = () => {
     );
 
     if (hasFailure) {
-      return {
-        type: 'error',
-        text: UNSUCCESSFUL_VERIFICATION_MSG,
-      };
+      return <div className={`${styles.error} ${styles.message}`} data-testid={TestId.VerificationMessage}>
+              {UNSUCCESSFUL_VERIFICATION_MSG} <ContextualHelp title="Registry List"><NotVerifiedMessageHelp/></ContextualHelp>
+        </div>
+
     } else if (hasWarning) {
-      return {
-        type: 'warning',
-        text: VERIFICATION_WARNING_MSG,
-      };
-    } else {
-      return {
-        type: 'success',
-        text: SUCCESSFUL_VERIFICATION_MSG,
-      };
-    }
+      return <div className={`${styles.warning} ${styles.message}`} data-testid={TestId.VerificationMessage}>
+              {VERIFICATION_WARNING_MSG} <ContextualHelp title="Registry List"><WarningMessageHelp/></ContextualHelp>
+        </div>
+    } 
+
+    return null
   };
 
-  const { type, text } = resultMessage();
 
   return (
     <div className={styles.card}>
@@ -81,10 +77,7 @@ export const VerificationCard = () => {
           </div>
         ) : (
           <>
-            <div className={`${styles.verificationStatus} ${styles[type]}`} data-testid={TestId.VerificationMessage}>
-              {text}
-            </div>
-
+            <ErrorMessage/>
             <div className={styles.issuerDetails}>
               {(() => {
                 const result = (verificationResult as VerifyResponse)?.results?.[0];
@@ -109,7 +102,7 @@ export const VerificationCard = () => {
                   return (
                     <>
                       <p className={styles.registryName}>
-                        <strong>Issuer Details</strong>
+                        <strong>Issuer Registration</strong><ContextualHelp title="Registry List"><RegistryListHelp/></ContextualHelp>
                       </p>
                       {matchingIssuers.map((match: any, index: number) => {
                         const registryName =

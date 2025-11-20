@@ -15,8 +15,6 @@ const baseExpectedLogMessages = {
 
 const logTests = [
 
-///He is also going to add a commit to remove the 'This Credential:' label when there is no log.
-
     {
         name: 'legacy-noStatus-noExpiry',
         vc: 'https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacy-noStatus-noExpiry.json',

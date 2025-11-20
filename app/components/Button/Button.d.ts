@@ -6,4 +6,5 @@ export type ButtonProps = {
   icon?: ReactElement | null;
   onClick?: (e: React.SyntheticEvent) => void;
   className?: string;
+  children?: ReactElement;
 }

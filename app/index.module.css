@@ -184,6 +184,7 @@
   text-align: center;
   justify-content: center;
   margin-top: 24px;
+  position: relative;
 }
 
 .dndUploadText {
@@ -229,6 +230,7 @@
   flex-shrink: 1;
   flex-wrap: 1;
   margin-top: 24px;
+  position: relative;
 }
 
 .trustLink {
@@ -241,6 +243,7 @@
   padding-left: 8px;
   padding-block: 4px;
   display: flex;
+  justify-content: center;
   border-radius: 5px;
   margin-top: 4px;
   max-width: 500px;
@@ -384,6 +387,25 @@
   margin-bottom: 8px;
   border: 2px solid var(--border);
   border-radius: 10px;
+  position: relative;
+}
+
+.vprHelpIcon {
+   position: absolute;
+        top: 2;
+        right: 0;
+}
+
+.pasteHelpIcon {
+   position: absolute;
+        top: 5;
+        right: 2;
+}
+
+.scanQRHelpIcon {
+  position: absolute;
+        top: 1.5em;
+        right: 0;
 }
 
 .lcwLink {

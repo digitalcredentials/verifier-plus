@@ -15,6 +15,10 @@ import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifi
 import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
+import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
+import { IssuanceDateHelp, HolderHelp, DescriptionHelp, CriteriaHelp, TitleHelp, AchievementTypeHelp, expirationDateHelpSections, expirationDateHelpDescription } from '@/components/Help';
+import { CollapsibleSectionProps } from '../ContextualHelp/ContextualHelp.d';
+
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {
   // TODO: add back IssuerInfoModal
@@ -64,8 +68,8 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
           <div className={styles.achivementInfo}>
             {displayValues.achievementImage ? <img className={styles.achievementImage} src={displayValues.achievementImage} alt="achievement image" data-testid={TestId.AchievementImage}/> : null}
             <div>
-              <h1 id='title' className={styles.credentialName} data-testid={TestId.CredentialName}>{displayValues.credentialName}</h1>
-              {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type : {displayValues.achievementType}</p> : null}
+              <h1 id='title' className={styles.credentialName} data-testid={TestId.CredentialName}>{displayValues.credentialName}<ContextualHelp title="Credential Name and Image"><TitleHelp/></ContextualHelp></h1>
+              {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type : {displayValues.achievementType} <ContextualHelp title="Achievement Type"><AchievementTypeHelp/></ContextualHelp></p> : null}
             </div>
           </div>
         </div>
@@ -75,11 +79,19 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               <Issuer issuer={issuer} infoButtonPushed={infoButtonPushed} header='Issuer' />
               <div className={styles.headerRow}>
                 {displayValues.issuanceDate && (
-                  <InfoBlock header="Issuance Date" contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} testId={TestId.IssuanceDate} />
+                  <InfoBlock 
+                    header="Issuance Date" 
+                    HelpContent={IssuanceDateHelp}
+                    helpTitle="Issuance Date"
+                    contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} 
+                    testId={TestId.IssuanceDate} />
                 )}
 
                 <InfoBlock
                   header="Expiration Date"
+                  helpDescription={expirationDateHelpDescription}
+                  helpSections={expirationDateHelpSections}
+                  helpTitle="Expiration Date"
                   contents={
                     displayValues.expirationDate
                       ? DateTime.fromISO(displayValues.expirationDate).toLocaleString(DateTime.DATE_MED)
@@ -99,18 +111,28 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
 
           <div className={styles.primaryColumn}>
             {displayValues.issuedTo ?
-              <InfoBlock header="Issued To" contents={displayValues.issuedTo} testId={TestId.IssuedTo}/>
+              <InfoBlock 
+              header="Issued To" 
+              HelpContent={HolderHelp}
+              helpTitle="Issued To"
+              contents={displayValues.issuedTo} 
+              testId={TestId.IssuedTo}/>
               :
               null
             }
             {displayValues.credentialDescription ?
-              <InfoBlock header="Description" contents={displayValues.credentialDescription} testId={TestId.CredentialDescription}/>
+              <InfoBlock 
+              header="Description" 
+              HelpContent={DescriptionHelp}
+              helpTitle="Credential Description"
+              contents={displayValues.credentialDescription} 
+              testId={TestId.CredentialDescription}/>
               :
               null
             }
             {displayValues.criteria && (
               <div>
-                <h3 className={styles.smallHeader}>Criteria</h3>
+                <h3 className={styles.smallHeader}>Criteria<ContextualHelp title="Criteria"><CriteriaHelp/></ContextualHelp></h3>
                 {/* <div className={styles.credentialCriteria}>{displayValues.criteria}</div> */}
                 <div className={styles.markdownContainer} data-testid={TestId.CredentialCriteria}>
                   <ReactMarkdown >{displayValues.criteria}</ReactMarkdown>
