@@ -191,8 +191,21 @@
   color: var(--dark-text);
 }
 
-.fileUpload input {
-  display: none;
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fileInput:focus + .browseLink {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 .browseLink {
@@ -200,6 +213,9 @@
   text-decoration: underline;
   margin: 0px;
   font: normal normal medium 14px/17px Rubik;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
 .descriptionBlock {
