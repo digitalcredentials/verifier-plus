@@ -344,6 +344,13 @@ export default function Home() {
     setFile(e.target.files !== null ? e.target.files[0] : null);
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.currentTarget.click();
+    }
+  }
+
   if (credential !== undefined) {
     return (
       <main className={styles.container}>
@@ -487,9 +494,18 @@ export default function Home() {
           }}
         >
           <div className={styles.dndUploadText}>
-            Drag and drop a file here or <label className={styles.fileUpload}>
-              <input type='file' onChange={handleBrowse} />
-              <span className={styles.browseLink}>browse</span>
+            Drag and drop a file here or{' '}
+            <input 
+              type='file' 
+              onChange={handleBrowse}
+              onKeyDown={handleKeyDown}
+              className={styles.fileInput}
+              id='file-upload'
+              aria-label='Upload credential file'
+              accept='.json,.png'
+            />
+            <label htmlFor='file-upload' className={styles.browseLink}>
+              browse
             </label>
           </div>
           <span className={styles.supportText}>Supports JSON</span>
