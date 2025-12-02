@@ -3,6 +3,11 @@
 ## 2.0.1 
 ### Added
 - Add Alignments to Open Badges 3.0 Display
+- VPR: Clarify to users on V+ site how to scan QR code
+### Fixed
+- A did_web_unresolved error should be better explained in the UI
+- Drag and drop/ file browse isn't accessible
+- Browser tab no longer showing Verifier Plus
 
 ## 2.0.0 
 ### Added
@@ -30,7 +35,6 @@
 - Feature/url verification query params
 ### Fixed
 - Fix problem where app crashes during verification of pasted JSON
-
 
 ## 1.0.0 
 ### Added
