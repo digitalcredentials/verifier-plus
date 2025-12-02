@@ -496,7 +496,7 @@ export default function Home() {
           <div className={styles.dndUploadText}>
             Drag and drop a file here or{' '}
             <span
-              role="button"
+              role="link"
               tabIndex={0}
               className={styles.browseLink}
               onClick={() => document.getElementById('file-upload')?.click()}
