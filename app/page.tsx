@@ -495,18 +495,26 @@ export default function Home() {
         >
           <div className={styles.dndUploadText}>
             Drag and drop a file here or{' '}
-            <input 
-              type='file' 
-              onChange={handleBrowse}
-              onKeyDown={handleKeyDown}
-              className={styles.fileInput}
-              id='file-upload'
-              aria-label='Upload credential file'
-              accept='.json,.png'
-            />
-            <label htmlFor='file-upload' className={styles.browseLink}>
+            <span
+              role="button"
+              tabIndex={0}
+              className={styles.browseLink}
+              onClick={() => document.getElementById('file-upload')?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  document.getElementById('file-upload')?.click();
+                }
+              }}
+            >
               browse
-            </label>
+            </span>
+            <input
+              type="file"
+              id="file-upload"
+              className={styles.visuallyHidden}
+              onChange={handleBrowse}
+              accept=".json,.png"
+            />
           </div>
           <span className={styles.supportText}>Supports JSON</span>
         </div>
