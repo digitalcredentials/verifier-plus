@@ -191,19 +191,19 @@
   color: var(--dark-text);
 }
 
-.fileInput {
+.visuallyHidden {
   position: absolute;
   width: 1px;
   height: 1px;
   padding: 0;
   margin: -1px;
-  overflow: hidden;
   clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
   border: 0;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.fileInput:focus + .browseLink {
+.visuallyHidden:focus + .browseLink {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
