@@ -80,7 +80,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
               <div className={styles.headerRow}>
                 {displayValues.issuanceDate && (
                   <InfoBlock 
-                    header="Issuance Date" 
+                    header="Valid From" 
                     helpDescription={validFromHelpDescription}
                     helpSections={validFromHelpSections}
                     helpTitle="ValidFrom"
@@ -89,10 +89,10 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
                 )}
 
                 <InfoBlock
-                  header="Expiration Date"
+                  header="Valid Until"
                   helpDescription={validUntilHelpDescription}
                   helpSections={validUntilHelpSections}
-                  helpTitle="validUntil"
+                  helpTitle="Valid Until"
                   contents={
                     displayValues.expirationDate
                       ? DateTime.fromISO(displayValues.expirationDate).toLocaleString(DateTime.DATE_MED)

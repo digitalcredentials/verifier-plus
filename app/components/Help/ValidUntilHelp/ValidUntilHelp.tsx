@@ -24,8 +24,8 @@ const DeterminationSection = () => {
 const DetailsSection = () => {
   return (
     <ul className={styles.list}>
-      <li>The expiry date is set directly in the Verifiable Credential and cannot be changed without invalidating the cryptographic signature.</li>
-      <li>The expiry date is not required. A credential can be issued that never expires.</li>
+      <li>The validUntil date is set directly in the Verifiable Credential and cannot be changed without invalidating the cryptographic signature.</li>
+      <li>The validUntil date is not required. A credential can be issued that never expires.</li>
     </ul>
   )
 }
@@ -49,7 +49,7 @@ export const validUntilHelpDescription = DescriptionSection()
 
 export const validUntilHelpSections  = [
   { sectionTitle: 'Details', content: DetailsSection() },
-  { sectionTitle: 'How We Determine the Expiration Date', content: DeterminationSection() },
+  { sectionTitle: 'How We Determine the Valid Until Date', content: DeterminationSection() },
   { sectionTitle: 'Example - Verifiable Credential v1', content: ExampleV1Section() },
   { sectionTitle: 'Example - Verifiable Credential v2', content: ExampleV2Section() },
   { sectionTitle: 'Notes', content: NotesSection( )}
