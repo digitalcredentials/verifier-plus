@@ -27,8 +27,8 @@
   }
   
   .logoPlaceholder img {
-    width: 40px;
-    height: 40px;
+   max-width: 200px;
+    max-height: 28px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #f9f9f9;
