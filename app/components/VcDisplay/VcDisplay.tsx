@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { CollapsibleSectionProps, JsonViewProps, VcDisplayProps, JSONLinkProps, VerifierPlusLinkProps } from './VcDisplay.d';
 
 // tell nextjs not to load react-json-view on the server because
-// react-json-view needs access to the document object, which
+// react-json-view needs access to the browser's document object, which
 // doesn't yet exist with ssr
 import dynamic from 'next/dynamic';
 const ReactJsonView = dynamic(() => import('@microlink/react-json-view'), { ssr: false });

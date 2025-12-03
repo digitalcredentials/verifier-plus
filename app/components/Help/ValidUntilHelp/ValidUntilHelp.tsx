@@ -1,18 +1,6 @@
 import { VcDisplay } from '@/components/VcDisplay/VcDisplay';
 import styles from '../Help.module.css';
 
-
-
-export const ExpirationDateHelp = () => {
-  return <>
-    <DetailsSection />
-    <DeterminationSection />
-    <ExampleV1Section />
-    <ExampleV2Section />
-    <NotesSection />
-  </>
-}
-
 const ExampleV2Section = () => {
   return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-expired.json' nodesToExpand={['validUntil']}/>
 }
@@ -51,15 +39,15 @@ const NotesSection = () => {
   )
 }
 
-const ExpirationDateDescriptionSection = () => {
+const DescriptionSection = () => {
   return (
     <div className={styles.note}> The date until which the credential is considered valid.</div>
   )
 }
 
-export const expirationDateHelpDescription = ExpirationDateDescriptionSection()
+export const validUntilHelpDescription = DescriptionSection()
 
-export const expirationDateHelpSections  = [
+export const validUntilHelpSections  = [
   { sectionTitle: 'Details', content: DetailsSection() },
   { sectionTitle: 'How We Determine the Expiration Date', content: DeterminationSection() },
   { sectionTitle: 'Example - Verifiable Credential v1', content: ExampleV1Section() },

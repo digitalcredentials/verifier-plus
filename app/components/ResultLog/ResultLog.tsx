@@ -5,7 +5,7 @@ import type { ResultItem, ResultLogProps } from './ResultLog.d';
 import styles from './ResultLog.module.css';
 import { StatusPurpose, hasStatusPurpose } from '@/lib/credentialStatus';
 import { TestId } from "@/lib/testIds"
-import { CredentialFormatHelp, ExpirationDateHelp, KnownIssuerHelp, RegistryHelp, SignatureHelp } from '../Help';
+import { CredentialFormatHelp, validUntilHelpSections, KnownIssuerHelp, RegistryHelp, SignatureHelp } from '../Help';
 import { ContextualHelp } from '../ContextualHelp/ContextualHelp';
 import { RevocationHelp } from '../Help/RevocationHelp/RevocationHelp';
 
@@ -49,6 +49,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
     testId = '',
     helpTitle, 
     HelpContent,
+    helpSections,
     issuer = false
   }: ResultItem) => {
     const isIssuerCheck = sourceLogId === LogId.IssuerDIDResolves;
@@ -88,7 +89,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
           {status === 'positive' && positiveMessage}
           {status === 'warning' && warningMessage}
           {status === 'negative' && negativeMessage}
-          {HelpContent&&<div style={{verticalAlign: 'top', display: 'inline-block'}}> <ContextualHelp title={helpTitle}><HelpContent/></ContextualHelp> </div>}  
+          {(HelpContent || helpSections)&&<div style={{verticalAlign: 'top', display: 'inline-block'}}> <ContextualHelp title={helpTitle} sections={helpSections}><HelpContent/></ContextualHelp> </div>}  
         </div>
       </div>
     );
@@ -232,7 +233,7 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
             warningMessage={LogMessages.HasExpired}
             sourceLogId={LogId.Expiration}
             testId={TestId.ExpirationLogMsg}
-            HelpContent={ExpirationDateHelp}
+            HelpContent={validUntilHelpSections}
             helpTitle="Expiration Date"
           />
 

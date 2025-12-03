@@ -16,7 +16,7 @@ import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
-import { IssuanceDateHelp, HolderHelp, DescriptionHelp, CriteriaHelp, TitleHelp, AchievementTypeHelp, expirationDateHelpSections, expirationDateHelpDescription } from '@/components/Help';
+import { HolderHelp, DescriptionHelp, CriteriaHelp, TitleHelp, AchievementTypeHelp, validUntilHelpSections, validUntilHelpDescription, validFromHelpDescription, validFromHelpSections } from '@/components/Help';
 import { CollapsibleSectionProps } from '../ContextualHelp/ContextualHelp.d';
 
 
@@ -81,17 +81,18 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
                 {displayValues.issuanceDate && (
                   <InfoBlock 
                     header="Issuance Date" 
-                    HelpContent={IssuanceDateHelp}
-                    helpTitle="Issuance Date"
+                    helpDescription={validFromHelpDescription}
+                    helpSections={validFromHelpSections}
+                    helpTitle="ValidFrom"
                     contents={DateTime.fromISO(displayValues.issuanceDate).toLocaleString(DateTime.DATE_MED)} 
                     testId={TestId.IssuanceDate} />
                 )}
 
                 <InfoBlock
                   header="Expiration Date"
-                  helpDescription={expirationDateHelpDescription}
-                  helpSections={expirationDateHelpSections}
-                  helpTitle="Expiration Date"
+                  helpDescription={validUntilHelpDescription}
+                  helpSections={validUntilHelpSections}
+                  helpTitle="validUntil"
                   contents={
                     displayValues.expirationDate
                       ? DateTime.fromISO(displayValues.expirationDate).toLocaleString(DateTime.DATE_MED)

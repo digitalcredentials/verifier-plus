@@ -22,9 +22,6 @@ export const RegistryCard: React.FC<RegistryCardProps> = ({ registryName, issuer
                     (More info on governance)
                 </a>
               ) : null}
-
-     
-
       <div className={styles.issuerMeta}>
       {issuerLogo && (
   <div className={styles.logoPlaceholder}>
