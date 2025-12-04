@@ -17,7 +17,7 @@ function ChevronIcon(props: React.ComponentProps<'svg'>) {
 const CollapsibleSection = ({ sectionTitle, content }: CollapsibleSectionProps) => {
    return (
    <Collapsible.Root className="flex flex-col justify-center text-gray-900">
-      <Collapsible.Trigger className="group flex items-center gap-2 rounded-sm bg-gray-100 px-2 py-1 text-sm font-medium hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-800 active:bg-gray-200">
+      <Collapsible.Trigger className="group flex items-center gap-2 rounded-sm bg-gray-100 px-2 py-1 text-sm font-medium hover:bg-gray-200 focus-visible:outline focus-visible:outline-blue-800 active:bg-gray-200">
         <ChevronIcon className="size-3 transition-all ease-out group-data-[panel-open]:rotate-90" />
         {sectionTitle}
       </Collapsible.Trigger>
@@ -35,7 +35,7 @@ export const ContextualHelp = ({ title, description, iconSize = '12px', children
 
      
       <Dialog.Root>
-        <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={`${style} hover:cursor-pointer`}><HelpIcon sx={{ fontSize: iconSize }} htmlColor={iconColor} /></span>}>
+        <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={`${style} hover:cursor-pointer`}><HelpIcon sx={{ fontSize: iconSize, verticalAlign: 'top' }} htmlColor={iconColor} /></span>}>
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
