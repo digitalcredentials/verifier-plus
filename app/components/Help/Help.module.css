@@ -77,3 +77,7 @@
         width: 30%; /* Or any specific width */
         padding: 20px
 }
+
+.emphasis {
+    font-weight:700;
+}

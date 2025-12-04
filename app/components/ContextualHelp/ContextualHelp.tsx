@@ -33,7 +33,6 @@ export const ContextualHelp = ({ title, description, iconSize = '12px', children
   if (isHelpEnabled) {
     return (
 
-     
       <Dialog.Root>
         <Dialog.Trigger onClick={(e) => e.stopPropagation()} nativeButton={false} render={<span className={`${style} hover:cursor-pointer`}><HelpIcon sx={{ fontSize: iconSize, verticalAlign: 'top' }} htmlColor={iconColor} /></span>}>
         </Dialog.Trigger>
@@ -43,7 +42,7 @@ export const ContextualHelp = ({ title, description, iconSize = '12px', children
             <Dialog.Title className="-mt-1.5 mb-1 text-lg text-center md:text-left font-medium">{title}</Dialog.Title>
 
             <ScrollArea.Root className="w-full">
-              <ScrollArea.Viewport className="max-h-[75dvh] overscroll-contain rounded-md outline -outline-offset-1 outline-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-800">
+              <ScrollArea.Viewport className="max-h-[75dvh] overscroll-contain rounded-md outline -outline-offset-1 outline-gray-200 focus-visible:outline focus-visible:outline-blue-800">
                 <div className="flex flex-col gap-4 py-5 pr-1 pl-1 md:pr-5 md:pl-5 text-sm leading-[1.375rem] text-gray-900">
                   {description}
                   {children}
