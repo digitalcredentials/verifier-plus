@@ -489,33 +489,23 @@ export default function Home() {
         <div
           className={styles.dndUpload}
           onDrop={handleFileDrop}
-          onDragOver={(e) => {
-            e.preventDefault();
-          }}
+          onDragOver={(e) => e.preventDefault()}
         >
-          <div className={styles.dndUploadText}>
-            Drag and drop a file here or{' '}
-            <span
-              role="link"
-              tabIndex={0}
-              className={styles.browseLink}
-              onClick={() => document.getElementById('file-upload')?.click()}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  document.getElementById('file-upload')?.click();
-                }
-              }}
-            >
+          <label htmlFor="file-upload" className={styles.dndUploadText}>
+            Drag and drop a file here or {' '}
+            <span className={styles.browseLink}>
               browse
             </span>
-            <input
-              type="file"
-              id="file-upload"
-              className={styles.visuallyHidden}
-              onChange={handleBrowse}
-              accept=".json,.png"
-            />
-          </div>
+          </label>
+
+          <input
+            type="file"
+            id="file-upload"
+            className={styles.visuallyHidden}
+            onChange={handleBrowse}
+            accept=".json,.png"
+          />
+
           <span className={styles.supportText}>Supports JSON</span>
         </div>
 
