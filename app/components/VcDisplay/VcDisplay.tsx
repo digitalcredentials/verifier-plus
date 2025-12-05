@@ -34,7 +34,7 @@ const JSONLink = ({ link }: JSONLinkProps) => {
 const VerifierPlusLink = ({ link }: VerifierPlusLinkProps) => {
   return (<div>
     <div>
-      <a target="_blank" style={{ color: "black", fontWeight: 800, textDecoration: 'underline' }} href={`https://verifierplus.org#verify?vc=${link}`}>Open</a> the credential directly in VerifierPlus.
+      <a target="_blank" className={styles.externalLink} href={`https://verifierplus.org#verify?vc=${link}`}>Open</a> the credential directly in VerifierPlus.
     </div>
   </div>)
 }

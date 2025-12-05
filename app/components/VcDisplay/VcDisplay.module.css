@@ -6,3 +6,9 @@
     display:block;
     white-space: nowrap;
 }
+
+.externalLink {
+    color: black;
+    font-weight: 800;
+    text-decoration: underline;
+}

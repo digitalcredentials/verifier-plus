@@ -21,13 +21,12 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { ChapiHelp, DragAndDropHelp, LcwRequestHelp, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, ScanQRHelp } from './components/Help'
+import { ChapiHelp, DragAndDropHelp, LcwRequestHelpDescription, LcwRequestHelpSections, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, ScanQRHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
 
 const randomPageId = uuidv4();
-
 
 export default function Home() {
   const [textArea, setTextArea] = useState('');
@@ -457,7 +456,10 @@ export default function Home() {
                 <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl} />
               </div>
             </Accordion>
-            <span className={styles.vprHelpIcon}> <ContextualHelp title="LCW Request "><LcwRequestHelp /></ContextualHelp></span>
+            <span className={styles.vprHelpIcon}> <ContextualHelp
+                  description={LcwRequestHelpDescription} 
+                  sections={LcwRequestHelpSections} 
+                  title="LCW Request"/></span>
           </div>
 
           <div className={styles.textAreaContainer}>
