@@ -21,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { ChapiHelp, DragAndDropHelp, LcwRequestHelp, NotVCHelp, PasteJsonUrlHelp, ScanQRHelp } from './components/Help'
+import { ChapiHelp, DragAndDropHelp, LcwRequestHelp, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, ScanQRHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -461,7 +461,13 @@ export default function Home() {
           </div>
 
           <div className={styles.textAreaContainer}>
-            <div className={styles.floatingTextarea}><span className={styles.pasteHelpIcon}><ContextualHelp title="JSON or URL?"><PasteJsonUrlHelp /></ContextualHelp></span>
+            <div className={styles.floatingTextarea}>
+              <span className={styles.pasteHelpIcon}>
+                <ContextualHelp
+                  description={pasteJSONHelpDescription} 
+                  sections={pasteJSONHelpSections} 
+                  title="Provide your Verifiable Credential"/>
+              </span>
               <textarea
                 aria-labelledby='textarea-label'
                 placeholder=' '

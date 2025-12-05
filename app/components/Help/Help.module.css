@@ -16,29 +16,30 @@
 }
 
 .image {
-   display:inline-block
+    display: inline-block
 }
 
 .title {
     text-align: center;
     font-size: 18px;
-    font-weight:500;
+    font-weight: 500;
 }
 
 .criteriaTitle {
     text-align: center;
     font-size: 16px;
-    font-weight:600;
+    font-weight: 600;
     margin-bottom: 15px;
 }
 
 .subtitle {
     font-size: 15px;
-    font-weight:500;
+    font-weight: 500;
     padding: 5px;
 }
+
 .criteria {
-    background-color:aliceblue;
+    background-color: aliceblue;
     padding: 5px
 }
 
@@ -66,18 +67,24 @@
     overflow-x: scroll;
     padding-top: 10px;
     padding-bottom: 10px;
-    color:black;
-    display:block;
+    color: black;
+    display: block;
     white-space: nowrap;
 }
 
 .qrCode {
-        display: block;
-        margin: 0 auto; /* Centers horizontally */
-        width: 30%; /* Or any specific width */
-        padding: 20px
+    display: block;
+    margin: 0 auto;
+    width: 30%;
+    padding: 20px
 }
 
 .emphasis {
-    font-weight:700;
+    font-weight: 700;
+}
+
+.externalLink {
+    color: black;
+    font-weight: 800;
+    text-decoration: underline;
 }
