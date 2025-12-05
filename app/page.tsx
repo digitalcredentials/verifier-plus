@@ -21,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { ChapiHelp, dragAndDropHelpDescription, dragAndDropHelpSections, LcwRequestHelpDescription, LcwRequestHelpSections, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, ScanQRHelp } from './components/Help'
+import { ChapiHelp, dragAndDropHelpDescription, dragAndDropHelpSections, LcwRequestHelpDescription, LcwRequestHelpSections, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, scanQRHelpDescription, scanQRtHelpSections } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -522,7 +522,12 @@ export default function Home() {
               className={styles.scan}
               text='Scan QR Code'
               onClick={ScanButtonOnClick}
-            /><span className={styles.scanQRHelpIcon}><ContextualHelp title="Scan Verifiable Credential from QR" ><ScanQRHelp /></ContextualHelp></span>
+            /><span className={styles.scanQRHelpIcon}>
+                <ContextualHelp
+                  description={scanQRHelpDescription}
+                  sections={scanQRtHelpSections}
+                  title="Scan Verifiable Credential from QR"/>
+              </span>
           </div>
 
           {fileError && (
