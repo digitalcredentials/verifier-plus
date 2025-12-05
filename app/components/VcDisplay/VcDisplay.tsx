@@ -75,8 +75,6 @@ const JsonView = ({ link, nodesToExpand = [] }: JsonViewProps) => {
   if (loading) return <div>Loading the credential...</div>;
   if (error) return <div>{`Sorry, we couldn't load the credential, but here is where it should be: ${link}`}</div>;
 
-
-
   return (<>
     {json &&
       <div>

@@ -21,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { ChapiHelp, DragAndDropHelp, LcwRequestHelpDescription, LcwRequestHelpSections, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, ScanQRHelp } from './components/Help'
+import { ChapiHelp, dragAndDropHelpDescription, dragAndDropHelpSections, LcwRequestHelpDescription, LcwRequestHelpSections, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, ScanQRHelp } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -501,7 +501,12 @@ export default function Home() {
             onDragOver={(e) => {
               e.preventDefault();
             }}
-          ><span className={styles.pasteHelpIcon}><ContextualHelp title="Drag and Drop or Upload"><DragAndDropHelp /></ContextualHelp></span>
+          ><span className={styles.pasteHelpIcon}>
+              <ContextualHelp
+                  description={dragAndDropHelpDescription} 
+                  sections={dragAndDropHelpSections}
+                  title="Drag and Drop, or Upload"/>
+            </span>
             <div className={styles.dndUploadText}>
               Drag and drop a file here or <label className={styles.fileUpload}>
                 <input type='file' onChange={handleBrowse} />

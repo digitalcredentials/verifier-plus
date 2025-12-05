@@ -1,21 +1,49 @@
 import styles from '../Help.module.css';
-export const DragAndDropHelp = () => {
-  return <>
-  <ul className={styles.list}>
-        <li>This is where you provide the Verifiable Credential you'd like to verify, as a file.</li>
-        <li>You can either choose the file from your computer using 'Browse', or find the file on your computer and drag it into this dotted box.</li>    
-         <li>JSON (Javascript Object Notation) is a simple way to structure data in a parent/child hierachy.</li>  
-          <li>You can alternatively directly paste the text from the file into the area just above labelled 'Paste JSON or URL'.</li>   
-  </ul>
-  
-     <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>
-      For an example of what the JSON for a Verifiable Credential looks like, see the help text for the 'Paste JSON or URL' 
-      text area just above.
-    
-      You can also download the file from this URL to your computer and try dragging it or selecting it:
-      <div className={styles.scrollableLink}>
-        <a href="https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/dataIntegrityProof/didKey/legacyRegistry-noStatus-noExpiry-basicOBv3.json"><div className={styles.scrollableLink}>https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/dataIntegrityProof/didKey/legacyRegistry-noStatus-noExpiry-basicOBv3.json</div></a>
-      </div>
-      </div>
-  </>
+import { VcDisplay } from '@/components/VcDisplay/VcDisplay';
+
+const ExampleV2Section = () => {
+    return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/dataIntegrityProof/didKey/legacyRegistry-noStatus-noExpiry-basicOBv3.json' />
 }
+
+const ExampleV1Section = () => {
+    return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/ed25519/didKey/legacy-noStatus-expired.json' />
+}
+
+const DetailsSection = () => {
+    return (
+        <ul className={styles.list}>
+            <li>You can either choose the file from your computer by clicking 'browse', or find the file on your computer and drag it into the dotted box.</li>
+            <li>The file must contain a Verifiable Credential.</li>
+            <li>Verifiable Credentials are encoded as JSON and the file extension is typically '.json'.</li>
+            <li>Examples of Verifiable Credentials are provided below in the examples sections.</li>
+            <li>You can alternatively paste the JSON (or a link to the JSON) in the text area above labelled 'Paste JSON or URL'.</li>
+        </ul>
+    )
+}
+
+const NotesSection = () => {
+    return (
+        <>
+        <div className={styles.note}><img className={styles.infoIcon} src="./icons/info_24_lime.svg"></img>VerifierPlus only verifies <a target="_blank" className={styles.externalLink} href="https://w3c.github.io/vc-data-model/">Verifiable Credentials</a>, which
+            includes Open Badges version 3, but not Open Badges version 2.
+        </div>
+        </>
+    )
+}
+
+const DescriptionSection = () => {
+    return (
+        <div className={styles.note}>Drag in a Verifiable Credential file or click 'browse' to select the file.</div>
+    )
+}
+
+export const dragAndDropHelpDescription = DescriptionSection()
+
+export const dragAndDropHelpSections = [
+    { sectionTitle: 'Details', content: DetailsSection() },
+    { sectionTitle: 'Example - Verifiable Credential v1', content: ExampleV1Section() },
+    { sectionTitle: 'Example - Verifiable Credential v2', content: ExampleV2Section() },
+    { sectionTitle: 'Notes', content: NotesSection() }
+]
+
+
