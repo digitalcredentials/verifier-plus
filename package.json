@@ -26,7 +26,7 @@
     "luxon": "^3.7.2",
     "material-icons": "^1.11.4",
     "mongodb": "^6.19.0",
-    "next": "^15.5.4",
+    "next": "^15.5.7",
     "nodemailer": "^6.9.13",
     "qr-scanner": "^1.4.2",
     "qrcode.react": "^4.2.0",
