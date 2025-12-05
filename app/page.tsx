@@ -21,7 +21,7 @@ import { pollExchange } from '@/lib/exchanges';
 import packageJson from '../package.json';
 import * as polyfill from 'credential-handler-polyfill'
 import { ContextualHelp } from './components/ContextualHelp/ContextualHelp'
-import { ChapiHelp, dragAndDropHelpDescription, dragAndDropHelpSections, LcwRequestHelpDescription, LcwRequestHelpSections, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, scanQRHelpDescription, scanQRtHelpSections } from './components/Help'
+import { chapiHelpDescription, chapiHelpSections, dragAndDropHelpDescription, dragAndDropHelpSections, LcwRequestHelpDescription, LcwRequestHelpSections, NotVCHelp, pasteJSONHelpDescription, pasteJSONHelpSections, scanQRHelpDescription, scanQRtHelpSections } from './components/Help'
 
 // NOTE: We currently only support one credential at a time. If a presentation with more than one credential
 // is dropped, pasted, or scanned we only look at the first one
@@ -547,7 +547,12 @@ export default function Home() {
               className={styles.scan}
               text='Request from web wallet via CHAPI'
               onClick={requestVcOnClick}
-            /><span className={styles.scanQRHelpIcon}><ContextualHelp title="Request from Web Wallet via CHAPI" ><ChapiHelp/></ContextualHelp></span>
+            /><span className={styles.scanQRHelpIcon}>
+              <ContextualHelp
+                  description={chapiHelpDescription}
+                  sections={chapiHelpSections}
+                  title="Request from Web Wallet via CHAPI"/>
+              </span>
           </div>
 
           <ScanModal isOpen={isOpen} setIsOpen={setIsOpen} onScan={onScan} setErrorMessage={setScanError} />

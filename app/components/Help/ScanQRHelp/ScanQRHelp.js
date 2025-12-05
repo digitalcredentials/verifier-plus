@@ -29,7 +29,7 @@ const ExampleSection = () => {
 
 const DescriptionSection = () => {
   return (
-    <div className={styles.note}>Scans a QR code pointing to, or containing, a Verifiable Creential, and verifies it.</div>
+    <div className={styles.note}>Scans a QR code pointing to, or containing, a Verifiable Credential, and verifies it.</div>
   )
 }
 

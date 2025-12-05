@@ -64,7 +64,7 @@ const NotesSection = () => {
     </div>
     <div className={styles.note}><img className={styles.infoIcon}  src="./icons/info_24_lime.svg"></img>This request only works
     with the DCC Learner Credential Wallet because we've used a deeplink that specifically opens the LCW app. Two other APIs that 
-    allow the end user to select which wallet they'd like are <a href="https://vcplayground.org/docs/#credential-handler-api-chapi">Credential Handler API (CHAPI)</a> and the <a href="https://digitalcredentials.dev">Digital Credentials API</a>.
+    allow the end user to select which wallet they'd like are <a className={styles.externalLink} href="https://vcplayground.org/docs/#credential-handler-api-chapi">Credential Handler API (CHAPI)</a> and the <a className={styles.externalLink} href="https://digitalcredentials.dev">Digital Credentials API</a>.
     </div>
     </>
   )
