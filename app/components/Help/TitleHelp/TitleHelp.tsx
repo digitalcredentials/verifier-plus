@@ -1,27 +1,22 @@
 import styles from '../Help.module.css';
 import { VcDisplay } from '@/components/VcDisplay/VcDisplay';
 
-const ExampleV2Section = () => {
-  return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v2/ed25519/didKey/legacy-noStatus-expired.json' nodesToExpand={['validUntil']}/>
+const ExampleOldDCCSection = () => {
+  return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/dataIntegrityProof/didKey/legacyRegistry-noStatus-noExpiry-oldDCCExample.json' nodesToExpand={['credentialSubject', 'credentialSubject.hasCredential', 'credentialSubject.hasCredential.name']}/>
 }
 
 const ExampleOBv3Section = () => {
-return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/ed25519/didKey/legacy-noStatus-expired.json' nodesToExpand={['expirationDate']}/>
+return <VcDisplay link='https://digitalcredentials.github.io/vc-test-fixtures/verifiableCredentials/v1/ed25519/didKey/legacy-noStatus-expired.json' nodesToExpand={['credentialSubject', 'credentialSubject.achievement', 'credentialSubject.achievement.image']}/>
    
 }
 const ImageDeterminationSection = () => {
   return (
     <div>
-      <div className={styles.preference}>For an Open Badge version 3:</div>
       <ul className={styles.list}>
         <li><span className={styles.emphasis}>credential.credentialSubject.achievement.image.id</span></li>
       </ul>
-      <div className={styles.preference}>For a plain Verifiable Credential:</div>
-      <ul className={styles.list}>
-        <li><span className={styles.emphasis}>No value is used</span></li>
-      </ul>
-      <div className={styles.preference}>If a plain VC or no value is available for the OBv3 then we show nothing.</div>
-      <div className={styles.preference}>See the example sections for working examples of each.</div>
+      <div className={styles.preference}>If there is no value available then we show nothing.</div>
+      <div className={styles.preference}>See the OBv3 example section below for a working example.</div>
     </div>)
 }
 
@@ -32,11 +27,11 @@ const NameDeterminationSection = () => {
       <ul className={styles.list}>
         <li><span className={styles.emphasis}>credential.credentialSubject.achievement.name</span></li>
       </ul>
-      <div className={styles.preference}>For a plain Verifiable Credential:</div>
+      <div className={styles.preference}>For a legacy DCC Verifiable Credential:</div>
       <ul className={styles.list}>
         <li><span className={styles.emphasis}>credential.credentialSubject.hasCredential.name</span></li>
       </ul>
-       <div className={styles.preference}>If no value is available then we show nothing.</div>
+       <div className={styles.preference}>If no value is available for either then we show nothing.</div>
       <div className={styles.preference}>See the example sections for working examples of each.</div>
     </div>)
 }
@@ -99,7 +94,7 @@ export const titleHelpSections  = [
   { sectionTitle: 'How We Determine the Name', content: NameDeterminationSection() },
    { sectionTitle: 'How We Determine the Image', content: ImageDeterminationSection() },
   { sectionTitle: 'Example - Open Badge verison 3', content: ExampleOBv3Section() },
-  { sectionTitle: 'Example - plain Verifiable Credential', content: ExampleV2Section() },
+  { sectionTitle: 'Example - legacy DCC VC', content: ExampleOldDCCSection() },
   { sectionTitle: 'Image Notes', content: ImageNotesSection( )},
   { sectionTitle: 'Name Notes', content: NameNotesSection( )}
 ]
