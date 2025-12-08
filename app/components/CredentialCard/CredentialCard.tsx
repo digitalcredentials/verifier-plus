@@ -16,7 +16,7 @@ import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
-import { HolderHelp, DescriptionHelp, CriteriaHelp, titleHelpDescription, titleHelpSections, AchievementTypeHelp, validUntilHelpSections, validUntilHelpDescription, validFromHelpDescription, validFromHelpSections } from '@/components/Help';
+import { HolderHelp, DescriptionHelp, CriteriaHelp, titleHelpDescription, titleHelpSections, achievementTypeHelpDescription, achievementTypeHelpSections, validUntilHelpSections, validUntilHelpDescription, validFromHelpDescription, validFromHelpSections } from '@/components/Help';
 
 
 
@@ -69,7 +69,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
             {displayValues.achievementImage ? <img className={styles.achievementImage} src={displayValues.achievementImage} alt="achievement image" data-testid={TestId.AchievementImage}/> : null}
             <div>
               <h1 id='title' className={styles.credentialName} data-testid={TestId.CredentialName}>{displayValues.credentialName}<ContextualHelp description={titleHelpDescription} sections={titleHelpSections} title="Credential Name and Image"/></h1>
-              {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type : {displayValues.achievementType} <ContextualHelp title="Achievement Type"><AchievementTypeHelp/></ContextualHelp></p> : null}
+              {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type : {displayValues.achievementType} <ContextualHelp title="Achievement Type" sections={achievementTypeHelpSections} description={achievementTypeHelpDescription}/></p> : null}
             </div>
           </div>
         </div>
