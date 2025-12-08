@@ -42,7 +42,7 @@ const NotesSection = () => {
 
 const DescriptionSection = () => {
   return (
-    <div className={styles.note}>The type of Open Badge achievement attested to by the credential.</div>
+    <div className={styles.note}>The type of Open Badge v3 achievement.</div>
   )
 }
 

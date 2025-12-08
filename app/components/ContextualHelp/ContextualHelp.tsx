@@ -28,6 +28,7 @@ const CollapsibleSection = ({ sectionTitle, content }: CollapsibleSectionProps) 
       </Collapsible.Panel>
     </Collapsible.Root>)
 }
+
 export const ContextualHelp = ({ title, description, iconSize = '12px', children, sections, iconColor = 'info', style = "align-top mx-1 inline m-h-1" }: ContextualHelpProps) => {
   let {isHelpEnabled} = useHelpContext();
   if (isHelpEnabled) {
