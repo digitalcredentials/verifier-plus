@@ -456,10 +456,11 @@ export default function Home() {
                 <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl} />
               </div>
             </Accordion>
-            <span className={styles.vprHelpIcon}> <ContextualHelp
+                <span className={styles.vprHelpIcon}> <ContextualHelp
                   description={LcwRequestHelpDescription} 
                   sections={LcwRequestHelpSections} 
-                  title="LCW Request"/></span>
+                  title="LCW Request"/>
+                </span>
           </div>
 
           <div className={styles.textAreaContainer}>

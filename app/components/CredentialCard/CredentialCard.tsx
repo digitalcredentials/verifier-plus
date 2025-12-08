@@ -17,7 +17,7 @@ import { Alignment } from '@/components/Alignment/Alignment';
 
 import { ContextualHelp } from '@/components/ContextualHelp/ContextualHelp'
 import { HolderHelp, DescriptionHelp, CriteriaHelp, TitleHelp, AchievementTypeHelp, validUntilHelpSections, validUntilHelpDescription, validFromHelpDescription, validFromHelpSections } from '@/components/Help';
-import { CollapsibleSectionProps } from '../ContextualHelp/ContextualHelp.d';
+
 
 
 export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardProps) => {

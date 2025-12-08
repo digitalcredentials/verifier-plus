@@ -6,7 +6,7 @@ export * from './RegistryHelp/RegistryHelp';
 export * from './HolderHelp/HolderHelp'
 export * from './DescriptionHelp/DescriptionHelp'
 export * from './CriteriaHelp/CriteriaHelp'
-export * from './VerifyIndicatorHelp/VerifyIndicatorHelp'
+export * from './VerificationStatusHelp/VerificationStatusHelp'
 export * from './TitleHelp/TitleHelp'
 export * from './AchievementTypeHelp/AchievementTypeHelp'
 export * from './CredentialFormatHelp/CredentialFormatHelp'

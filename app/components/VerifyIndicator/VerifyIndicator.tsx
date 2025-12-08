@@ -2,7 +2,7 @@ import { useVerificationContext } from "@/lib/verificationContext";
 import styles from './VerifyIndicator.module.css';
 import { TestId } from "@/lib/testIds";
 import { ContextualHelp } from "../ContextualHelp/ContextualHelp";
-import { VerifyIndicatorHelp } from "../Help";
+import { verificationStatusHelpDescription, verificationStatusHelpSections } from "../Help";
 
 export const VERIFYING_MSG = 'Verifying...';
 export const NOT_VERIFIED_MSG = 'Not Verified'
@@ -63,7 +63,11 @@ export const VerifyIndicator = () => {
       <span className={`${styles.indicator} ${className}`} >
         {icon}
         <span data-testid={TestId.VerifyIndicator}>{text}</span>
-      </span><ContextualHelp title="Verification Indicator"><VerifyIndicatorHelp/></ContextualHelp>
+      </span>
+       <ContextualHelp
+                        description={verificationStatusHelpDescription} 
+                        sections={verificationStatusHelpSections} 
+                        title="VerificationIndicator"/>
     </div>
   );
 };
