@@ -1,6 +1,6 @@
 {
   "name": "verifier-plus",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
