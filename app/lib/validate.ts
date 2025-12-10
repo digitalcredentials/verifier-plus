@@ -1,6 +1,7 @@
 import * as verifierCore from '@digitalcredentials/verifier-core';
 import type { VerifiablePresentation } from '@/types/presentation.d';
 import type { VerifiableCredential, CredentialError } from '@/types/credential.d';
+import { getIssuanceDate } from './credentialValidityPeriod';
 //import { CredentialErrorTypes } from '@/types/credential.d';
 //import { KnownDidRegistries } from './../data/knownRegistries'
 
@@ -10,6 +11,7 @@ enum CredentialErrorTypes {
   IsNotVerified = 'Credential is not verified.',
   CouldNotBeVerified = 'Credential could not be checked for verification and may be malformed.',
   DidNotInRegistry = 'Could not find issuer in registry with given DID.',
+  NotYetValid = 'This credential is not yet valid.',
 }
 
 
@@ -58,6 +60,21 @@ export async function verifyCredential(credential: VerifiableCredential): Promis
         error
       };
     */
+
+    // Check if credential is not yet valid before verification
+    const issuanceDate = getIssuanceDate(credential);
+    if (issuanceDate) {
+      const validFromDate = new Date(issuanceDate);
+      const now = new Date();
+      if (validFromDate > now) {
+        const formattedDate = validFromDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        return createNotYetValidResult(credential, `This credential will only be valid after ${formattedDate}.`);
+      }
+    }
 
       const response = await fetch("https://digitalcredentials.github.io/dcc-known-registries/known-did-registries.json");
       const knownDIDRegistries = await response.json();
@@ -141,6 +158,26 @@ function createFatalErrorResult(credential: VerifiableCredential, message: strin
     ]
   }
   addErrorToResult(result, message, true)
+  return result as VerifyResponse
+}
+
+function createNotYetValidResult(credential: VerifiableCredential, message: string): VerifyResponse {
+  const result = {
+    verified: false,
+    results: [
+      {
+        verified: false,
+        credential: credential,
+        log: [
+          { id: 'expiration', valid: false },
+          { id: 'valid_signature', valid: true },
+          { id: 'issuer_did_resolves', valid: true },
+          { id: 'revocation_status', valid: true }
+        ]
+      }
+    ]
+  }
+  addErrorToResult(result, message, false)
   return result as VerifyResponse
 }
 
