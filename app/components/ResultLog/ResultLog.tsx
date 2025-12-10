@@ -18,6 +18,7 @@ export enum LogMessages {
   HasExpired = 'has expired',
   NoExpirationDate = 'no expiration date set',
   HasNotExpired = 'has not expired',
+  NotYetValid = 'is not yet valid',
   GeneralError = 'There was an error verifing this credential.',
   UnknownError = 'There was an unknown error verifing this credential.',
   WellFormed = 'is in a supported credential format',
@@ -130,8 +131,9 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
     const isMalformedError =
       result?.error?.message ===
       'Credential could not be checked for verification and may be malformed.';
+    const isNotYetValidError = result?.error?.message?.includes('will only be valid after');
     const { credential } = result;
-    if (shouldShowKnownError) {
+    if (shouldShowKnownError && !isNotYetValidError) {
       return (
         <div>
           <p data-testid={TestId.GeneralErrorMsg} className={styles.error}>{LogMessages.GeneralError}</p>
@@ -140,6 +142,12 @@ export const ResultLog = ({ verificationResult }: ResultLogProps) => {
               <p data-testid={TestId.ReturnedErrorMsg}>{error.message}</p>
             </div>
           )}
+        </div>
+      )
+    } else if (isNotYetValidError) {
+      return (
+        <div>
+          <p data-testid={TestId.GeneralErrorMsg} className={styles.error}>{error?.message}</p>
         </div>
       )
     } else if (hasSigningError) {
