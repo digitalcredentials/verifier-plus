@@ -46,14 +46,23 @@ const VOCABULARY: Record<string, string> = {
   SecondarySchoolDiploma: 'Secondary School Diploma',
 }
 
-// "WorkExperience" -> "Work Experience", "PhDProgram" -> "PhD Program",
-// "work_based_learning" -> "work based learning". A capital starts a new word
-// only where a lowercase letter follows it, so abbreviations stay whole.
+// Looked up without regard to case, as the "ext:" prefix is
+const VOCABULARY_BY_KEY = new Map(
+  Object.entries(VOCABULARY).map(([term, label]) => [term.toLowerCase(), label])
+)
+
+// "WorkExperience" -> "Work Experience", "WorkAtHome" -> "Work At Home",
+// "PhDProgram" -> "PhD Program", "work_based_learning" -> "work based
+// learning". A capital starts a new word only where a lowercase letter follows
+// it, so abbreviations stay whole. The lookaheads consume nothing, so a short
+// word ("At") does not swallow the boundary after it. Known limits, since a
+// pattern cannot tell them from an abbreviation: a plural abbreviation run into
+// the next word ("PhDsProgram"), and a one-letter word ("AtAUniversity").
 function splitWords(term: string): string {
   return term
     .replace(/_+/g, ' ')
-    .replace(/([a-z0-9])([A-Z][a-z])/g, '$1 $2')
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+    .replace(/([a-z0-9])(?=[A-Z][a-z])/g, '$1 ')
+    .replace(/([A-Z])(?=[A-Z][a-z])/g, '$1 ')
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -66,8 +75,11 @@ export function formatAchievementType(value: unknown): string | undefined {
   if (!trimmed) {
     return undefined
   }
-  if (VOCABULARY[trimmed]) {
-    return VOCABULARY[trimmed]
+  // A Map, not the object: an object lookup would also match inherited names
+  // such as "constructor" or "__proto__"
+  const label = VOCABULARY_BY_KEY.get(trimmed.toLowerCase())
+  if (label) {
+    return label
   }
   const extension = trimmed.match(/^ext:(.*)$/i)
   if (extension) {
