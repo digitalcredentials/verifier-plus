@@ -10,11 +10,24 @@ test('labels terms from the Open Badges vocabulary', () => {
   expect(formatAchievementType('Diploma')).toBe('Diploma');
 });
 
+test('matches vocabulary terms regardless of case', () => {
+  expect(formatAchievementType('bachelorDegree')).toBe('Bachelor Degree');
+  expect(formatAchievementType('BACHELORDEGREE')).toBe('Bachelor Degree');
+});
+
+test('treats built-in object names as ordinary text', () => {
+  for (const value of ['constructor', 'toString', 'hasOwnProperty', '__proto__']) {
+    expect(formatAchievementType(value)).toBe(value);
+  }
+});
+
 test('drops the ext: prefix and splits run-together words', () => {
   expect(formatAchievementType('ext:Employment')).toBe('Employment');
   expect(formatAchievementType('EXT:Employment')).toBe('Employment');
   expect(formatAchievementType('ext:WorkExperience')).toBe('Work Experience');
   expect(formatAchievementType('ext:work_based_learning')).toBe('work based learning');
+  expect(formatAchievementType('ext:WorkAtHome')).toBe('Work At Home');
+  expect(formatAchievementType('ext:CertificateOfAchievement')).toBe('Certificate Of Achievement');
 });
 
 test('keeps abbreviations whole when splitting an extension', () => {
