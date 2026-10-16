@@ -12,6 +12,7 @@ import { useVerificationContext } from "@/lib/verificationContext";
 import ReactMarkdown from 'react-markdown';
 import { getExpirationDate, getIssuanceDate } from '@/lib/credentialValidityPeriod';
 import { extractNameFromOBV3Identifier } from '@/lib/extractNameFromOBV3Identifier';
+import { formatAchievementType } from '@/lib/achievementType';
 import { TestId } from '@/lib/testIds';
 import { Alignment } from '@/components/Alignment/Alignment';
 
@@ -65,7 +66,7 @@ export const CredentialCard = ({ credential, wasMulti = false }: CredentialCardP
             {displayValues.achievementImage ? <img className={styles.achievementImage} src={displayValues.achievementImage} alt="achievement image" data-testid={TestId.AchievementImage}/> : null}
             <div>
               <h1 id='title' className={styles.credentialName} data-testid={TestId.CredentialName}>{displayValues.credentialName}</h1>
-              {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type : {displayValues.achievementType}</p> : null}
+              {displayValues.achievementType ? <p className={styles.achievementType} data-testid={TestId.AchievementType}>Achievement Type: {displayValues.achievementType}</p> : null}
             </div>
           </div>
         </div>
@@ -196,7 +197,7 @@ const mapCredDataToDisplayValues = (credential?: VerifiableCredential): Credenti
       credentialDescription: credential.credentialSubject.achievement?.description,
       criteria: credential.credentialSubject.achievement?.criteria?.narrative,
       achievementImage: credential.credentialSubject.achievement?.image?.id,
-      achievementType: credential.credentialSubject.achievement?.achievementType
+      achievementType: formatAchievementType(credential.credentialSubject.achievement?.achievementType)
 
     }
   } else {
