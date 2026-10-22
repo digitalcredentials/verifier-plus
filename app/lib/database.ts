@@ -7,6 +7,7 @@ const DB_PASS = process.env.DB_PASS;
 const DB_HOST = process.env.DB_HOST;
 const DB_NAME = process.env.DB_NAME as string || 'verifier-plus';
 const DB_COLLECTION = process.env.DB_COLLECTION as string || 'credentials';
+const DB_SHORT_LINKS_COLLECTION = process.env.DB_SHORT_LINKS_COLLECTION as string || 'shortLinks';
 const DB_URI = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}`;
 
 declare global {
@@ -21,7 +22,10 @@ export async function cachedClient() {
       console.log(`Connected to: mongodb+srv://{DB_USER}:{DB_PASS}@${DB_HOST}`);
       const db = client.db(DB_NAME);
       const credentialsCollection = db.collection(DB_COLLECTION);
-      return { client, db, credentialsCollection };
+      const shortLinksCollection = db.collection(DB_SHORT_LINKS_COLLECTION);
+      await shortLinksCollection.createIndex({ id: 1 }, { unique: true });
+      await shortLinksCollection.createIndex({ url: 1 }, { unique: true });
+      return { client, db, credentialsCollection, shortLinksCollection };
     }
   });
 }
