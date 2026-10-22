@@ -1,5 +1,4 @@
-import { redirect } from 'next/navigation';
-import { LoadingError } from '@/components/LoadingError/LoadingError';
+import { notFound, redirect } from 'next/navigation';
 import * as shortLinks from '@/lib/shortLinks';
 
 /**
@@ -12,15 +11,12 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>
 }) {
-  let credentialUrl: string
-  try {
-    const { id } = await params
-    credentialUrl = await shortLinks.get({ id });
-  } catch (error) {
-    console.log(error)
-    return (<LoadingError />)
+  const { id } = await params
+  const credentialUrl = await shortLinks.get({ id });
+
+  if (!credentialUrl) {
+    notFound();
   }
 
-  // redirect() works by throwing, so it has to stay outside the try/catch
   redirect(`/#verify?vc=${encodeURIComponent(credentialUrl)}`);
 }

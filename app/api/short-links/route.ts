@@ -34,10 +34,16 @@ export async function POST(request: NextRequest) {
       { status: 201, headers: { ...headers, 'Location': result.url.view } })
   } catch (error: any) {
     console.error(error);
+    if (error instanceof SyntaxError || error.statusCode === 400) {
+      return Response.json({
+        status: 'Invalid request',
+        error: error.message
+      }, { status: 400, headers })
+    }
     return Response.json({
-      status: 'Invalid request',
-      error: error.message
-    }, { status: error.statusCode || 400, headers })
+      status: 'Server error',
+      error: 'Could not create a short link. Please try again.'
+    }, { status: 500, headers })
   }
 }
 

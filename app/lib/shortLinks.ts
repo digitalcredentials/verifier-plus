@@ -1,6 +1,7 @@
 import { randomInt } from 'crypto';
 
 import { cachedClient } from './database';
+import { isValidHttpUrl } from './url';
 
 // Hosts whose public credential links can be shortened (comma-separated).
 // For now this is only the wallet storage (WAS) that we run.
@@ -9,10 +10,14 @@ const ALLOWED_HOSTS = (process.env.SHORT_LINK_ALLOWED_HOSTS || 'was.lcw-sandbox.
   .map(host => host.trim().toLowerCase())
   .filter(Boolean);
 
+// Public credential links in wallet storage look like /space/{spaceId}/public/{file}
+const PUBLIC_PATH = /^\/space\/[^/]+\/public\/[^/]+$/;
+
 const ID_ALPHABET = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const ID_LENGTH = 8;
 const MAX_URL_LENGTH = 2048;
 const DUPLICATE_KEY_ERROR = 11000;
+const MAX_ATTEMPTS = 3;
 
 export type ShortLinkPayload = {
   // public URL of a credential in wallet storage
@@ -37,30 +42,25 @@ export type StoreShortLinkResult = {
  */
 export async function post({ url }: ShortLinkPayload): Promise<StoreShortLinkResult> {
   const credentialUrl = _checkUrl(url);
-  const { shortLinksCollection } = await cachedClient();
+  const shortLinksCollection = await _collection();
 
-  const existing = await shortLinksCollection.findOne({ url: credentialUrl });
-  if (existing) {
-    return _result(existing.id);
-  }
-
-  const id = _newId();
-  try {
-    await shortLinksCollection.insertOne({ id, url: credentialUrl, createdAt: new Date() });
-  } catch (error: any) {
-    if (error?.code !== DUPLICATE_KEY_ERROR) {
-      throw error;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      // Stores a new id for the URL, or returns the id it already has
+      const stored = await shortLinksCollection.findOneAndUpdate(
+        { url: credentialUrl },
+        { $setOnInsert: { id: _newId(), createdAt: new Date() } },
+        { upsert: true, returnDocument: 'after' }
+      );
+      return { id: stored!.id, url: { view: `/s/${stored!.id}` } };
+    } catch (error: any) {
+      // Another request stored this URL at the same moment, or the new id was
+      // already taken. Trying again finds the stored URL or picks a new id.
+      if (error?.code !== DUPLICATE_KEY_ERROR || attempt === MAX_ATTEMPTS) {
+        throw error;
+      }
     }
-    // Another request stored this URL first (or, very rarely, the id was
-    // already taken), so return whatever is now stored for the URL.
-    const stored = await shortLinksCollection.findOne({ url: credentialUrl });
-    if (!stored) {
-      throw error;
-    }
-    return _result(stored.id);
   }
-
-  return _result(id);
 }
 
 /**
@@ -68,42 +68,54 @@ export async function post({ url }: ShortLinkPayload): Promise<StoreShortLinkRes
  *
  * @param id {string}
  *
- * @returns {Promise<string>} the credential's public URL
+ * @returns {Promise<string | null>} the credential's public URL, or null if
+ *   there is no such short link
  */
-export async function get({ id }: { id: string }): Promise<string> {
-  const { shortLinksCollection } = await cachedClient();
+export async function get({ id }: { id: string }): Promise<string | null> {
+  const shortLinksCollection = await _collection();
   const result = await shortLinksCollection.findOne({ id });
+  return result ? result.url : null;
+}
 
-  if (!result) {
-    const notFound: any = new Error('Short link not found.');
-    notFound.statusCode = 404;
-    notFound.statusText = 'Not found';
-    throw notFound;
-  }
+// Indexes are created once per server, on first use, so that a problem with
+// them only affects short links and not the rest of the app.
+let indexesReady: Promise<unknown> | undefined;
 
-  return result.url;
+async function _collection() {
+  const { shortLinksCollection } = await cachedClient();
+  indexesReady ??= Promise.all([
+    shortLinksCollection.createIndex({ id: 1 }, { unique: true }),
+    shortLinksCollection.createIndex({ url: 1 }, { unique: true })
+  ]).catch(error => {
+    indexesReady = undefined;
+    throw error;
+  });
+  await indexesReady;
+  return shortLinksCollection;
 }
 
 function _checkUrl(url: unknown): string {
-  if (typeof url !== 'string' || url.length > MAX_URL_LENGTH) {
-    throw new Error("Missing or invalid 'url' property.");
+  if (typeof url !== 'string' || url.length > MAX_URL_LENGTH || !isValidHttpUrl(url)) {
+    throw _invalid("Missing or invalid 'url' property.");
   }
 
-  let parsed: URL;
-  try {
-    parsed = new URL(url);
-  } catch {
-    throw new Error("Invalid 'url' property.");
-  }
-
-  if (parsed.protocol !== 'https:') {
-    throw new Error("The 'url' property must be an https URL.");
-  }
+  const parsed = new URL(url.trim());
   if (!ALLOWED_HOSTS.includes(parsed.hostname.toLowerCase())) {
-    throw new Error(`Short links are not available for ${parsed.hostname}.`);
+    throw _invalid(`Short links are not available for ${parsed.hostname}.`);
+  }
+  if (!PUBLIC_PATH.test(parsed.pathname) || parsed.search || parsed.hash) {
+    throw _invalid("The 'url' property must be a public credential link from wallet storage.");
   }
 
-  return parsed.href;
+  // Same credential, same stored URL (drops a trailing '?' or '#')
+  return `${parsed.origin}${parsed.pathname}`;
+}
+
+function _invalid(message: string): Error {
+  const invalid: any = new Error(message);
+  invalid.statusCode = 400;
+  invalid.statusText = 'Invalid request';
+  return invalid;
 }
 
 function _newId(): string {
@@ -112,8 +124,4 @@ function _newId(): string {
     id += ID_ALPHABET[randomInt(ID_ALPHABET.length)];
   }
   return id;
-}
-
-function _result(id: string): StoreShortLinkResult {
-  return { id, url: { view: `/s/${id}` } };
 }

@@ -66,8 +66,8 @@ test('POST /short-links should create a short link that opens the credential', a
     url: { view: `/s/${newRecord.id}` }
   }));
 
-  // asking again for the same URL should give the same short link
-  const secondPostReply = await request.post(`/api/short-links`, {data: { url: credentialUrl }});
+  // asking again for the same URL (even with a trailing '?') should give the same short link
+  const secondPostReply = await request.post(`/api/short-links`, {data: { url: `${credentialUrl}?` }});
   expect((await secondPostReply.json()).id).toBe(newRecord.id);
 
   // the short link should open the same page as the long link
@@ -85,9 +85,16 @@ test('POST /short-links should only shorten https links to our wallet storage', 
 
   const noUrl = await request.post(`/api/short-links`, {data: {}});
   expect(noUrl.status()).toBe(400);
+
+  const notAPublicLink = await request.post(`/api/short-links`, {data: { url: 'https://was.lcw-sandbox.org/space/test-space/private/Badges' }});
+  expect(notAPublicLink.status()).toBe(400);
+
+  const withQuery = await request.post(`/api/short-links`, {data: { url: 'https://was.lcw-sandbox.org/space/test-space/public/Badges?n=1' }});
+  expect(withQuery.status()).toBe(400);
 });
 
 test('GET /s/{id} should show not found for an unknown short link', async ({ page }) => {
-  await page.goto('/s/doesNotExist');
+  const reply = await page.goto('/s/doesNotExist');
+  expect(reply?.status()).toBe(404);
   await expect(page.getByText('404 credential not found')).toBeVisible();
 });

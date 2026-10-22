@@ -166,7 +166,7 @@ and the server returns a short link:
   }
  ```
 
-Asking again for the same URL returns the same short link. A short link keeps working for as long as the credential is shared from wallet storage. Only https URLs on the hosts listed in `SHORT_LINK_ALLOWED_HOSTS` (default `was.lcw-sandbox.org`) can be shortened. Short links are kept in the mongo collection named by `DB_SHORT_LINKS_COLLECTION` (default `shortLinks`).
+Asking again for the same URL returns the same short link. A short link keeps working for as long as the credential is shared from wallet storage. Only public credential links (`https://{host}/space/{spaceId}/public/{file}`, with no query string) on the hosts listed in `SHORT_LINK_ALLOWED_HOSTS` (default `was.lcw-sandbox.org`) can be shortened. Short links are kept in the mongo collection named by `DB_SHORT_LINKS_COLLECTION` (default `shortLinks`).
 
 ## Local Development
 

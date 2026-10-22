@@ -23,8 +23,6 @@ export async function cachedClient() {
       const db = client.db(DB_NAME);
       const credentialsCollection = db.collection(DB_COLLECTION);
       const shortLinksCollection = db.collection(DB_SHORT_LINKS_COLLECTION);
-      await shortLinksCollection.createIndex({ id: 1 }, { unique: true });
-      await shortLinksCollection.createIndex({ url: 1 }, { unique: true });
       return { client, db, credentialsCollection, shortLinksCollection };
     }
   });
