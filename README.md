@@ -144,6 +144,30 @@ Worth noting is that the same effect as the 'view' url can be achieved with a cr
 
 VerifierPlus knows to go fetch the credential, verify it, and display it in the rendered view.
 
+### Short links
+
+Links like the one above can be long. For credentials kept in wallet storage that we run, VerifierPlus can make a short link instead. POST the credential's public URL to /api/short-links:
+
+```JSON
+ {
+    "url": "https://was.lcw-sandbox.org/space/{spaceId}/public/{file}"
+ }
+ ```
+
+and the server returns a short link:
+
+```JSON
+ {
+    "id": "{shortLinkId}",
+    "url": {
+      // opens the credential in VerifierPlus, same as /#verify?vc={url}
+      "view": "/s/{shortLinkId}"
+    }
+  }
+ ```
+
+Asking again for the same URL returns the same short link. A short link keeps working for as long as the credential is shared from wallet storage. Only public credential links (`https://{host}/space/{spaceId}/public/{file}`, with no query string) on the hosts listed in `SHORT_LINK_ALLOWED_HOSTS` (default `was.lcw-sandbox.org`) can be shortened. Short links are kept in the mongo collection named by `DB_SHORT_LINKS_COLLECTION` (default `shortLinks`).
+
 ## Local Development
 
 Clone the repo then:
