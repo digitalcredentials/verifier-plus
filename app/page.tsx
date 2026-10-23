@@ -13,6 +13,7 @@ import { useVerification } from '@/lib/useVerification'
 import { credentialsFromQrText } from '@/lib/decode';
 import { TopBar } from '@/components/TopBar/TopBar'
 import { BottomBar } from '@/components/BottomBar/BottomBar'
+import { LoadingError } from '@/components/LoadingError/LoadingError'
 import { extractCredentialsFrom, VerifiableObject } from '@/lib/verifiableObject'
 import { QRCodeSVG } from 'qrcode.react';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,6 +39,8 @@ export default function Home() {
   const [credential, setCredential] = useState<VerifiableCredential | undefined>(undefined);
   const credentialContext = useVerification(credential);
   const [wasMulti, setWasMulti] = useState(false);
+  // status of fetching the credential behind a #verify?vc= link
+  const [linkStatus, setLinkStatus] = useState<'idle' | 'loading' | 'failed'>('idle');
   const { version } = packageJson;
 
   useEffect(() => {
@@ -49,6 +52,7 @@ export default function Home() {
       .catch((e: any) => { console.error('Error loading CHAPI polyfill:', e) })
 
     const handlePopstate = (event: PopStateEvent) => {
+      setLinkStatus('idle');
       if (event.state && event.state.credential) {
         setCredential(event.state.credential);
         return;
@@ -62,11 +66,10 @@ export default function Home() {
         const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
         const vcUrl = urlParams.get('vc');
         if (vcUrl) {
-          getJSONFromURL(decodeURIComponent(vcUrl)).then(json => {
-            if (json) {
-              verifyCredential(json);
-            }
-          });
+          setLinkStatus('loading');
+          getJSONFromURL(decodeURIComponent(vcUrl))
+            .then(json => setLinkStatus(json && verifyCredential(json) ? 'idle' : 'failed'))
+            .catch(() => setLinkStatus('failed'));
         }
       } else if (window.location.hash === '') {
         setCredential(undefined);
@@ -85,6 +88,7 @@ export default function Home() {
       const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
       const vcUrl = urlParams.get('vc');
       if (vcUrl) {
+        setLinkStatus('loading');
         getJSONFromURL(decodeURIComponent(vcUrl)).then(json => {
           if (json) {
             const parsedJson = JSON.parse(json);
@@ -96,9 +100,13 @@ export default function Home() {
               if (vc.length > 1) {
                 setWasMulti(true);
               }
+              setLinkStatus('idle');
+              return;
             }
           }
-        });
+          // the link didn't lead to a credential: fetch failed, or it isn't one
+          setLinkStatus('failed');
+        }).catch(() => setLinkStatus('failed'));
       }
     } else {
       // Set initial state for home page
@@ -364,6 +372,23 @@ export default function Home() {
           </VerificationContext.Provider>
         </div>
 
+        <BottomBar isDark={isDark} />
+      </main>
+    );
+  }
+
+  if (linkStatus !== 'idle') {
+    return (
+      <main className={styles.container}>
+        {/* the logo goes home, so clear the link status rather than a credential */}
+        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={() => setLinkStatus('idle')} />
+        {linkStatus === 'loading' ? (
+          <div className={styles.linkLoading} role="status" aria-label="Loading credential">
+            <span className={styles.spinner}></span>
+          </div>
+        ) : (
+          <LoadingError />
+        )}
         <BottomBar isDark={isDark} />
       </main>
     );

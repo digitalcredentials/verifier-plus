@@ -425,6 +425,15 @@ a.lcwLink > h3 {
   margin-right: 12px;
 }
 
+.linkLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  /* .spinner is a list-item; hide its bullet */
+  list-style: none;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
