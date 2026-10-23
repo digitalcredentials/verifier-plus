@@ -35,6 +35,19 @@ test('a link to something that is not a credential shows credential not found', 
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
 })
 
+test('opening a dead link in a tab already showing a credential shows credential not found', async ({ page }) => {
+  await page.route('**/api/proxy', route => route.request().postDataJSON().url.endsWith('/dead')
+    ? route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } })
+    : route.fulfill({ json: getOBv3_v2() }))
+  await page.goto(vcLink)
+  await expect(page.getByTestId(TestId.CredentialName)).toHaveText('Bachelors - v2 - Test')
+
+  // as if the dead link were pasted into the address bar: only the #fragment changes
+  await page.goto(`/#verify?vc=${encodeURIComponent('https://example.com/credentials/dead')}`)
+  await expect(page.getByText(NOT_FOUND)).toBeVisible()
+  await expect(page.getByTestId(TestId.CredentialName)).not.toBeVisible()
+})
+
 test('the home page is not shown while a link loads', async ({ page }) => {
   let respond = () => {}
   await page.route('**/api/proxy', route => new Promise<void>(resolve => {
@@ -47,6 +60,25 @@ test('the home page is not shown while a link loads', async ({ page }) => {
   await expect(page.getByText(HOME_PAGE_TEXT)).not.toBeVisible()
   respond()
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
+})
+
+test('leaving a link while it loads keeps the home page when it fails', async ({ page }) => {
+  let respond = () => {}
+  await page.route('**/api/proxy', route => new Promise<void>(resolve => {
+    respond = () => resolve(route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } }))
+  }))
+  const proxyRequest = page.waitForRequest('**/api/proxy')
+  await page.goto(vcLink)
+  await proxyRequest
+
+  await page.getByText('VerifierPlus', { exact: true }).click()
+  await expect(page).toHaveURL('/')
+  // the page logs this just before it handles the failed fetch
+  const fetchFailed = page.waitForEvent('console', msg => msg.text().includes('Error fetching URL'))
+  respond()
+  await fetchFailed
+  await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+  await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
 })
 
 test('going back to a dead link shows credential not found again', async ({ page }) => {

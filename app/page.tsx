@@ -66,10 +66,21 @@ export default function Home() {
         const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
         const vcUrl = urlParams.get('vc');
         if (vcUrl) {
+          const linkHash = window.location.hash;
+          // stop showing any credential from before, so a dead link can't sit under it
+          setCredential(undefined);
+          setWasMulti(false);
           setLinkStatus('loading');
           getJSONFromURL(decodeURIComponent(vcUrl))
-            .then(json => setLinkStatus(json && verifyCredential(json) ? 'idle' : 'failed'))
-            .catch(() => setLinkStatus('failed'));
+            .then(json => {
+              // ignore a result that arrives after the user has left the link
+              if (window.location.hash !== linkHash) { return; }
+              setLinkStatus(json && verifyCredential(json) ? 'idle' : 'failed');
+            })
+            .catch(error => {
+              console.error('Error loading credential link:', error);
+              setLinkStatus('failed');
+            });
         }
       } else if (window.location.hash === '') {
         setCredential(undefined);
@@ -88,8 +99,11 @@ export default function Home() {
       const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
       const vcUrl = urlParams.get('vc');
       if (vcUrl) {
+        const linkHash = window.location.hash;
         setLinkStatus('loading');
         getJSONFromURL(decodeURIComponent(vcUrl)).then(json => {
+          // ignore a result that arrives after the user has left the link
+          if (window.location.hash !== linkHash) { return; }
           if (json) {
             const parsedJson = JSON.parse(json);
             const vc = extractCredentialsFrom(parsedJson);
@@ -106,7 +120,10 @@ export default function Home() {
           }
           // the link didn't lead to a credential: fetch failed, or it isn't one
           setLinkStatus('failed');
-        }).catch(() => setLinkStatus('failed'));
+        }).catch(error => {
+          console.error('Error loading credential link:', error);
+          setLinkStatus('failed');
+        });
       }
     } else {
       // Set initial state for home page

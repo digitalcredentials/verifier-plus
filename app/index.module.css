@@ -430,8 +430,12 @@ a.lcwLink > h3 {
   align-items: center;
   justify-content: center;
   flex: 1;
-  /* .spinner is a list-item; hide its bullet */
-  list-style: none;
+}
+
+/* .spinner is styled to sit beside an accordion title; centre it on its own */
+.linkLoading .spinner {
+  display: block;
+  margin: 0;
 }
 
 @keyframes spin {
