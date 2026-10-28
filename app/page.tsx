@@ -256,6 +256,13 @@ export default function Home() {
     return result;
   }
 
+  // the logo goes home: clear whatever was showing, a credential or a link's status
+  function goHome() {
+    setCredential(undefined);
+    setWasMulti(false);
+    setLinkStatus('idle');
+  }
+
   function ScanButtonOnClick() {
     setIsOpen(!isOpen);
   }
@@ -379,7 +386,7 @@ export default function Home() {
   if (credential !== undefined) {
     return (
       <main className={styles.container}>
-        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
+        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={goHome} />
         <div className={styles.verifyContainer}>
           <VerificationContext.Provider value={credentialContext}>
             <Container>
@@ -397,8 +404,7 @@ export default function Home() {
   if (linkStatus !== 'idle') {
     return (
       <main className={styles.container}>
-        {/* the logo goes home, so clear the link status rather than a credential */}
-        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={() => setLinkStatus('idle')} />
+        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={goHome} />
         {linkStatus === 'loading' ? (
           <div className={styles.linkLoading} role="status" aria-label="Loading credential">
             <span className={styles.spinner}></span>

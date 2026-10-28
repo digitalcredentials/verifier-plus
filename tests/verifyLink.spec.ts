@@ -71,12 +71,52 @@ test('leaving a link while it loads keeps the home page when it fails', async ({
   await page.goto(vcLink)
   await proxyRequest
 
-  await page.getByText('VerifierPlus', { exact: true }).click()
+  await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
   await expect(page).toHaveURL('/')
   // the page logs this just before it handles the failed fetch
   const fetchFailed = page.waitForEvent('console', msg => msg.text().includes('Error fetching URL'))
   respond()
   await fetchFailed
+  await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+  await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
+})
+
+test('the logo clears the multiple-credentials notice', async ({ page }) => {
+  const MULTI = 'Presentation had multiple credentials'
+  await page.route('**/api/proxy', route => route.fulfill({ json: {
+    type: ['VerifiablePresentation'], verifiableCredential: [getOBv3_v2(), getOBv3_v2()]
+  } }))
+  await page.goto(vcLink)
+  await expect(page.getByText(MULTI)).toBeVisible()
+
+  await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
+  await expect(page).toHaveURL('/')
+  await page.getByTestId('vc-text-area').fill(JSON.stringify(getOBv3_v2()))
+  await page.getByRole('button', { name: 'Verify' }).click()
+  await expect(page.getByTestId(TestId.CredentialName)).toHaveText('Bachelors - v2 - Test')
+  await expect(page.getByText(MULTI)).not.toBeVisible()
+})
+
+test('the logo goes home after a wallet credential replaces a dead link', async ({ page }) => {
+  await page.route('**/api/proxy', route => route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } }))
+  // The "Request credentials from LCW" panel polls this until a wallet sends a presentation.
+  // Polling keeps running after the page leaves home, which is how a wallet credential can
+  // arrive while a dead link is showing; if that ever changes, this setup needs updating.
+  let walletSent = false
+  await page.route('**/api/exchanges/**', route => walletSent
+    ? route.fulfill({ json: JSON.stringify({ verifiablePresentation: { verifiableCredential: [getOBv3_v2()] } }) })
+    : route.fulfill({ status: 404, body: '' }))
+
+  await page.goto('/')
+  await page.getByText('Request credentials from LCW').click()
+  await page.goto(vcLink)
+  await expect(page.getByText(NOT_FOUND)).toBeVisible()
+
+  walletSent = true
+  await expect(page.getByTestId(TestId.CredentialName)).toHaveText('Bachelors - v2 - Test', { timeout: 10000 })
+
+  await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
+  await expect(page).toHaveURL('/')
   await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
   await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
 })
@@ -87,7 +127,7 @@ test('going back to a dead link shows credential not found again', async ({ page
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
 
   // the logo takes you home
-  await page.getByText('VerifierPlus', { exact: true }).click()
+  await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
   await expect(page).toHaveURL('/')
   await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
 
