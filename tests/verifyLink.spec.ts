@@ -81,6 +81,29 @@ test('leaving a link while it loads keeps the home page when it fails', async ({
   await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
 })
 
+test('a link still loading when another is opened in the same tab is ignored', async ({ page }) => {
+  let respondToFirst = () => {}
+  await page.route('**/api/proxy', route => route.request().postDataJSON().url.endsWith('/dead')
+    ? route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } })
+    : new Promise<void>(resolve => { respondToFirst = () => resolve(route.fulfill({ json: getOBv3_v2() })) }))
+  await page.goto('/')
+  await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+  // only the #fragment changes each time, so the open page handles both links
+  const firstRequest = page.waitForRequest('**/api/proxy')
+  await page.goto(vcLink)
+  await firstRequest
+  await page.goto(`/#verify?vc=${encodeURIComponent('https://example.com/credentials/dead')}`)
+  await expect(page.getByText(NOT_FOUND)).toBeVisible()
+
+  // the first link's credential arrives late, and must not replace the second link's page
+  const firstAnswered = page.waitForResponse('**/api/proxy')
+  respondToFirst()
+  await firstAnswered
+  await page.waitForTimeout(500)
+  await expect(page.getByText(NOT_FOUND)).toBeVisible()
+  await expect(page.getByTestId(TestId.CredentialName)).not.toBeVisible()
+})
+
 test('the logo clears the multiple-credentials notice', async ({ page }) => {
   const MULTI = 'Presentation had multiple credentials'
   await page.route('**/api/proxy', route => route.fulfill({ json: {
@@ -134,4 +157,18 @@ test('going back to a dead link shows credential not found again', async ({ page
   // and back returns to the dead link
   await page.goBack()
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
+})
+
+test('going back from a dead link to the home page shows the home page', async ({ page }) => {
+  await page.route('**/api/proxy', route => route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } }))
+  await page.goto('/')
+  await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+  // only the #fragment changes, so the open page handles the link
+  await page.goto(vcLink)
+  await expect(page.getByText(NOT_FOUND)).toBeVisible()
+
+  await page.goBack()
+  await expect(page).toHaveURL('/')
+  await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+  await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
 })
