@@ -173,16 +173,28 @@ test('going back to a dead link shows credential not found again', async ({ page
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
 })
 
-test('going back from a dead link to the home page shows the home page', async ({ page }) => {
+test('going forward from a dead link to the home page the logo opened shows the home page', async ({ page }) => {
   await page.route('**/api/proxy', route => route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } }))
+  await page.goto(vcLink)
+  await expect(page.getByText(NOT_FOUND)).toBeVisible()
+  await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
+  await expect(page).toHaveURL('/')
+  await page.goBack()
+  await expect(page.getByText(NOT_FOUND)).toBeVisible()
+
+  // the logo's entry is Next.js's own, so going forward to it doesn't reload the page
+  await page.goForward()
+  await expect(page).toHaveURL('/')
+  await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+  await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
+})
+
+test('a link opened in a tab already showing the home page shows the spinner while it loads', async ({ page }) => {
+  await page.route('**/api/proxy', () => new Promise(() => {}))
   await page.goto('/')
   await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
   // only the #fragment changes, so the open page handles the link
   await page.goto(vcLink)
-  await expect(page.getByText(NOT_FOUND)).toBeVisible()
-
-  await page.goBack()
-  await expect(page).toHaveURL('/')
-  await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
-  await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
+  await expect(page.getByRole('status', { name: 'Loading credential' })).toBeVisible()
+  await expect(page.getByText(HOME_PAGE_TEXT)).not.toBeVisible()
 })
