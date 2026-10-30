@@ -86,6 +86,19 @@ test('a link still loading when another is opened in the same tab is ignored', a
   await page.route('**/api/proxy', route => route.request().postDataJSON().url.endsWith('/dead')
     ? route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } })
     : new Promise<void>(resolve => { respondToFirst = () => resolve(route.fulfill({ json: getOBv3_v2() })) }))
+  // Counts the proxy answers the page has read, one task after each read, by
+  // when the page's own handling of that answer has run
+  await page.addInitScript(() => {
+    const read = Response.prototype.json
+    Object.assign(window, { proxyAnswersRead: 0 })
+    Response.prototype.json = async function () {
+      const body = await read.call(this)
+      if (this.url.endsWith('/api/proxy')) {
+        setTimeout(() => Object.assign(window, { proxyAnswersRead: (window as any).proxyAnswersRead + 1 }))
+      }
+      return body
+    }
+  })
   await page.goto('/')
   await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
   // only the #fragment changes each time, so the open page handles both links
@@ -95,11 +108,12 @@ test('a link still loading when another is opened in the same tab is ignored', a
   await page.goto(`/#verify?vc=${encodeURIComponent('https://example.com/credentials/dead')}`)
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
 
-  // the first link's credential arrives late, and must not replace the second link's page
-  const firstAnswered = page.waitForResponse('**/api/proxy')
+  // the first link's credential arrives late, and must not replace the second link's page.
+  // The dead link's 404 is never read as JSON, so the first read is the late answer.
   respondToFirst()
-  await firstAnswered
-  await page.waitForTimeout(500)
+  await page.waitForFunction(() => (window as any).proxyAnswersRead === 1)
+  // two frames, so whatever the late answer changed has been drawn
+  await page.evaluate(() => new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done))))
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
   await expect(page.getByTestId(TestId.CredentialName)).not.toBeVisible()
 })
