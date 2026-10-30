@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import { getOBv3_v2 } from "@/tests/fixtures/obv3";
 import { TestId } from "@/lib/testIds"
 
@@ -265,3 +265,40 @@ test('the logo, then Back, to pasted credentials keeps the multiple-credentials 
   await expect(page.getByTestId(TestId.CredentialName)).toHaveText('Bachelors - v2 - Test')
   await expect(page.getByText(MULTI)).toBeVisible()
 })
+
+// Holds the page's read of a link's answer until a click reaches window: after
+// the logo's own handler has run, and before Next.js changes the address to /.
+// This is the gap a slow answer can land in.
+const holdLinkAnswerUntilClick = (page: Page) => page.addInitScript(() => {
+  const fetchFirst = window.fetch
+  window.fetch = async function (...args: Parameters<typeof fetch>) {
+    const response = await fetchFirst.apply(this, args)
+    const url = typeof args[0] === 'string' ? args[0] : (args[0] as Request).url
+    if (url.endsWith('/api/proxy')) {
+      await new Promise<void>(release => window.addEventListener('click', () => release(), { once: true }))
+    }
+    return response
+  }
+})
+
+for (const [answer, reply] of [
+  ['a dead link', { status: 404, json: { error: 'Failed to fetch URL' } }],
+  ['a working link', { json: getOBv3_v2() }],
+] as const) {
+  test(`the logo wins over ${answer} answering just after it is clicked`, async ({ page }) => {
+    await page.route('**/api/proxy', route => route.fulfill(reply))
+    await holdLinkAnswerUntilClick(page)
+    await page.goto(vcLink)
+    await expect(page.getByRole('status', { name: 'Loading credential' })).toBeVisible()
+
+    await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
+    await expect(page).toHaveURL('/')
+    await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+    // the held answer is released by the click; give it every chance to land
+    await page.evaluate(() => new Promise(done => setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(done)))))
+    await expect(page).toHaveURL('/')
+    await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+    await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
+    await expect(page.getByTestId(TestId.CredentialName)).not.toBeVisible()
+  })
+}

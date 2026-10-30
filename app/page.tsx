@@ -2,7 +2,7 @@
 import styles from './index.module.css'
 import { Accordion } from '@/components/Accordion/Accordion'
 import { Button } from '@/components/Button/Button'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ScanModal } from '@/components/ScanModal/ScanModal'
 import { CredentialCard } from '@/components/CredentialCard/CredentialCard'
 import { Container } from '@/components/Container/Container'
@@ -41,6 +41,10 @@ export default function Home() {
   const [wasMulti, setWasMulti] = useState(false);
   // status of fetching the credential behind a #verify?vc= link
   const [linkStatus, setLinkStatus] = useState<'idle' | 'loading' | 'failed'>('idle');
+  // which link load is current: moved on by every new load, Back/Forward and
+  // the logo, so an answer that arrives after the person left is dropped. The
+  // address can't tell: Next.js changes it only after the logo's click.
+  const linkLoad = useRef(0);
   const { version } = packageJson;
 
   useEffect(() => {
@@ -52,6 +56,7 @@ export default function Home() {
       .catch((e: any) => { console.error('Error loading CHAPI polyfill:', e) })
 
     const handlePopstate = (event: PopStateEvent) => {
+      const load = ++linkLoad.current;
       setLinkStatus('idle');
       if (event.state && event.state.credential) {
         setCredential(event.state.credential);
@@ -67,7 +72,6 @@ export default function Home() {
         const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
         const vcUrl = urlParams.get('vc');
         if (vcUrl) {
-          const linkHash = window.location.hash;
           // stop showing any credential from before, so a dead link can't sit under it
           setCredential(undefined);
           setWasMulti(false);
@@ -75,7 +79,7 @@ export default function Home() {
           getJSONFromURL(decodeURIComponent(vcUrl))
             .then(json => {
               // ignore a result that arrives after the user has left the link
-              if (window.location.hash !== linkHash) { return; }
+              if (linkLoad.current !== load) { return; }
               setLinkStatus(json && verifyCredential(json) ? 'idle' : 'failed');
             })
             .catch(error => {
@@ -100,11 +104,11 @@ export default function Home() {
       const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
       const vcUrl = urlParams.get('vc');
       if (vcUrl) {
-        const linkHash = window.location.hash;
+        const load = ++linkLoad.current;
         setLinkStatus('loading');
         getJSONFromURL(decodeURIComponent(vcUrl)).then(json => {
           // ignore a result that arrives after the user has left the link
-          if (window.location.hash !== linkHash) { return; }
+          if (linkLoad.current !== load) { return; }
           if (json) {
             const parsedJson = JSON.parse(json);
             const vc = extractCredentialsFrom(parsedJson);
@@ -260,6 +264,7 @@ export default function Home() {
 
   // the logo goes home: clear whatever was showing, a credential or a link's status
   function goHome() {
+    linkLoad.current++;
     setCredential(undefined);
     setWasMulti(false);
     setLinkStatus('idle');
