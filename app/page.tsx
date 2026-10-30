@@ -2,7 +2,7 @@
 import styles from './index.module.css'
 import { Accordion } from '@/components/Accordion/Accordion'
 import { Button } from '@/components/Button/Button'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ScanModal } from '@/components/ScanModal/ScanModal'
 import { CredentialCard } from '@/components/CredentialCard/CredentialCard'
 import { Container } from '@/components/Container/Container'
@@ -13,6 +13,7 @@ import { useVerification } from '@/lib/useVerification'
 import { credentialsFromQrText } from '@/lib/decode';
 import { TopBar } from '@/components/TopBar/TopBar'
 import { BottomBar } from '@/components/BottomBar/BottomBar'
+import { LoadingError } from '@/components/LoadingError/LoadingError'
 import { extractCredentialsFrom, VerifiableObject } from '@/lib/verifiableObject'
 import { QRCodeSVG } from 'qrcode.react';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,6 +39,12 @@ export default function Home() {
   const [credential, setCredential] = useState<VerifiableCredential | undefined>(undefined);
   const credentialContext = useVerification(credential);
   const [wasMulti, setWasMulti] = useState(false);
+  // status of fetching the credential behind a #verify?vc= link
+  const [linkStatus, setLinkStatus] = useState<'idle' | 'loading' | 'failed'>('idle');
+  // which link load is current: moved on by every new load, Back/Forward and
+  // the logo, so an answer that arrives after the person left is dropped. The
+  // address can't tell: Next.js changes it only after the logo's click.
+  const linkLoad = useRef(0);
   const { version } = packageJson;
 
   useEffect(() => {
@@ -49,8 +56,11 @@ export default function Home() {
       .catch((e: any) => { console.error('Error loading CHAPI polyfill:', e) })
 
     const handlePopstate = (event: PopStateEvent) => {
+      const load = ++linkLoad.current;
+      setLinkStatus('idle');
       if (event.state && event.state.credential) {
         setCredential(event.state.credential);
+        setWasMulti(Boolean(event.state.multi));
         return;
       }
 
@@ -62,11 +72,20 @@ export default function Home() {
         const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
         const vcUrl = urlParams.get('vc');
         if (vcUrl) {
-          getJSONFromURL(decodeURIComponent(vcUrl)).then(json => {
-            if (json) {
-              verifyCredential(json);
-            }
-          });
+          // stop showing any credential from before, so a dead link can't sit under it
+          setCredential(undefined);
+          setWasMulti(false);
+          setLinkStatus('loading');
+          getJSONFromURL(decodeURIComponent(vcUrl))
+            .then(json => {
+              // ignore a result that arrives after the user has left the link
+              if (linkLoad.current !== load) { return; }
+              setLinkStatus(json && verifyCredential(json) ? 'idle' : 'failed');
+            })
+            .catch(error => {
+              console.error('Error loading credential link:', error);
+              setLinkStatus('failed');
+            });
         }
       } else if (window.location.hash === '') {
         setCredential(undefined);
@@ -85,19 +104,30 @@ export default function Home() {
       const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
       const vcUrl = urlParams.get('vc');
       if (vcUrl) {
+        const load = ++linkLoad.current;
+        setLinkStatus('loading');
         getJSONFromURL(decodeURIComponent(vcUrl)).then(json => {
+          // ignore a result that arrives after the user has left the link
+          if (linkLoad.current !== load) { return; }
           if (json) {
             const parsedJson = JSON.parse(json);
             const vc = extractCredentialsFrom(parsedJson);
-            if (vc && vc.length > 0) {
-              const state = { credential: vc[0] };
+            if (vc?.[0]) {
+              const state = { credential: vc[0], multi: vc.length > 1 };
               history.replaceState(state, '', window.location.hash);
               setCredential(vc[0]);
               if (vc.length > 1) {
                 setWasMulti(true);
               }
+              setLinkStatus('idle');
+              return;
             }
           }
+          // the link didn't lead to a credential: fetch failed, or it isn't one
+          setLinkStatus('failed');
+        }).catch(error => {
+          console.error('Error loading credential link:', error);
+          setLinkStatus('failed');
         });
       }
     } else {
@@ -106,7 +136,11 @@ export default function Home() {
     }
 
     window.addEventListener('popstate', handlePopstate);
-    return () => window.removeEventListener('popstate', handlePopstate);
+    return () => {
+      window.removeEventListener('popstate', handlePopstate);
+      // leaving the page, for /privacy say, leaves any link load behind too
+      linkLoad.current++;
+    };
   }, []);
 
 
@@ -210,12 +244,13 @@ export default function Home() {
     let newCredential: VerifiableObject = parsedJson;
 
     const vc = extractCredentialsFrom(newCredential);
-    if (vc === null) { return; }
+    // a presentation with no credentials in it has nothing to show
+    if (!vc?.[0]) { return; }
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
     const vcUrl = urlParams.get('vc');
 
-    // Create a new history state
-    const state = { credential: vc[0] };
+    // Create a new history state; multi lets Back restore the notice
+    const state = { credential: vc[0], multi: vc.length > 1 };
 
     if (vcUrl) {
       // If we're coming from a URL, replace the current state
@@ -229,6 +264,14 @@ export default function Home() {
     if (vc.length > 1) { setWasMulti(true); }
     setCredential(vc[0]);
     return result;
+  }
+
+  // the logo goes home: clear whatever was showing, a credential or a link's status
+  function goHome() {
+    linkLoad.current++;
+    setCredential(undefined);
+    setWasMulti(false);
+    setLinkStatus('idle');
   }
 
   function ScanButtonOnClick() {
@@ -354,7 +397,7 @@ export default function Home() {
   if (credential !== undefined) {
     return (
       <main className={styles.container}>
-        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={setCredential} />
+        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={goHome} />
         <div className={styles.verifyContainer}>
           <VerificationContext.Provider value={credentialContext}>
             <Container>
@@ -364,6 +407,22 @@ export default function Home() {
           </VerificationContext.Provider>
         </div>
 
+        <BottomBar isDark={isDark} />
+      </main>
+    );
+  }
+
+  if (linkStatus !== 'idle') {
+    return (
+      <main className={styles.container}>
+        <TopBar hasLogo={true} isDark={isDark} setIsDark={setIsDark} setCredential={goHome} />
+        {linkStatus === 'loading' ? (
+          <div className={styles.linkLoading} role="status" aria-label="Loading credential">
+            <span className={styles.spinner}></span>
+          </div>
+        ) : (
+          <LoadingError />
+        )}
         <BottomBar isDark={isDark} />
       </main>
     );
