@@ -48,7 +48,9 @@ test('opening a dead link in a tab already showing a credential shows credential
   await expect(page.getByTestId(TestId.CredentialName)).not.toBeVisible()
 })
 
-test('the home page is not shown while a link loads', async ({ page }) => {
+// Only once the page's JavaScript runs: the server-rendered home page shows
+// before that, on every #verify link (#275)
+test('once the page has loaded, the home page is not shown while a link loads', async ({ page }) => {
   let respond = () => {}
   await page.route('**/api/proxy', route => new Promise<void>(resolve => {
     respond = () => resolve(route.fulfill({ status: 404, json: { error: 'Failed to fetch URL' } }))
@@ -182,9 +184,12 @@ test('going forward from a dead link to the home page the logo opened shows the 
   await page.goBack()
   await expect(page.getByText(NOT_FOUND)).toBeVisible()
 
-  // the logo's entry is Next.js's own, so going forward to it doesn't reload the page
+  // the logo's entry is Next.js's own, so going forward to it doesn't reload
+  // the page, and only the page's own popstate handling can show home
+  await page.evaluate(() => Object.assign(window, { stillThisPage: true }))
   await page.goForward()
   await expect(page).toHaveURL('/')
+  expect(await page.evaluate(() => (window as any).stillThisPage)).toBe(true)
   await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
   await expect(page.getByText(NOT_FOUND)).not.toBeVisible()
 })
