@@ -55,6 +55,7 @@ export default function Home() {
       setLinkStatus('idle');
       if (event.state && event.state.credential) {
         setCredential(event.state.credential);
+        setWasMulti(Boolean(event.state.multi));
         return;
       }
 
@@ -107,8 +108,8 @@ export default function Home() {
           if (json) {
             const parsedJson = JSON.parse(json);
             const vc = extractCredentialsFrom(parsedJson);
-            if (vc && vc.length > 0) {
-              const state = { credential: vc[0] };
+            if (vc?.[0]) {
+              const state = { credential: vc[0], multi: vc.length > 1 };
               history.replaceState(state, '', window.location.hash);
               setCredential(vc[0]);
               if (vc.length > 1) {
@@ -235,12 +236,13 @@ export default function Home() {
     let newCredential: VerifiableObject = parsedJson;
 
     const vc = extractCredentialsFrom(newCredential);
-    if (vc === null) { return; }
+    // a presentation with no credentials in it has nothing to show
+    if (!vc?.[0]) { return; }
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
     const vcUrl = urlParams.get('vc');
 
-    // Create a new history state
-    const state = { credential: vc[0] };
+    // Create a new history state; multi lets Back restore the notice
+    const state = { credential: vc[0], multi: vc.length > 1 };
 
     if (vcUrl) {
       // If we're coming from a URL, replace the current state

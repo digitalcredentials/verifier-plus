@@ -198,3 +198,65 @@ test('a link opened in a tab already showing the home page shows the spinner whi
   await expect(page.getByRole('status', { name: 'Loading credential' })).toBeVisible()
   await expect(page.getByText(HOME_PAGE_TEXT)).not.toBeVisible()
 })
+
+const EMPTY_PRESENTATIONS = [
+  { type: ['VerifiablePresentation'], verifiableCredential: [] },
+  { type: ['VerifiablePresentation'] },
+]
+
+test('a link to a presentation with no credentials in it shows credential not found', async ({ page }) => {
+  for (const body of EMPTY_PRESENTATIONS) {
+    await page.unrouteAll()
+    await page.route('**/api/proxy', route => route.fulfill({ json: body }))
+    // opened fresh
+    await page.goto('about:blank')
+    await page.goto(vcLink)
+    await expect(page.getByText(NOT_FOUND)).toBeVisible()
+    // opened in a tab already showing the home page: only the #fragment changes
+    await page.goto('/')
+    await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+    await page.goto(vcLink)
+    await expect(page.getByText(NOT_FOUND)).toBeVisible()
+  }
+})
+
+test('the logo, then Back, to a link with several credentials keeps the multiple-credentials notice', async ({ page }) => {
+  const MULTI = 'Presentation had multiple credentials'
+  await page.route('**/api/proxy', route => route.fulfill({ json: {
+    type: ['VerifiablePresentation'], verifiableCredential: [getOBv3_v2(), getOBv3_v2()]
+  } }))
+  await page.goto(vcLink)
+  await expect(page.getByText(MULTI)).toBeVisible()
+
+  await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
+  await expect(page).toHaveURL('/')
+  await page.goBack()
+  await expect(page.getByTestId(TestId.CredentialName)).toHaveText('Bachelors - v2 - Test')
+  await expect(page.getByText(MULTI)).toBeVisible()
+})
+
+test('pasting a presentation with no credentials in it says it is not a credential', async ({ page }) => {
+  await page.goto('/')
+  for (const body of EMPTY_PRESENTATIONS) {
+    await page.getByTestId('vc-text-area').fill(JSON.stringify(body))
+    await page.getByRole('button', { name: 'Verify' }).click()
+    await expect(page.getByText('The JSON is not a Verifiable Credential or an Open Badge 3.0')).toBeVisible()
+    await expect(page.getByText(HOME_PAGE_TEXT)).toBeVisible()
+  }
+})
+
+test('the logo, then Back, to pasted credentials keeps the multiple-credentials notice', async ({ page }) => {
+  const MULTI = 'Presentation had multiple credentials'
+  await page.goto('/')
+  await page.getByTestId('vc-text-area').fill(JSON.stringify({
+    type: ['VerifiablePresentation'], verifiableCredential: [getOBv3_v2(), getOBv3_v2()]
+  }))
+  await page.getByRole('button', { name: 'Verify' }).click()
+  await expect(page.getByText(MULTI)).toBeVisible()
+
+  await page.locator('header').getByText('VerifierPlus', { exact: true }).click()
+  await expect(page).toHaveURL('/')
+  await page.goBack()
+  await expect(page.getByTestId(TestId.CredentialName)).toHaveText('Bachelors - v2 - Test')
+  await expect(page.getByText(MULTI)).toBeVisible()
+})
