@@ -136,7 +136,11 @@ export default function Home() {
     }
 
     window.addEventListener('popstate', handlePopstate);
-    return () => window.removeEventListener('popstate', handlePopstate);
+    return () => {
+      window.removeEventListener('popstate', handlePopstate);
+      // leaving the page, for /privacy say, leaves any link load behind too
+      linkLoad.current++;
+    };
   }, []);
 
 

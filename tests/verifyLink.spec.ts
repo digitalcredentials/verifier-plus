@@ -302,3 +302,35 @@ for (const [answer, reply] of [
     await expect(page.getByTestId(TestId.CredentialName)).not.toBeVisible()
   })
 }
+
+test('a link still loading when another page is opened leaves that page alone', async ({ page }) => {
+  let respond = () => {}
+  await page.route('**/api/proxy', route => new Promise<void>(resolve => {
+    respond = () => resolve(route.fulfill({ json: getOBv3_v2() }))
+  }))
+  // Counts the proxy answers the page has read, one task after each read
+  await page.addInitScript(() => {
+    const read = Response.prototype.json
+    Object.assign(window, { proxyAnswersRead: 0 })
+    Response.prototype.json = async function () {
+      const body = await read.call(this)
+      if (this.url.endsWith('/api/proxy')) {
+        setTimeout(() => Object.assign(window, { proxyAnswersRead: (window as any).proxyAnswersRead + 1 }))
+      }
+      return body
+    }
+  })
+  const proxyRequest = page.waitForRequest('**/api/proxy')
+  await page.goto(vcLink)
+  await proxyRequest
+
+  await page.getByRole('link', { name: 'Privacy Policy' }).click()
+  await expect(page).toHaveURL('/privacy')
+  {
+    respond()
+    await page.waitForFunction(() => (window as any).proxyAnswersRead === 1)
+  }
+  // the late credential must not be written into the privacy page's history entry
+  expect(await page.evaluate(() => Object.keys(history.state ?? {}))).not.toContain('credential')
+  await expect(page).toHaveURL('/privacy')
+})
