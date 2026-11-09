@@ -425,6 +425,19 @@ a.lcwLink > h3 {
   margin-right: 12px;
 }
 
+.linkLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* .spinner is styled to sit beside an accordion title; centre it on its own */
+.linkLoading .spinner {
+  display: block;
+  margin: 0;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
