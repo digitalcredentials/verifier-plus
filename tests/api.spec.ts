@@ -42,5 +42,5 @@ test('POST /credentials should store posted VP', async ({ request }) => {
   // when we try to get it again
   const secondGetReply = await request.get(newRecord.url.get)
   expect(secondGetReply.ok()).not.toBeTruthy();
-  expect(secondGetReply.status()).toBe(500)
+  expect(secondGetReply.status()).toBe(404)
 });

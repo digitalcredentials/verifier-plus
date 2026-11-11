@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server';
-import * as credentials from '@/lib/credentials';
+import { shareCredential } from '@/lib/credentials';
+import { processError } from '@/lib/processError';
 
 /**
  * POST /api/credentials
- * Adds a new credential to the database.
+ * Shares a credential.
  *
  * Request:
  * - `Content-type: application/json` header is required (otherwise, the JSON
@@ -31,20 +32,12 @@ import * as credentials from '@/lib/credentials';
  * (Note the /api/ prefix in the get and unshare URLs, above).
  */
 export async function POST(request: NextRequest) {
-
   try {
-        const credential = await request.json();
-        const result = await credentials.post(credential);
-        const headers = {'Location': result.url.view};
-        return Response.json({ status: 'Credential added', ...result }, {status:201, headers})
-     
+    const body = await request.json();
+    const result = await shareCredential(body);
+    const headers = { 'Location': result.url.view };
+    return Response.json({ status: 'Credential added', ...result }, { status: 201, headers });
   } catch (error) {
-    console.error(error);
-    return Response.json({
-      status: 'Invalid request',
-      // @ts-ignore
-      error: error.message
-    }, {status: 400})
-
+    return processError(error);
   }
 }

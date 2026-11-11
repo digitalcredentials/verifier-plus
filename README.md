@@ -214,7 +214,7 @@ This therefore allows us to run end to end tests on our local development server
 
 You can also pass the value in on the command line if you like, e.g.,
 
-`PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org npm run test`
+`PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org npm run test:e2e`
 
 Note too that you can set which browsers you'd like to run the tests on using the --project flag as described in this [Playwright doc](https://playwright.dev/docs/running-tests#run-tests-on-different-browsers). Note that you'll have to have defined the projects in the [playwright.config.ts](./playwright.config.ts).
 

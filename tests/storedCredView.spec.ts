@@ -76,7 +76,7 @@ test('a stored credential should display', async ({ request, page }) => {
   // when we try to retrieve it from the GET endpoint
   const secondGetReply = await request.get(getURL)
   expect(secondGetReply.ok()).not.toBeTruthy();
-  expect(secondGetReply.status()).toBe(500)
+  expect(secondGetReply.status()).toBe(404)
 
   //8. and similarly, should not be displayable:
   await page.goto(viewURL)

@@ -4,7 +4,7 @@ import { extractCredentialsFrom } from '@/lib/verifiableObject';
 import { LoadingError } from '@/components/LoadingError/LoadingError';
 import Link from "next/link";
 import { CredentialVerification } from '@/components/CredentialVerification/CredentialVerification'
-import * as credentialsFetcher from '@/lib/credentials';
+import { getSharedCredential } from '@/lib/credentials';
 
 export default async function Page({
   params,
@@ -14,7 +14,7 @@ export default async function Page({
   let credentials : VerifiableCredential[]
   try {
     const { publicCredentialId } = await params
-    const credentialVP = await credentialsFetcher.get({ publicCredentialId });
+    const credentialVP = await getSharedCredential(publicCredentialId);
     credentials = extractCredentialsFrom(credentialVP.vp) || []
   } catch (error) {
     console.log(error)
