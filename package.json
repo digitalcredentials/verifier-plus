@@ -8,7 +8,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "test": "playwright test --project=DesktopChrome --project=API"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test --project=DesktopChrome --project=API"
   },
   "dependencies": {
     "@digitalbazaar/lru-memoize": "^4.0.0",
@@ -48,7 +50,8 @@
     "@types/validator": "^13.15.3",
     "dotenv": "^17.2.1",
     "tailwindcss": "^4.1.13",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.1.0"
   },
   "optionalDependencies": {
     "lightningcss-linux-arm64-musl": "^1.30.1",

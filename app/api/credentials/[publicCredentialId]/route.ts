@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
-import * as credentials from '@/lib/credentials';
+import { getSharedCredential, unshareCredential } from '@/lib/credentials';
+import { processError } from '@/lib/processError';
 
 /**
  * GET /api/credentials/{publicCredentialId}
@@ -7,11 +8,10 @@ import * as credentials from '@/lib/credentials';
 export async function GET(request: NextRequest, { params }: { params: Promise<{ publicCredentialId: string }> }) {
   try {
     const { publicCredentialId } = await params
-    // Returns a GetCredentialResult instance
-    const result = await credentials.get({ publicCredentialId });
+    const result = await getSharedCredential(publicCredentialId);
     return Response.json(result)
   } catch (e) {
-    processError(e)
+    return processError(e)
   }
 }
 
@@ -22,20 +22,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ publicCredentialId: string }> }) {
   try {
     const { publicCredentialId } = await params
-    await credentials.unshare({ publicCredentialId });
+    await unshareCredential(publicCredentialId);
     return Response.json({ message: 'Credential unshared.' })
   } catch (e) {
-    processError(e)
+    return processError(e)
   }
-}
-
-function processError(thrownError: any) {
-  console.error(thrownError);
-  const status = thrownError.statusCode || 400;
-  const error = {
-    status: thrownError.statusText || 'Invalid request',
-    // @ts-ignore
-    error: thrownError.message
-  }
-  return Response.json(error, { status });
 }
