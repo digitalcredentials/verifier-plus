@@ -98,7 +98,7 @@ npx tsx scripts/atlas/atlas.ts copy --table <table name> --expect-account <accou
 
 `--sample-links <n>` (with `--write`, up to 20) also prints `n` paths, `/credentials/<id>`, of records it wrote or found present, to open in a browser. **Only for the staging account (364323832338)**, whose data is synthetic: it refuses for any other account.
 
-`--expect-account local` is for tests: it is allowed only when `DYNAMODB_ENDPOINT` is set, writes to DynamoDB Local there, and skips the AWS account check. Any real account is refused while `DYNAMODB_ENDPOINT` is set.
+`--expect-account local` is for tests: it is allowed only when `DYNAMODB_ENDPOINT` is set, writes to DynamoDB Local there, and skips the AWS account check. It signs with the access key `test`; a DynamoDB Local started without `-sharedDb` keeps a separate set of tables per access key, so create the table with that key too. Any real account is refused while `DYNAMODB_ENDPOINT` is set.
 
 ## The rehearsal, in staging
 

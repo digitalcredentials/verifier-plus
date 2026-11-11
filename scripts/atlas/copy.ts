@@ -37,8 +37,11 @@ export const STAGING_ACCOUNT = '364323832338';
 /** Writes in flight at once. The data set is small; this only keeps a run short. */
 const CONCURRENCY = 10;
 const MAX_SAMPLE_LINKS = 20;
-/** DynamoDB Local accepts any credentials. */
-const LOCAL_CREDENTIALS = { accessKeyId: 'local', secretAccessKey: 'local' };
+/**
+ * DynamoDB Local accepts any credentials, but without -sharedDb it keeps a
+ * separate set of tables per access key: create the table with these.
+ */
+export const LOCAL_CREDENTIALS = { accessKeyId: 'test', secretAccessKey: 'test' };
 
 export const copyUsage =
   'copy --table <name> --expect-account <12-digit account id | local> [--write] [--sample-links <n>]';

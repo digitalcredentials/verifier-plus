@@ -16,12 +16,13 @@ import { DynamoCredentialStore } from '@/lib/credentialStore/dynamodb-store';
 import { testStoreSelected } from '@/lib/credentialStore/test-stores';
 
 import type { Env } from './common';
-import { copy, type CopyReport, REGION } from './copy';
+import { copy, type CopyReport, LOCAL_CREDENTIALS, REGION } from './copy';
 import { synthetic, type SyntheticSet } from './synthetic';
 
 const mongoUri = process.env.TEST_MONGO_URI ?? 'mongodb://localhost:27017';
 const endpoint = process.env.DYNAMODB_ENDPOINT ?? 'http://localhost:8000';
-const credentials = { accessKeyId: 'test', secretAccessKey: 'test' };
+// The same access key as copy's, since DynamoDB Local without -sharedDb keeps tables per key.
+const credentials = LOCAL_CREDENTIALS;
 
 describe.runIf(testStoreSelected('mongodb') && testStoreSelected('dynamodb'))('synthetic, then copy to DynamoDB Local', () => {
   const db = `verifier-plus-rehearsal-${randomUUID().slice(0, 8)}`;
