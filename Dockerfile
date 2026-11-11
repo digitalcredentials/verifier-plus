@@ -51,6 +51,9 @@ ENV PORT=3000
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
-# ENV HOSTNAME="0.0.0.0"
+# Listen on every interface. Docker sets HOSTNAME to the container id, which
+# would make server.js listen on that interface only, so /api/healthz could
+# not reach the server at localhost.
+ENV HOSTNAME="0.0.0.0"
 CMD ["node", "server.js"]
 

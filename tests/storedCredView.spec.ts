@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { getTestVP } from "@/tests/fixtures/testVP";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds"
+import { expectLogIcons } from "@/tests/helpers/resultLog";
 
 const generalErrorMessages = {
   NOT_FOUND: '404 credential not found'
@@ -63,10 +64,14 @@ test('a stored credential should display', async ({ request, page }) => {
         // check expired message matches expected
         await expect(page.getByText(LogMessages.NoExpirationDate)).toBeVisible();
         await expect(page.getByTestId(TestId.ExpirationLogMsg)).toHaveText(LogMessages.NoExpirationDate)
-        // finally take a screenshot of the log area to capture the combination of checkmarks and x's
-        // NOTE: it is very important that this screenshot be taken when the app is working/displaying correctly
-        // SEE: https://playwright.dev/docs/test-snapshots
-        await expect(page.getByTestId(TestId.ResultLog)).toHaveScreenshot();
+        // finally check the checkmarks beside the lines
+        await expectLogIcons(page, {
+            wellFormed: LogMessages.WellFormed,
+            signature: LogMessages.ValidSignature,
+            issuer: LogMessages.KnownIssuer,
+            revocation: LogMessages.NotRevoked,
+            expiry: LogMessages.NoExpirationDate,
+        })
 
   // 6. now delete the credential
   const deleteReply = await request.delete(unshareURL)

@@ -1,16 +1,17 @@
 {
   "name": "verifier-plus",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "engines": {
     "node": ">=24 <25"
   },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "build:lambda": "bash scripts/build-lambda.sh",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test --project=DesktopChrome --project=API",
+    "test:e2e": "playwright test --project=API --project=DesktopChrome --project=Lambda",
     "test:stores": "TEST_STORES=memory,mongodb,dynamodb vitest run"
   },
   "dependencies": {

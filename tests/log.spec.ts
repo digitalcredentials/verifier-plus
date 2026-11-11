@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { getTamperedVCAsString } from "@/tests/fixtures/minimalVCv2";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds"
+import { expectLogIcons } from "@/tests/helpers/resultLog";
 
 const badDiDWebErrorMessage = "The signature could not be checked because the public signing key could not be retrieved from https://digitalcredentials.github.io/dcc-did-web-bad/did.json";
 
@@ -74,10 +75,8 @@ logTests.forEach(({ name, vc, expected }) => {
         // check expired message matches expected
         await expect(page.getByText(expectedMessages.expiry)).toBeVisible();
         await expect(page.getByTestId(TestId.ExpirationLogMsg)).toHaveText(expectedMessages.expiry)
-        // finally take a screenshot of the log area to capture the combination of checkmarks and x's
-        // NOTE: it is very important that this screenshot be taken when the app is working/displaying correctly
-        // SEE: https://playwright.dev/docs/test-snapshots
-        await expect(page.getByTestId(TestId.ResultLog)).toHaveScreenshot();
+        // finally check the combination of checkmarks, warnings and x's beside the lines
+        await expectLogIcons(page, expectedMessages)
     })
 });
 

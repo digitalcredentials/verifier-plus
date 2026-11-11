@@ -7,3 +7,4 @@ certs/
 vhost/
 CHANGELOG.md
 docker-compose.example.*
+dist/

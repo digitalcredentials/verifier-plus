@@ -1,0 +1,165 @@
+{
+  "$comment": "Every environment variable verifier-plus reads. A deployment sets the ones marked for it; app/lib/settings.contract.test.ts checks this file against app/lib/settings.ts. 'required' is 'always', 'never', or the condition under which the setting must be set. 'readBy' is 'app' (app/lib/settings.ts) or 'next' (the Next.js standalone server). 'docker' and 'lambda' say who sets it there: 'you' (the operator), 'image' (the Dockerfile), 'run.sh' (dist/lambda/run.sh), 'template' (the deployment's template), 'runtime' (AWS Lambda itself), or 'unused'.",
+  "settings": [
+    {
+      "name": "CREDENTIAL_STORE",
+      "required": "always",
+      "values": ["memory", "mongodb", "dynamodb"],
+      "default": null,
+      "purpose": "Where shared credentials are kept. memory keeps them in the process and loses them on restart (local development and tests only).",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "template"
+    },
+    {
+      "name": "CREDENTIAL_TTL_DAYS",
+      "required": "never",
+      "values": "a positive whole number of days",
+      "default": "365",
+      "purpose": "How long a shared credential stays viewable after it is shared.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "template"
+    },
+    {
+      "name": "CREDENTIAL_TABLE",
+      "required": "when CREDENTIAL_STORE=dynamodb",
+      "values": "a DynamoDB table name",
+      "default": null,
+      "purpose": "The table shared credentials are kept in. Its key is the string attribute id, and its TTL attribute is expiresAt.",
+      "readBy": "app",
+      "docker": "unused",
+      "lambda": "template"
+    },
+    {
+      "name": "DYNAMODB_ENDPOINT",
+      "required": "never",
+      "values": "a URL",
+      "default": null,
+      "purpose": "Only for DynamoDB Local, such as http://localhost:8000. Unset to reach AWS.",
+      "readBy": "app",
+      "docker": "unused",
+      "lambda": "unused"
+    },
+    {
+      "name": "DB_URI",
+      "required": "when CREDENTIAL_STORE=mongodb, unless DB_HOST is set",
+      "values": "a mongodb:// or mongodb+srv:// connection string",
+      "default": null,
+      "purpose": "The MongoDB connection string, used as given. Set this or DB_HOST, not both.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "unused"
+    },
+    {
+      "name": "DB_HOST",
+      "required": "when CREDENTIAL_STORE=mongodb, unless DB_URI is set",
+      "values": "a MongoDB Atlas host",
+      "default": null,
+      "purpose": "The 2.x way to connect: the app builds mongodb+srv://DB_USER:DB_PASS@DB_HOST.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "unused"
+    },
+    {
+      "name": "DB_USER",
+      "required": "when DB_HOST is set",
+      "values": "a MongoDB user",
+      "default": null,
+      "purpose": "The user for DB_HOST.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "unused"
+    },
+    {
+      "name": "DB_PASS",
+      "required": "when DB_HOST is set",
+      "values": "a MongoDB password",
+      "default": null,
+      "purpose": "The password for DB_HOST.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "unused"
+    },
+    {
+      "name": "DB_NAME",
+      "required": "never",
+      "values": "a MongoDB database name",
+      "default": "verifier-plus",
+      "purpose": "The database shared credentials are kept in.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "unused"
+    },
+    {
+      "name": "DB_COLLECTION",
+      "required": "never",
+      "values": "a MongoDB collection name",
+      "default": "credentials",
+      "purpose": "The collection shared credentials are kept in.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "unused"
+    },
+    {
+      "name": "EXCHANGES",
+      "required": "always",
+      "values": ["on", "off"],
+      "default": null,
+      "purpose": "Whether the landing page offers to request credentials from the Learner Credential Wallet. Exchanges live in process memory, so on is refused on Lambda.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "template"
+    },
+    {
+      "name": "EXCHANGE_SERVER_URL",
+      "required": "never",
+      "values": "an absolute http or https URL",
+      "default": "the address the browser used to reach the page",
+      "purpose": "Where wallets reach the exchange. Read only when EXCHANGES=on.",
+      "readBy": "app",
+      "docker": "you",
+      "lambda": "unused"
+    },
+    {
+      "name": "AWS_REGION",
+      "required": "when CREDENTIAL_STORE=dynamodb",
+      "values": "an AWS region",
+      "default": null,
+      "purpose": "The region of CREDENTIAL_TABLE. Provided by the runtime on Lambda; set it yourself only to run the dynamodb store elsewhere.",
+      "readBy": "app",
+      "docker": "unused",
+      "lambda": "runtime"
+    },
+    {
+      "name": "AWS_LAMBDA_FUNCTION_NAME",
+      "required": "never",
+      "values": "the function's name",
+      "default": null,
+      "purpose": "Provided by the runtime. Its presence tells the app it is on Lambda, where EXCHANGES=on is refused.",
+      "readBy": "app",
+      "docker": "unused",
+      "lambda": "runtime"
+    },
+    {
+      "name": "PORT",
+      "required": "never",
+      "values": "a TCP port",
+      "default": "3000 (Docker), 8080 (Lambda)",
+      "purpose": "The port the server listens on. On Lambda, the port the Web Adapter forwards to.",
+      "readBy": "next",
+      "docker": "image",
+      "lambda": "run.sh"
+    },
+    {
+      "name": "HOSTNAME",
+      "required": "never",
+      "values": "an address to listen on",
+      "default": "0.0.0.0",
+      "purpose": "The interface the server listens on.",
+      "readBy": "next",
+      "docker": "image",
+      "lambda": "run.sh"
+    }
+  ]
+}
