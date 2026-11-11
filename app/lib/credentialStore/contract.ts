@@ -6,7 +6,8 @@ import type { CredentialRecord, CredentialStore } from './credential-store';
 
 /**
  * The guarantees every credential store makes, written once. Each store's
- * test file calls this with a factory for a fresh, empty store.
+ * test file calls this with a factory for a store; every test uses new random
+ * ids, so the store may already hold other records.
  */
 export function describeCredentialStore(name: string, makeStore: () => CredentialStore | Promise<CredentialStore>) {
   describe(`CredentialStore contract: ${name}`, () => {
@@ -68,7 +69,7 @@ export function describeCredentialStore(name: string, makeStore: () => Credentia
   });
 }
 
-function testRecord(overrides: Partial<CredentialRecord> = {}): CredentialRecord {
+export function testRecord(overrides: Partial<CredentialRecord> = {}): CredentialRecord {
   const createdAt = new Date('2026-01-01T00:00:00.000Z');
   return {
     id: crypto.randomUUID(),

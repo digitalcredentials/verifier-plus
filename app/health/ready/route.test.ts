@@ -35,11 +35,14 @@ describe('GET /health/ready', () => {
     });
   });
 
-  it('is DOWN when a store this build lacks is chosen', async () => {
+  it('is DOWN naming the missing settings of the chosen store', async () => {
     const res = await runInContext(await createAppContext({ CREDENTIAL_STORE: 'dynamodb' }), () => GET());
 
     expect(res.status).toBe(503);
-    expect((await res.json()).problems).toEqual(["CREDENTIAL_STORE is 'dynamodb', which is not available in this build"]);
+    expect((await res.json()).problems).toEqual([
+      'CREDENTIAL_STORE is dynamodb, so set CREDENTIAL_TABLE',
+      'CREDENTIAL_STORE is dynamodb, so set AWS_REGION',
+    ]);
   });
 
   it('is DOWN when ping fails', async () => {

@@ -1,4 +1,3 @@
-declare module '@digitalbazaar/lru-memoize';
 declare module '@digitalcredentials/vc';
 declare module '@digitalcredentials/verifier-core';
 declare module '@digitalcredentials/vpqr';
