@@ -1,5 +1,9 @@
 # verifier-plus Changelog
 
+## Unreleased
+### Changed
+- Node 24; Next 15.5.29
+
 ## 2.0.2 
 ### Added
 - Upgrade NextJS to 15.5.7
