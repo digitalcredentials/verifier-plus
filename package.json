@@ -10,10 +10,12 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test --project=DesktopChrome --project=API"
+    "test:e2e": "playwright test --project=DesktopChrome --project=API",
+    "test:stores": "TEST_STORES=memory,mongodb,dynamodb vitest run"
   },
   "dependencies": {
-    "@digitalbazaar/lru-memoize": "^4.0.0",
+    "@aws-sdk/client-dynamodb": "^3.1166.0",
+    "@aws-sdk/lib-dynamodb": "^3.1166.0",
     "@digitalcredentials/ed25519-signature-2020": "^6.0.0",
     "@digitalcredentials/issuer-registry-client": "^3.0.0",
     "@digitalcredentials/security-document-loader": "^8.0.0",

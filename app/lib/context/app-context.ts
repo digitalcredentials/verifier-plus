@@ -49,7 +49,7 @@ export function provideSettings(env: Env): SettingsCtx {
 
 /** Adds the store, and any problem creating it to the settings' problems. */
 export async function provideCredentialStore({ settings }: SettingsCtx): Promise<SettingsCtx & CredentialStoreCtx> {
-  const { credentialStore, problems } = await loadCredentialStore(settings.values.credentialStore);
+  const { credentialStore, problems } = await loadCredentialStore(settings.values);
   return {
     settings: { ...settings, problems: [...settings.problems, ...problems] },
     credentialStore,

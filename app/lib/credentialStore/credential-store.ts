@@ -15,9 +15,8 @@ export type CredentialRecord = {
 };
 
 /**
- * Where shared credentials live. Implementations: memory, and (later)
- * mongodb and dynamodb. All of them pass the shared contract suite in
- * contract.ts.
+ * Where shared credentials live. Implementations: memory, mongodb and
+ * dynamodb. All of them pass the shared contract suite in contract.ts.
  */
 export type CredentialStore = {
   /** Create only if absent. Throws credential-already-exists if the id is taken. */

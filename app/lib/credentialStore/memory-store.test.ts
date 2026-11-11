@@ -1,4 +1,9 @@
+import { describe } from 'vitest';
+
 import { describeCredentialStore } from './contract';
 import { MemoryCredentialStore } from './memory-store';
+import { testStoreSelected } from './test-stores';
 
-describeCredentialStore('memory', () => MemoryCredentialStore());
+describe.runIf(testStoreSelected('memory'))('memory store', () => {
+  describeCredentialStore('memory', () => MemoryCredentialStore());
+});
