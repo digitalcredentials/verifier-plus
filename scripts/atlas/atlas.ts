@@ -1,86 +1,84 @@
 /**
- * Read-only tools for the verifier-plus credentials collection in MongoDB Atlas.
- * See README.md beside this file.
+ * Tools for moving the verifier-plus credentials collection from MongoDB Atlas
+ * to DynamoDB. See README.md beside this file.
  *
- *   npx tsx scripts/atlas/atlas.ts <command>
+ *   npx tsx scripts/atlas/atlas.ts <command> [options]
  *
  * Settings come from the environment only, never from flags, so a connection
  * string stays out of shell history:
  *
- *   ATLAS_URI         required; a read-only user's connection string
- *   ATLAS_DB          default verifier-plus
- *   ATLAS_COLLECTION  default credentials
+ *   scan               ATLAS_URI (required; a read-only user's connection string),
+ *                      ATLAS_DB (default verifier-plus), ATLAS_COLLECTION (default credentials)
+ *   copy, synthetic    SOURCE_URI (required), SOURCE_DB, SOURCE_COLLECTION, same defaults
  *
  * Aggregates go to stdout and errors to stderr. Nothing here prints a
- * credential id, a holder DID or any part of a stored presentation.
+ * credential id, a holder DID or any part of a stored presentation, except
+ * copy's sample links on staging, whose data is synthetic.
  */
-import { MongoClient, type Collection, type Document } from 'mongodb';
+import type { Collection, Document } from 'mongodb';
 
-const DAY_MS = 24 * 60 * 60 * 1000;
+import { MAX_SHARED_VP_BYTES } from '@/lib/credentials';
+import { DEFAULT_CREDENTIAL_TTL_DAYS } from '@/lib/settings';
+
+import {
+  ATLAS_VARIABLES,
+  DAY_MS,
+  formatBytes,
+  formatDays,
+  type MongoTarget,
+  openMongo,
+  printRows,
+  Refusal,
+  UsageError,
+  UUID_V4,
+} from './common';
+import { copy, copyUsage } from './copy';
+import { synthetic, syntheticUsage } from './synthetic';
+
 /** The age at which a shared credential expires: the app's default CREDENTIAL_TTL_DAYS. */
-const TTL_DAYS = 365;
-/** The app's limit on a shared presentation (MAX_SHARED_VP_BYTES): 350 KB of UTF-8 JSON. */
-const LIMIT_BYTES = 350 * 1024;
+const TTL_DAYS = DEFAULT_CREDENTIAL_TTL_DAYS;
+/** The app's limit on a shared presentation: 350 KB of UTF-8 JSON. */
+const LIMIT_BYTES = MAX_SHARED_VP_BYTES;
 /** DynamoDB's limit on a whole item. */
 const DYNAMODB_ITEM_BYTES = 400 * 1024;
-const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 type Command = {
   summary: string;
-  run: (atlas: Atlas) => Promise<void>;
+  usage: string;
+  /** Returns the exit code. */
+  run: (args: string[]) => Promise<number>;
 };
+
+const out = (line = '') => process.stdout.write(`${line}\n`);
 
 const commands: Record<string, Command> = {
   scan: {
-    summary: 'Print the collection\'s indexes and aggregate counts and vp sizes. Reads only.',
-    run: scan,
+    summary: 'Print the collection\'s indexes and aggregate counts and vp sizes. Reads only. ATLAS_URI.',
+    usage: 'scan',
+    run: runScan,
+  },
+  copy: {
+    summary: 'Copy shared, unexpired credentials from SOURCE_URI to a DynamoDB table. Dry run unless --write.',
+    usage: copyUsage,
+    run: async (args) => (await copy(args, process.env, out)).exitCode,
+  },
+  synthetic: {
+    summary: 'Write a generated data set in Atlas\'s shape to a MongoDB on localhost (SOURCE_URI).',
+    usage: syntheticUsage,
+    run: async (args) => {
+      await synthetic(args, process.env, out);
+      return 0;
+    },
   },
 };
 
 // ---------------------------------------------------------------------------
 // Connection
 
-type Atlas = {
-  /** Where the URI points, with no user name or password. */
-  host: string;
-  db: string;
-  collectionName: string;
-  collection: Collection;
-  close: () => Promise<void>;
-};
-
-class UsageError extends Error {}
+type Atlas = MongoTarget;
 
 function openAtlas(): Atlas {
-  const uri = process.env.ATLAS_URI;
-  if (!uri) {
-    throw new UsageError('ATLAS_URI is not set. Export the read-only user\'s connection string first; see scripts/atlas/README.md.');
-  }
-  const db = process.env.ATLAS_DB || 'verifier-plus';
-  const collectionName = process.env.ATLAS_COLLECTION || 'credentials';
-
-  let client: MongoClient;
-  try {
-    // The constructor parses the URI without connecting.
-    client = new MongoClient(uri, { readPreference: 'secondaryPreferred' });
-  } catch {
-    // The parser's message can quote the URI, password included, so it is not printed.
-    throw new UsageError('ATLAS_URI is not a valid MongoDB connection string.');
-  }
-
-  return {
-    host: hostOf(client),
-    db,
-    collectionName,
-    collection: client.db(db).collection(collectionName),
-    close: () => client.close(),
-  };
-}
-
-/** The host part of the parsed URI: the SRV name, or the seed list. Never the credentials. */
-function hostOf(client: MongoClient): string {
-  const { srvHost, hosts } = client.options;
-  return srvHost ?? hosts.map((host) => host.toString()).join(',');
+  return openMongo(process.env, ATLAS_VARIABLES, { readPreference: 'secondaryPreferred' });
 }
 
 // ---------------------------------------------------------------------------
@@ -104,6 +102,18 @@ type Tally = {
     newest?: Date;
   };
 };
+
+async function runScan(args: string[]): Promise<number> {
+  if (args.length > 0) throw new UsageError('scan takes no options.');
+  const atlas = openAtlas();
+  out(`Reading ${atlas.db}.${atlas.collectionName} on ${atlas.host}`);
+  try {
+    await scan(atlas);
+  } finally {
+    await atlas.close();
+  }
+  return 0;
+}
 
 async function scan(atlas: Atlas): Promise<void> {
   const now = new Date();
@@ -159,8 +169,6 @@ async function tallyDocuments(collection: Collection, now: Date): Promise<Tally>
 }
 
 function printScan(now: Date, indexes: Document[], tally: Tally): void {
-  const out = (line = '') => process.stdout.write(`${line}\n`);
-
   out(`Scanned at ${now.toISOString()}`);
   out();
   out('Indexes');
@@ -225,23 +233,6 @@ function percentile(sorted: number[], p: number): number | undefined {
   return sorted[Math.max(0, Math.ceil((p / 100) * sorted.length) - 1)];
 }
 
-function printRows(out: (line?: string) => void, rows: [string, number | string][]): void {
-  const width = Math.max(...rows.map(([label]) => label.length));
-  for (const [label, value] of rows) {
-    out(`  ${label.padEnd(width)}  ${typeof value === 'number' ? value.toLocaleString('en-US') : value}`);
-  }
-}
-
-function formatBytes(bytes: number | undefined): string {
-  if (bytes === undefined) return 'none';
-  return `${bytes.toLocaleString('en-US')} bytes (${(bytes / 1024).toFixed(1)} KB)`;
-}
-
-function formatDays(seconds: number): string {
-  const days = seconds / (DAY_MS / 1000);
-  return `${Number.isInteger(days) ? days : days.toFixed(2)} days`;
-}
-
 // ---------------------------------------------------------------------------
 // Entry point
 
@@ -249,31 +240,29 @@ function usage(): string {
   const names = Object.keys(commands);
   const width = Math.max(...names.map((name) => name.length));
   return [
-    'Usage: npx tsx scripts/atlas/atlas.ts <command>',
+    'Usage: npx tsx scripts/atlas/atlas.ts <command> [options]',
     '',
     'Commands:',
     ...names.map((name) => `  ${name.padEnd(width)}  ${commands[name].summary}`),
     '',
-    'Settings, from the environment only: ATLAS_URI (required), ATLAS_DB, ATLAS_COLLECTION.',
+    'Options:',
+    ...names.map((name) => `  ${commands[name].usage}`),
+    '',
+    'Settings, from the environment only:',
+    '  scan             ATLAS_URI (required), ATLAS_DB, ATLAS_COLLECTION',
+    '  copy, synthetic  SOURCE_URI (required), SOURCE_DB, SOURCE_COLLECTION, CREDENTIAL_TTL_DAYS',
+    '  copy             AWS_PROFILE, or DYNAMODB_ENDPOINT with --expect-account local',
   ].join('\n');
 }
 
 async function main(argv: string[]): Promise<number> {
-  const [name, ...extra] = argv;
+  const [name, ...args] = argv;
   const command = name === undefined ? undefined : commands[name];
-  if (!command || extra.length > 0) {
+  if (!command) {
     process.stderr.write(`${usage()}\n`);
     return 2;
   }
-
-  const atlas = openAtlas();
-  process.stdout.write(`Reading ${atlas.db}.${atlas.collectionName} on ${atlas.host}\n`);
-  try {
-    await command.run(atlas);
-  } finally {
-    await atlas.close();
-  }
-  return 0;
+  return command.run(args);
 }
 
 main(process.argv.slice(2)).then(
@@ -282,6 +271,7 @@ main(process.argv.slice(2)).then(
   },
   (error: unknown) => {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+    if (error instanceof Refusal) process.stderr.write('Refused: nothing was written.\n');
     process.exitCode = error instanceof UsageError ? 2 : 1;
   },
 );
