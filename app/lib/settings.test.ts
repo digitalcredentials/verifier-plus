@@ -4,14 +4,21 @@ import { mongoHostForLogs, readSettings } from './settings';
 
 describe('readSettings', () => {
   it('reads valid settings with no problems', () => {
-    expect(readSettings({ CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: '30' })).toEqual({
-      values: { credentialStore: 'memory', credentialTtlDays: 30, mongodb: null, dynamodb: null },
+    expect(readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: '30' })).toEqual({
+      values: {
+        credentialStore: 'memory',
+        credentialTtlDays: 30,
+        mongodb: null,
+        dynamodb: null,
+        exchanges: false,
+        exchangeServerUrl: null,
+      },
       problems: [],
     });
   });
 
   it('defaults the TTL to 365 days', () => {
-    expect(readSettings({ CREDENTIAL_STORE: 'memory' }).values.credentialTtlDays).toBe(365);
+    expect(readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: 'memory' }).values.credentialTtlDays).toBe(365);
   });
 
   it.each([
@@ -19,27 +26,27 @@ describe('readSettings', () => {
     ['empty', '', 'CREDENTIAL_STORE is not set; set it to memory, mongodb or dynamodb'],
     ['unknown', 'postgres', "CREDENTIAL_STORE is 'postgres'; set it to memory, mongodb or dynamodb"],
   ])('reports CREDENTIAL_STORE when it is %s', (_, value, problem) => {
-    const settings = readSettings({ CREDENTIAL_STORE: value });
+    const settings = readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: value });
     expect(settings.values.credentialStore).toBeNull();
     expect(settings.problems).toEqual([problem]);
   });
 
   it.each(['0', '-5', '1.5', 'a year'])('reports CREDENTIAL_TTL_DAYS=%s', (value) => {
-    const settings = readSettings({ CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: value });
+    const settings = readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: value });
     expect(settings.problems).toEqual([
       `CREDENTIAL_TTL_DAYS must be a positive whole number of days; it is '${value}'`,
     ]);
   });
 
   it('reads no backend settings for a store that is not chosen', () => {
-    const settings = readSettings({ CREDENTIAL_STORE: 'memory', DB_URI: 'nonsense', DB_HOST: 'h' });
+    const settings = readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: 'memory', DB_URI: 'nonsense', DB_HOST: 'h' });
     expect(settings.values).toMatchObject({ mongodb: null, dynamodb: null });
     expect(settings.problems).toEqual([]);
   });
 });
 
 describe('readSettings for mongodb', () => {
-  const mongo = (env: Record<string, string>) => readSettings({ CREDENTIAL_STORE: 'mongodb', ...env });
+  const mongo = (env: Record<string, string>) => readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: 'mongodb', ...env });
 
   it('uses DB_URI as given, with the 2.x name defaults', () => {
     expect(mongo({ DB_URI: 'mongodb://localhost:27017' })).toEqual({
@@ -77,6 +84,7 @@ describe('readSettings for mongodb', () => {
 describe('readSettings for dynamodb', () => {
   it('reads the table, region and optional endpoint', () => {
     const settings = readSettings({
+      EXCHANGES: 'off',
       CREDENTIAL_STORE: 'dynamodb',
       CREDENTIAL_TABLE: 'credentials',
       AWS_REGION: 'us-east-1',
@@ -87,7 +95,7 @@ describe('readSettings for dynamodb', () => {
   });
 
   it('reports each missing setting', () => {
-    const settings = readSettings({ CREDENTIAL_STORE: 'dynamodb' });
+    const settings = readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: 'dynamodb' });
     expect(settings.values.dynamodb).toBeNull();
     expect(settings.problems).toEqual([
       'CREDENTIAL_STORE is dynamodb, so set CREDENTIAL_TABLE',
@@ -105,5 +113,55 @@ describe('mongoHostForLogs', () => {
     ['mongodb://user:p@ss@host/db', 'host'],
   ])('%s → %s', (uri, host) => {
     expect(mongoHostForLogs(uri)).toBe(host);
+  });
+});
+
+describe('readSettings for exchanges', () => {
+  const exchanges = (env: Record<string, string>) => readSettings({ CREDENTIAL_STORE: 'memory', ...env });
+  const lambdaRefusal =
+    'EXCHANGES=on is not supported on Lambda: request exchanges are kept in process memory, ' +
+    'which Lambda does not share between instances. transaction-service is the planned home.';
+
+  it.each([
+    ['unset', {}, 'EXCHANGES is not set; set it to on or off'],
+    ['unknown', { EXCHANGES: 'yes' }, "EXCHANGES is 'yes'; set it to on or off"],
+  ])('reports EXCHANGES when it is %s, and treats exchanges as off', (_, env, problem) => {
+    const settings = exchanges(env);
+    expect(settings.values.exchanges).toBe(false);
+    expect(settings.problems).toEqual([problem]);
+  });
+
+  it('reads off with no problem', () => {
+    const settings = exchanges({ EXCHANGES: 'off', EXCHANGE_SERVER_URL: 'not read when off' });
+    expect(settings.values).toMatchObject({ exchanges: false, exchangeServerUrl: null });
+    expect(settings.problems).toEqual([]);
+  });
+
+  it('reads on, with no EXCHANGE_SERVER_URL', () => {
+    const settings = exchanges({ EXCHANGES: 'on' });
+    expect(settings.values).toMatchObject({ exchanges: true, exchangeServerUrl: null });
+    expect(settings.problems).toEqual([]);
+  });
+
+  it('reads EXCHANGE_SERVER_URL without a trailing slash', () => {
+    const settings = exchanges({ EXCHANGES: 'on', EXCHANGE_SERVER_URL: 'https://verifierplus.org/' });
+    expect(settings.values.exchangeServerUrl).toBe('https://verifierplus.org');
+    expect(settings.problems).toEqual([]);
+  });
+
+  it.each(['verifierplus.org', '/api', 'ftp://verifierplus.org'])('reports EXCHANGE_SERVER_URL=%s', (value) => {
+    const settings = exchanges({ EXCHANGES: 'on', EXCHANGE_SERVER_URL: value });
+    expect(settings.values.exchangeServerUrl).toBeNull();
+    expect(settings.problems).toEqual(['EXCHANGE_SERVER_URL must be an absolute URL']);
+  });
+
+  it('refuses on when running on Lambda, and treats exchanges as off', () => {
+    const settings = exchanges({ EXCHANGES: 'on', AWS_LAMBDA_FUNCTION_NAME: 'verifier-plus' });
+    expect(settings.values).toMatchObject({ exchanges: false, exchangeServerUrl: null });
+    expect(settings.problems).toEqual([lambdaRefusal]);
+  });
+
+  it('allows off on Lambda', () => {
+    expect(exchanges({ EXCHANGES: 'off', AWS_LAMBDA_FUNCTION_NAME: 'verifier-plus' }).problems).toEqual([]);
   });
 });

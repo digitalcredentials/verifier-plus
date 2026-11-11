@@ -25,7 +25,7 @@ describe('GET /health/ready', () => {
   });
 
   it('is DOWN naming CREDENTIAL_STORE when it is unset', async () => {
-    const res = await runInContext(await createAppContext({}), () => GET());
+    const res = await runInContext(await createAppContext({ EXCHANGES: 'off' }), () => GET());
 
     expect(res.status).toBe(503);
     expect(await res.json()).toEqual({
@@ -36,7 +36,7 @@ describe('GET /health/ready', () => {
   });
 
   it('is DOWN naming the missing settings of the chosen store', async () => {
-    const res = await runInContext(await createAppContext({ CREDENTIAL_STORE: 'dynamodb' }), () => GET());
+    const res = await runInContext(await createAppContext({ EXCHANGES: 'off', CREDENTIAL_STORE: 'dynamodb' }), () => GET());
 
     expect(res.status).toBe(503);
     expect((await res.json()).problems).toEqual([
@@ -74,7 +74,7 @@ describe('GET /health/ready', () => {
 
   it('is DOWN when any setting has a problem, even with a working store', async () => {
     const res = await runInContext(
-      await createAppContext({ CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: 'forever' }),
+      await createAppContext({ EXCHANGES: 'off', CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: 'forever' }),
       () => GET(),
     );
 
@@ -84,5 +84,25 @@ describe('GET /health/ready', () => {
       problems: ["CREDENTIAL_TTL_DAYS must be a positive whole number of days; it is 'forever'"],
       components: { credentialStore: { status: 'UP' } },
     });
+  });
+
+  it('is DOWN naming EXCHANGES when it is unset', async () => {
+    const res = await runInContext(await createAppContext({ CREDENTIAL_STORE: 'memory' }), () => GET());
+
+    expect(res.status).toBe(503);
+    expect((await res.json()).problems).toEqual(['EXCHANGES is not set; set it to on or off']);
+  });
+
+  it('is DOWN naming the refusal of EXCHANGES=on on Lambda', async () => {
+    const res = await runInContext(
+      await createAppContext({ CREDENTIAL_STORE: 'memory', EXCHANGES: 'on', AWS_LAMBDA_FUNCTION_NAME: 'verifier-plus' }),
+      () => GET(),
+    );
+
+    expect(res.status).toBe(503);
+    expect((await res.json()).problems).toEqual([
+      'EXCHANGES=on is not supported on Lambda: request exchanges are kept in process memory, ' +
+        'which Lambda does not share between instances. transaction-service is the planned home.',
+    ]);
   });
 });

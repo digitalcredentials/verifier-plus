@@ -15,6 +15,7 @@
 import type { Clock } from '@/lib/clock';
 import { SystemClock } from '@/lib/clock';
 import type { CredentialStore } from '@/lib/credentialStore/credential-store';
+import { ExchangeCache } from '@/lib/exchangeCache';
 import { loadCredentialStore } from '@/lib/credentialStore/load-store';
 import type { Env, Settings } from '@/lib/settings';
 import { readSettings } from '@/lib/settings';
@@ -26,20 +27,26 @@ export type AppContext = {
   credentialStore: CredentialStore | null;
   clock: Clock;
   fetch: typeof globalThis.fetch;
+  // TEMPORARY(transaction-service): remove with the in-app exchange
+  /** Null when EXCHANGES is off, unset, or refused on Lambda. */
+  exchanges: ExchangeCache | null;
 };
 
 export type SettingsCtx = Pick<AppContext, 'settings'>;
 export type CredentialStoreCtx = Pick<AppContext, 'credentialStore'>;
 export type ClockCtx = Pick<AppContext, 'clock'>;
 export type FetchCtx = Pick<AppContext, 'fetch'>;
+export type ExchangesCtx = Pick<AppContext, 'exchanges'>;
 
 /** Builds the context. Never throws for a bad or missing setting. */
 export async function createAppContext(env: Env): Promise<AppContext> {
+  warnAboutRenamedSettings(env);
   const { settings } = provideSettings(env);
   return {
     ...(await provideCredentialStore({ settings })),
     ...provideClock(),
     ...provideFetch(),
+    ...provideExchanges({ settings }),
   };
 }
 
@@ -62,4 +69,16 @@ export function provideClock(): ClockCtx {
 
 export function provideFetch(): FetchCtx {
   return { fetch: globalThis.fetch };
+}
+
+// TEMPORARY(transaction-service): remove with the in-app exchange
+export function provideExchanges({ settings }: SettingsCtx): ExchangesCtx {
+  return { exchanges: settings.values.exchanges ? ExchangeCache() : null };
+}
+
+/** Settings that 3.0.0 renamed. Still set, they do no harm, so they are not problems. */
+function warnAboutRenamedSettings(env: Env) {
+  if (env.NEXT_PUBLIC_EXCHANGE_SERVER_URL !== undefined) {
+    console.warn('NEXT_PUBLIC_EXCHANGE_SERVER_URL is no longer read; use EXCHANGE_SERVER_URL');
+  }
 }

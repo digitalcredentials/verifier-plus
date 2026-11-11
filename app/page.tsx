@@ -47,6 +47,22 @@ export default function Home() {
   // changes it only after the logo's click has been handled.
   const linkLoad = useRef(0);
   const { version } = packageJson;
+  // TEMPORARY(transaction-service): remove with the in-app exchange
+  // Where wallets reach this server's exchanges; null while /api/config has not
+  // answered and when exchanges are off, which both hide the wallet button.
+  const [exchangeServerUrl, setExchangeServerUrl] = useState<string | null>(null);
+
+  // TEMPORARY(transaction-service): remove with the in-app exchange
+  useEffect(() => {
+    let current = true;
+    fetch('/api/config')
+      .then(res => res.ok ? res.json() : null)
+      .then(config => {
+        if (current && config?.exchanges && config.exchangeServerUrl) setExchangeServerUrl(config.exchangeServerUrl);
+      })
+      .catch(e => console.error('Error loading /api/config:', e));
+    return () => { current = false };
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = "en";
@@ -432,13 +448,13 @@ export default function Home() {
   }
 
 
-  const EXCHANGE_SERVER_URL = process.env.NEXT_PUBLIC_EXCHANGE_SERVER_URL // e.g.,'https://verifierplus.org';
-
+  // TEMPORARY(transaction-service): remove with the in-app exchange
+  // (from here to stopPolling, and the "Request credentials from LCW" block below)
   const WALLET_DEEP_LINK = 'https://lcw.app/request'
-  const exchangeUrl = `${EXCHANGE_SERVER_URL}/api/exchanges/${randomPageId}`
+  const exchangeUrl = `${exchangeServerUrl}/api/exchanges/${randomPageId}`
 
   const chapiRequest = {
-    credentialRequestOrigin: EXCHANGE_SERVER_URL,
+    credentialRequestOrigin: exchangeServerUrl,
     protocols: {
       vcapi: exchangeUrl
     }
@@ -505,22 +521,25 @@ export default function Home() {
           </div>
         )}
 
-        <div className={styles.lcwContainer} data-testid="lcw-request-btn">
-          <Accordion
-            iconClosed={lcwIcon}
-            iconOpen={spinner}
-            onOpen={startPolling}
-            onClose={() => stopPolling(undefined)}
-            title="Request credentials from LCW" >
-            {/*             <p>
-              <a className={styles.lcwLink} target={'_blank'} rel={'noreferrer'} href={lcwRequestUrl}><h3>Mobile Link</h3></a>
-            </p> */}
-            <div><h5 className={styles.lcwLink}>Scan QR code with phone camera to open:</h5></div>
-            <div className={styles.qrCode}>
-              <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl}/>
-            </div>
-          </Accordion>
-        </div>
+        {/* TEMPORARY(transaction-service): remove with the in-app exchange */}
+        {exchangeServerUrl && (
+          <div className={styles.lcwContainer} data-testid="lcw-request-btn">
+            <Accordion
+              iconClosed={lcwIcon}
+              iconOpen={spinner}
+              onOpen={startPolling}
+              onClose={() => stopPolling(undefined)}
+              title="Request credentials from LCW" >
+              {/*             <p>
+                <a className={styles.lcwLink} target={'_blank'} rel={'noreferrer'} href={lcwRequestUrl}><h3>Mobile Link</h3></a>
+              </p> */}
+              <div><h5 className={styles.lcwLink}>Scan QR code with phone camera to open:</h5></div>
+              <div className={styles.qrCode}>
+                <QRCodeSVG value={lcwRequestUrl} data-testid="lcw-qr-request" data-testvalue={lcwRequestUrl}/>
+              </div>
+            </Accordion>
+          </div>
+        )}
 
         <div className={styles.textAreaContainer}>
           <div className={styles.floatingTextarea}>

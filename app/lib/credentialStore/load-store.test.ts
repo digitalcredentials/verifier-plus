@@ -11,7 +11,7 @@ describe('loadCredentialStore', () => {
     ['mongodb', { DB_URI: 'mongodb://localhost:1' }],
     ['dynamodb', { CREDENTIAL_TABLE: 'credentials', AWS_REGION: 'us-east-1' }],
   ])('creates the %s store without connecting', async (name, env) => {
-    const settings = readSettings({ CREDENTIAL_STORE: name, ...env });
+    const settings = readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: name, ...env });
     expect(settings.problems).toEqual([]);
 
     const { credentialStore, problems } = await loadCredentialStore(settings.values);
@@ -21,7 +21,7 @@ describe('loadCredentialStore', () => {
   });
 
   it.each(['mongodb', 'dynamodb'])('returns no %s store, and no extra problem, when its settings are missing', async (name) => {
-    const settings = readSettings({ CREDENTIAL_STORE: name });
+    const settings = readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: name });
     expect(await loadCredentialStore(settings.values)).toEqual({ credentialStore: null, problems: [] });
   });
 

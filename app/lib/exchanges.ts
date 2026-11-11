@@ -1,9 +1,6 @@
-import { LRUCache } from 'lru-cache';
-import { VC_API_EXCHANGE_TIMEOUT } from './config';
-
-declare global {
-  var exchanges: any | undefined;
-}
+// TEMPORARY(transaction-service): remove with the in-app exchange
+// Browser code only: polls the server's exchange route. The server's cache is
+// in exchangeCache.ts, kept apart so client code never imports server code.
 
 export async function pollExchange({
   exchangeUrl,
@@ -23,8 +20,3 @@ export async function pollExchange({
     stopPolling(); // Stop polling after credential is fetched
   }
 }
-
-export const exchanges = globalThis.exchanges ||
-  new LRUCache({ ttl: VC_API_EXCHANGE_TIMEOUT, ttlAutopurge: true });
-
-globalThis.exchanges = exchanges;
