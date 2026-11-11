@@ -4,8 +4,13 @@ import { getTestVPForVPQR } from '@/tests/fixtures/testVP';
 import { vprQuery } from '@/app/api/exchanges/[txId]/route';
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds"
+import { expectLogIcons } from "@/tests/helpers/resultLog";
 
+// TEMPORARY(transaction-service): remove with the in-app exchange
 test('test the qr', async ({ page, request }) => {
+  const config = await (await request.get('/api/config')).json();
+  test.skip(!config.exchanges, 'exchanges are off on this server');
+
   await page.goto('/');
   await page.getByTestId('lcw-request-btn').click();
   const qr = await page.getByTestId("lcw-qr-request")
@@ -62,10 +67,14 @@ example of the value of the deeplinks 'request' parameter:
   // check expired message matches expected
   await expect(page.getByText(LogMessages.NoExpirationDate)).toBeVisible();
   await expect(page.getByTestId(TestId.ExpirationLogMsg)).toHaveText(LogMessages.NoExpirationDate)
-  // finally take a screenshot of the log area to capture the combination of checkmarks and x's
-  // NOTE: it is very important that this screenshot be taken when the app is working/displaying correctly
-  // SEE: https://playwright.dev/docs/test-snapshots
-  await expect(page.getByTestId(TestId.ResultLog)).toHaveScreenshot();
+  // finally check the checkmarks beside the lines
+  await expectLogIcons(page, {
+      wellFormed: LogMessages.WellFormed,
+      signature: LogMessages.ValidSignature,
+      issuer: LogMessages.KnownIssuer,
+      revocation: LogMessages.NotRevoked,
+      expiry: LogMessages.NoExpirationDate,
+  })
 
 
 });

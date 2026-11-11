@@ -117,9 +117,9 @@ The Learner Credential Wallet also provides options making it easy to share that
 
 The storage service itself is simply three API endpoints for storing, retrieving, and deleting a credential. You can find them in the [/app/api/credentials/route.ts](/app/api/credentials/route.ts) file.
 
-The api endpoints save to a mongo backend, which you will have to setup. We've used Mongo Atlas ourselves, but you can of course use whatever Mongo setup you like.
+The api endpoints save to a credential store, which you choose with the `CREDENTIAL_STORE` setting: MongoDB (see [MongoDB](#mongodb)), Amazon DynamoDB (see [AWS Lambda](#aws-lambda)), or, for local development and tests only, the server's memory. A shared credential stays viewable for a year (`CREDENTIAL_TTL_DAYS`), and can be at most 350 KB.
 
-When storing a credential with an intial POST of the credential to /api/credentials the server will put the credential into mongo and return a list of three urls, like so:
+When storing a credential with an intial POST of the credential to /api/credentials the server will put the credential into the store and return a list of three urls, like so:
 
 ```JSON
  {
@@ -144,6 +144,41 @@ Worth noting is that the same effect as the 'view' url can be achieved with a cr
 
 VerifierPlus knows to go fetch the credential, verify it, and display it in the rendered view.
 
+## Settings
+
+verifier-plus is configured by environment variables. [settings.contract.json](./settings.contract.json) lists every one the app reads, and a unit test keeps it in step with the code. The ones you set:
+
+| Setting | Required | Purpose |
+|---|---|---|
+| `CREDENTIAL_STORE` | always | `memory`, `mongodb` or `dynamodb`. `memory` loses every shared credential on restart: local development and tests only. |
+| `EXCHANGES` | always | `on` or `off`: whether the landing page can request credentials from the Learner Credential Wallet. See [below](#verifiable-presentation-request-exchange). |
+| `EXCHANGE_SERVER_URL` | no | Where wallets reach the exchange, when exchanges are on. Defaults to the address the browser used to reach the page. |
+| `CREDENTIAL_TTL_DAYS` | no | How many days a shared credential stays viewable. Default 365. |
+| `DB_URI` | for `mongodb`, unless `DB_HOST` is set | A `mongodb://` or `mongodb+srv://` connection string. |
+| `DB_HOST`, `DB_USER`, `DB_PASS` | for `mongodb`, unless `DB_URI` is set | The 2.x way to connect to MongoDB Atlas: the app builds `mongodb+srv://DB_USER:DB_PASS@DB_HOST`. |
+| `DB_NAME`, `DB_COLLECTION` | no | Default `verifier-plus` and `credentials`. |
+| `CREDENTIAL_TABLE` | for `dynamodb` | The DynamoDB table. |
+| `AWS_REGION` | for `dynamodb` | The table's region. AWS Lambda sets it. |
+| `DYNAMODB_ENDPOINT` | no | Only for [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html), such as `http://localhost:8000`. |
+
+A missing or invalid setting does not stop the server. Routes that need it answer 503 naming it, and `GET /health/ready` answers 503 with a list of every problem, so check it after a deployment:
+
+```
+$ curl http://localhost:3000/health/ready
+{"status":"UP","problems":[],"components":{"credentialStore":{"status":"UP","durationMs":2}}}
+```
+
+### Upgrading from 2.x
+
+3.0.0 requires two settings that 2.x did not have. If you set only `DB_USER`, `DB_PASS` and `DB_HOST`, add:
+
+```
+CREDENTIAL_STORE=mongodb
+EXCHANGES=on
+```
+
+`EXCHANGES=on` keeps the "request credentials from the Learner Credential Wallet" option; use `off` to drop it. If you set `NEXT_PUBLIC_EXCHANGE_SERVER_URL`, rename it to `EXCHANGE_SERVER_URL`. Shared credentials now expire after a year; ones 2.x stored count from when they were shared. See the [CHANGELOG](./CHANGELOG.md) for the rest.
+
 ## Local Development
 
 Clone the repo then:
@@ -155,6 +190,8 @@ $ npm run dev
 
 *This spins up a [dev server](http://localhost:3000) hosted at `http://localhost:3000`, which you can now open in a web browser.*
 
+`npm run dev` needs no database: [.env.development](./.env.development) sets `CREDENTIAL_STORE=memory` and `EXCHANGES=on`, so sharing works until the server stops. To use MongoDB or DynamoDB locally, set the settings for it in `.env.local`, which overrides `.env.development`.
+
 >[!WARNING]
 >Make sure you run the right npm script. There are two sets of scripts, one in the package.json in the root directory and another in the .next/standalone/package.json directory. The latter is for running on the server, and if you run it locally it doesn't work properly. It is particularly easy to accidentally run the standalone script if you are working in Visual Code because the standalone scripts appear above the regular scripts in the VCode NPM Scripts tab. Make sure you run these:
 
@@ -162,16 +199,16 @@ $ npm run dev
 
 The development server updates as you save changes to the underlying files.
 
-Note that unless you've also configured a mongo backend as described in the [MongoDB](#mongodb) section below, then the credentials api endpoints won't work, but all verification should work as expected.
-
 ## MongoDB
 
-Th credential storage part of VerifierPlus requires MongoDB for its backend storage. To set up MongoDB for this app:
+Set `CREDENTIAL_STORE=mongodb` and either `DB_URI` (any MongoDB, such as `mongodb://localhost:27017`) or, as in 2.x, `DB_HOST`, `DB_USER` and `DB_PASS` for a MongoDB Atlas cluster. To set up Atlas:
 
  * create a Mongo Atlas cluster. 
  * from there create a collection, as well as a user with read and write permissions. 
  * copy `.env.example` to `.env` 
  * copy the connection details for your Atlas cluster into the appropriate fields in the `.env` file.
+
+On first use the app creates two indexes on the collection: a unique index on `id`, and a TTL index on `expiresAt` that has MongoDB delete each record when it expires. If the collection already has a different index named `id_1`, sharing fails and `/health/ready` names the index to remove. Records that 2.x stored have no `expiresAt`; the app treats them as expiring `CREDENTIAL_TTL_DAYS` after their `createdAt`, and MongoDB does not delete them.
 
 > [!TIP]
 > If the app can't connect to your Mongo Atlas collection, make sure that you've added your server IP to the whitelist for your Mongo Atlas account.
@@ -190,6 +227,13 @@ Th credential storage part of VerifierPlus requires MongoDB for its backend stor
 
  We've set the configuation values in the 'environment' sections of the compose file, but you can also use a .env file, like the .env.example we provide. The .env file may be more secure.
 
+ Both compose files set `CREDENTIAL_STORE=mongodb` and `EXCHANGES=on`, which 3.0.0 requires (see [Upgrading from 2.x](#upgrading-from-2x)). To run the image by hand:
+
+```
+$ docker build -t verifier-plus .
+$ docker run -p 3000:3000 -e CREDENTIAL_STORE=mongodb -e DB_URI=mongodb://your-mongo-host:27017 -e EXCHANGES=on verifier-plus
+```
+
 > [!TIP]
 > If, when deploying to a different architecture, you get errors that seem related to tailwind, it may be that you need to include specific builds of the [lightningcss](https://lightningcss.dev) library, which [tailwind](https://tailwindcss.com) uses under the hood. The error should tell you which specific build is needed. You can then find the right package in npm and install it as an optionalDependency as we've already done for the linux build we needed for our AWS deployment: `npm i lightningcss-linux-x64-musl --save-optional`. You'll see in the optionalDependencies section of [package.json](./package.json) that we've also installed another build for an M4 Mac, `lightningcss-linux-arm64-musl`.
 
@@ -205,25 +249,58 @@ Th credential storage part of VerifierPlus requires MongoDB for its backend stor
 
  See [.env.example](./.env.example) for an example
 
+ The exchange is temporary: [transaction-service](https://github.com/digitalcredentials/transaction-service) is its planned home. The code to remove then is marked `TEMPORARY(transaction-service)`.
+
+## AWS Lambda
+
+ `npm run build:lambda` builds the app for AWS Lambda into `dist/lambda/`: the Next.js standalone server, its static files, and `run.sh`, which the [Lambda Web Adapter](https://github.com/awslabs/aws-lambda-web-adapter) starts. Build on Linux x86_64 for a deployable artifact, because the build includes native modules for the platform it ran on.
+
+ On Lambda, use `CREDENTIAL_STORE=dynamodb` with `CREDENTIAL_TABLE`, and `EXCHANGES=off`. The table's key is the string attribute `id`, and its TTL attribute is `expiresAt`. The Digital Credentials Consortium's deployment lives in its platform repository, not here.
+
+ To try the build locally:
+
+```
+$ npm run build:lambda
+$ CREDENTIAL_STORE=memory EXCHANGES=off PORT=3000 dist/lambda/run.sh
+```
+
 ## Testing
 
-We use [Playwright](https://playwright.dev) for testing, pretty much as described on the excellent Playwright site, so we won't reproduce the Playwright documentation.
+### Unit tests
+
+`npm test` runs the unit tests with [Vitest](https://vitest.dev). They need no database and no network: each store's tests run against the memory store.
+
+`npm run test:stores` runs the same store tests against MongoDB and DynamoDB Local as well. Start both first with [docker-compose.test.yml](./docker-compose.test.yml):
+
+```
+$ docker compose -f docker-compose.test.yml up -d
+$ npm run test:stores
+```
+
+`TEST_STORES` picks the stores (a comma list of `memory`, `mongodb`, `dynamodb`); `TEST_MONGO_URI` and `DYNAMODB_ENDPOINT` point at other servers. A store that is named but unreachable fails the run rather than being skipped.
+
+### End-to-end tests
+
+We use [Playwright](https://playwright.dev) for end-to-end testing, pretty much as described on the excellent Playwright site, so we won't reproduce the Playwright documentation.
 
 The basic idea, though, is that the playwright tests check a running server, which by default
 is localhost, but can be set to any server by setting `PLAYWRIGHT_TEST_URL` in [.env.playwright](./.env.playwright), like so:
 
-`PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org`
+`PLAYWRIGHT_TEST_URL=https://verifierplus.org`
 
 This therefore allows us to run end to end tests on our local development server, on a staging server, or on a production server. Any running instance of verifier-plus.
 
 You can also pass the value in on the command line if you like, e.g.,
 
-`PLAYWRIGHT_TEST_URL=https://stage.verifierplus.org npm run test:e2e`
+`PLAYWRIGHT_TEST_URL=http://localhost:3000 npm run test:e2e`
+
+`npm run test:e2e` runs three projects: `API` (the credential API), `DesktopChrome` (the pages), and `Lambda` (what a deployment on AWS Lambda must get right: readiness, reads straight after writes, and the size limits). The test that requests credentials from the wallet asks `/api/config` first and is skipped when exchanges are off. Some tests fetch credentials and registries from the internet.
 
 Note too that you can set which browsers you'd like to run the tests on using the --project flag as described in this [Playwright doc](https://playwright.dev/docs/running-tests#run-tests-on-different-browsers). Note that you'll have to have defined the projects in the [playwright.config.ts](./playwright.config.ts).
 
->[!NOTE]
->We've set a fairly relaxed maxDiffPixels and maxDiffPixelRatio in [playwright.config.ts](./playwright.config.ts) for the screenshot matching because our tests were failing because of inconsequential differences between the images. You may want to change those if need be.
+### CI
+
+[.github/workflows/ci.yml](./.github/workflows/ci.yml) runs on every pull request: the unit tests and types, the store tests against MongoDB and DynamoDB Local, the Lambda build with the end-to-end tests against `dist/lambda/run.sh`, and the Docker image with MongoDB and the end-to-end tests.
 
 >[!TIP]
 >If for whatever reason you don't want to set the playwright PLAYWRIGHT_TEST_URL as an environment variable you can of course also directly change the baseURL in [playwright.config.ts](./playwright.config.ts).

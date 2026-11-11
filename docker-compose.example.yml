@@ -14,6 +14,14 @@ services:
       - HEALTH_CHECK_WEB_HOOK=a webhook like those of Slack
       - HEALTH_CHECK_SERVICE_URL=http://localhost:3000/api/healthz - the healthz endpoint
       - HEALTH_CHECK_SERVICE_NAME=VERIFIER-PLUS
+      # Required since 3.0.0: where shared credentials are kept, and whether
+      # the landing page can request credentials from the Learner Credential Wallet.
+      - CREDENTIAL_STORE=mongodb
+      - EXCHANGES=on
+      # Optional: where wallets reach the exchange (defaults to the page's address).
+      # - EXCHANGE_SERVER_URL=https://your server host
+      # MongoDB: DB_URI, or DB_HOST with DB_USER and DB_PASS
+      # - DB_URI=mongodb://your mongo host:27017
       - DB_USER=your mongo user
       - DB_PASS=and mongo password
       - DB_HOST=and mongo host

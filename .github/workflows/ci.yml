@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: Unit tests and types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx tsc --noEmit
+
+  stores:
+    name: Store contract tests (memory, MongoDB, DynamoDB Local)
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+        ports: ["27017:27017"]
+      dynamodb:
+        image: amazon/dynamodb-local:3.3.2
+        ports: ["8000:8000"]
+    env:
+      TEST_STORES: memory,mongodb,dynamodb
+      TEST_MONGO_URI: mongodb://localhost:27017
+      DYNAMODB_ENDPOINT: http://localhost:8000
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  # Proves the Lambda build: dist/lambda/run.sh serves the app with the memory
+  # store. It does not prove the Lambda Web Adapter, DynamoDB or API Gateway;
+  # the staging deployment's tests do.
+  lambda-shape:
+    name: Lambda build and smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build:lambda
+      - name: Start dist/lambda/run.sh
+        run: |
+          CREDENTIAL_STORE=memory EXCHANGES=off PORT=3000 dist/lambda/run.sh > server.log 2>&1 &
+          for _ in $(seq 1 60); do
+            if curl -sf http://localhost:3000/health/ready; then exit 0; fi
+            sleep 1
+          done
+          echo "/health/ready did not answer 200 within 60 s"
+          cat server.log
+          exit 1
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --project=API --project=DesktopChrome --project=Lambda
+        env:
+          PLAYWRIGHT_TEST_URL: http://localhost:3000
+      - if: ${{ !cancelled() }}
+        run: cat server.log
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-report-lambda-shape
+          path: playwright-report/
+          retention-days: 14
+
+  # Proves the Docker image self-hosters run: MongoDB store, exchanges on.
+  docker:
+    name: Docker image with MongoDB
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: docker build -t verifier-plus:ci .
+      - name: Start the image beside MongoDB
+        run: |
+          docker run -d --name verifier-plus \
+            --network "${{ job.services.mongo.network }}" -p 3000:3000 \
+            -e CREDENTIAL_STORE=mongodb -e DB_URI=mongodb://mongo:27017 -e EXCHANGES=on \
+            verifier-plus:ci
+          for _ in $(seq 1 60); do
+            if curl -sf http://localhost:3000/api/healthz | grep -q '"healthy":true'; then
+              curl -s http://localhost:3000/api/healthz
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "/api/healthz did not report healthy within 60 s"
+          curl -s http://localhost:3000/api/healthz || true
+          docker logs verifier-plus
+          exit 1
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --project=API --project=DesktopChrome --project=Lambda
+        env:
+          PLAYWRIGHT_TEST_URL: http://localhost:3000
+      - if: ${{ !cancelled() }}
+        run: docker logs verifier-plus
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-report-docker
+          path: playwright-report/
+          retention-days: 14

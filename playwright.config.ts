@@ -21,6 +21,8 @@ export default defineConfig({
   retries: 2,
   // Artifacts folder where screenshots, videos, and traces are stored.
   outputDir: "test-results/",
+  // In CI, also write an HTML report (playwright-report/) to upload.
+  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
 
 
   // Run your local dev server before starting the tests:
@@ -63,29 +65,33 @@ export default defineConfig({
       }
     },
     {
+      // What a deployment on AWS Lambda must get right; no browser.
+      name: 'Lambda',
+      testMatch: /.*lambda.spec.ts/,
+      retries: 0,
+      use: {
+        extraHTTPHeaders: {
+          'Content-Type': 'application/json'
+        }
+      }
+    },
+    {
       name: "DesktopChrome",
-      testIgnore: /.*api.spec.ts/,
+      testIgnore: /.*(api|lambda).spec.ts/,
       use: {
         ...devices["Desktop Chrome"],
-      },
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixels: 2000, // Allow up to 2000 pixels to be different
-          maxDiffPixelRatio: 0.1, // Allow up to 10% of pixels to be different
-          //threshold: 0.1, // Adjust color difference tolerance
-        },
       },
     },
     // {
     //   name: 'Desktop Firefox',
-    //.  testIgnore: /.*api.spec.ts/,
+    //.  testIgnore: /.*(api|lambda).spec.ts/,
     //   use: {
     //     ...devices['Desktop Firefox'],
     //   },
     // },
     // {
     //   name: 'Desktop Safari',
-    //.  testIgnore: /.*api.spec.ts/,
+    //.  testIgnore: /.*(api|lambda).spec.ts/,
     //   use: {
     //     ...devices['Desktop Safari'],
     //   },
@@ -93,21 +99,14 @@ export default defineConfig({
     // Test against mobile viewports.
     {
       name: "MobileChrome",
-      testIgnore: /.*api.spec.ts/,
+      testIgnore: /.*(api|lambda).spec.ts/,
       use: {
         ...devices["Pixel 5"],
-      },
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixels: 2000, // Allow up to 2000 pixels to be different
-          maxDiffPixelRatio: 0.1, // Allow up to 10% of pixels to be different
-          //threshold: 0.1, // Adjust color difference tolerance
-        },
       },
     },
    // {
     //  name: "MobileSafari",
-    //  testIgnore: /.*api.spec.ts/,
+    //  testIgnore: /.*(api|lambda).spec.ts/,
    //   use: devices["iPhone 12"],
    // },
   ],

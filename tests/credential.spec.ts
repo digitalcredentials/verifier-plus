@@ -97,8 +97,8 @@ test("full credential display OBv3 VCv2", async ({ page }) => {
 
   // confirm the credential image is shown
   const credentialImageURL = testVC.credentialSubject.achievement.image.id
-  await expect(page.getByTestId(TestId.AchievementImage)).toHaveScreenshot();
   const credentialImage = page.getByTestId(TestId.AchievementImage)
+  await expect.poll(() => credentialImage.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true)
   const srcAttrValue = await credentialImage.getAttribute('src');
   await expect(srcAttrValue).toEqual(credentialImageURL)
 });
@@ -145,8 +145,8 @@ test("full credential display OBv3 VCv1", async ({ page }) => {
 
   // confirm the credential image is shown
   const credentialImageURL = testVC.credentialSubject.achievement.image.id
-  await expect(page.getByTestId(TestId.AchievementImage)).toHaveScreenshot();
   const credentialImage = page.getByTestId(TestId.AchievementImage)
+  await expect.poll(() => credentialImage.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true)
   const srcAttrValue = await credentialImage.getAttribute('src');
   await expect(srcAttrValue).toEqual(credentialImageURL)
 });
