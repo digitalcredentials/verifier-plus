@@ -40,7 +40,7 @@ describe('the credential service', () => {
 
   it('takes the expiry from CREDENTIAL_TTL_DAYS', async () => {
     const ctx = createTestAppContext({
-      settings: readSettings({ CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: '30' }),
+      settings: readSettings({ EXCHANGES: 'off', CREDENTIAL_STORE: 'memory', CREDENTIAL_TTL_DAYS: '30' }),
     });
 
     await runInContext(ctx, async () => {
@@ -131,7 +131,7 @@ describe('the credential service', () => {
   });
 
   it('answers 503 naming the setting when no store is configured', async () => {
-    const ctx = await createAppContext({});
+    const ctx = await createAppContext({ EXCHANGES: 'off' });
 
     await runInContext(ctx, async () => {
       for (const attempt of [() => shareCredential(getTestVP()), () => getSharedCredential('any'), () => unshareCredential('any')]) {

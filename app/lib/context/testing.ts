@@ -6,16 +6,17 @@ import { readSettings } from '@/lib/settings';
 import type { AppContext } from './app-context';
 
 /**
- * A context with the memory store, a fixed clock and a fetch that refuses
- * every request, so a test can reach no database and no network unless it
- * says so. Pass overrides to change any part.
+ * A context with the memory store, a fixed clock, a fetch that refuses every
+ * request, and exchanges off, so a test can reach no database and no network
+ * unless it says so. Pass overrides to change any part.
  */
 export function createTestAppContext(overrides: Partial<AppContext> = {}): AppContext {
   return {
-    settings: readSettings({ CREDENTIAL_STORE: 'memory' }),
+    settings: readSettings({ CREDENTIAL_STORE: 'memory', EXCHANGES: 'off' }),
     credentialStore: MemoryCredentialStore(),
     clock: FixedClock(),
     fetch: FetchMock(),
+    exchanges: null,
     ...overrides,
   };
 }
@@ -43,7 +44,11 @@ export type FetchMockRoutes = Record<string, (request: Request) => Response | Pr
 
 export type FetchMock = typeof globalThis.fetch & { calls: Request[] };
 
-/** A fetch that answers only the routes given and rejects everything else. */
+/**
+ * A fetch that answers only the routes given and rejects everything else.
+ * Like the real fetch, it rejects with the signal's reason when the request's
+ * signal aborts before the response arrives.
+ */
 export function FetchMock(routes: FetchMockRoutes = {}): FetchMock {
   const calls: Request[] = [];
   const fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -51,7 +56,12 @@ export function FetchMock(routes: FetchMockRoutes = {}): FetchMock {
     calls.push(request);
     const respond = routes[`${request.method} ${request.url}`];
     if (!respond) throw new Error(`FetchMock has no response for ${request.method} ${request.url}`);
-    return respond(request);
+    const { signal } = request;
+    signal.throwIfAborted();
+    return new Promise<Response>((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+      Promise.resolve(respond(request)).then(resolve, reject);
+    });
   };
   return Object.assign(fetch, { calls });
 }

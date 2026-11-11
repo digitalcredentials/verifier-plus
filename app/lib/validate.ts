@@ -1,6 +1,7 @@
 import * as verifierCore from '@digitalcredentials/verifier-core';
 import type { VerifiablePresentation } from '@/types/presentation.d';
 import type { VerifiableCredential, CredentialError } from '@/types/credential.d';
+import { OUTBOUND_TIMEOUT_MS, withTimeout } from './limits';
 //import { CredentialErrorTypes } from '@/types/credential.d';
 //import { KnownDidRegistries } from './../data/knownRegistries'
 
@@ -48,7 +49,17 @@ export async function verifyPresentation(
   }
 }
 
-export async function verifyCredential(credential: VerifiableCredential): Promise<VerifyResponse> {
+const KNOWN_DID_REGISTRIES_URL = 'https://digitalcredentials.github.io/dcc-known-registries/known-did-registries.json';
+
+/**
+ * @param options.fetch The fetch for the known-registries list: the app
+ *   context's on the server. Passed in, not read from the context, because
+ *   this module is reachable from client code.
+ */
+export async function verifyCredential(
+  credential: VerifiableCredential,
+  { fetch = globalThis.fetch }: { fetch?: typeof globalThis.fetch } = {},
+): Promise<VerifyResponse> {
   try {
     /*
     basic structure of object returned from verifyCredential call
@@ -59,8 +70,10 @@ export async function verifyCredential(credential: VerifiableCredential): Promis
       };
     */
 
-      const response = await fetch("https://digitalcredentials.github.io/dcc-known-registries/known-did-registries.json");
-      const knownDIDRegistries = await response.json();
+    const knownDIDRegistries = await withTimeout(OUTBOUND_TIMEOUT_MS, async (signal) => {
+      const response = await fetch(KNOWN_DID_REGISTRIES_URL, { signal });
+      return response.json();
+    });
 
     const result = await verifierCore.verifyCredential({
       credential,

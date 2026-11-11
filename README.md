@@ -197,8 +197,12 @@ Th credential storage part of VerifierPlus requires MongoDB for its backend stor
 
  VerifierPlus provides an option on the landing page to request credentials from the Learner Credential Wallet.
 
- To use it you must set the NEXT_PUBLIC_EXCHANGE_SERVER_URL environment variable, pointing at the domain on which you run your instance of verifier-plus. 
- 
+ Turn it on or off with the `EXCHANGES` environment variable, which must be set to `on` or `off`. The landing page shows the option only when it is `on`, and `/api/exchanges/...` answers 404 "Exchanges disabled" when it is `off`. Exchanges are kept in the server's memory, so they need a single long-running server process: on AWS Lambda, `EXCHANGES=on` is refused, `/health/ready` reports it, and exchanges stay off.
+
+ Wallets reach the exchange at the address the browser used to reach the page. To give another address, set `EXCHANGE_SERVER_URL` to an absolute URL, such as `https://verifierplus.org`.
+
+ `NEXT_PUBLIC_EXCHANGE_SERVER_URL` is no longer read; set `EXCHANGE_SERVER_URL` instead.
+
  See [.env.example](./.env.example) for an example
 
 ## Testing

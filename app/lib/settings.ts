@@ -41,6 +41,15 @@ export type SettingValues = {
   mongodb: MongoSettings | null;
   /** Read only when CREDENTIAL_STORE is dynamodb; null otherwise or when invalid. */
   dynamodb: DynamoSettings | null;
+  // TEMPORARY(transaction-service): remove with the in-app exchange
+  /**
+   * EXCHANGES: true only when it is on and allowed here. Unset, invalid, or
+   * on but refused on Lambda all read as false (with a problem).
+   */
+  exchanges: boolean;
+  // TEMPORARY(transaction-service): remove with the in-app exchange
+  /** EXCHANGE_SERVER_URL, without a trailing slash. Read only when exchanges are on; null when unset. */
+  exchangeServerUrl: string | null;
 };
 
 export type Settings = {
@@ -52,12 +61,15 @@ export type Settings = {
 export function readSettings(env: Env): Settings {
   const problems: string[] = [];
   const credentialStore = readCredentialStore(env, problems);
+  const exchanges = readExchanges(env, problems);
   return {
     values: {
       credentialStore,
       credentialTtlDays: readCredentialTtlDays(env, problems),
       mongodb: credentialStore === 'mongodb' ? readMongoSettings(env, problems) : null,
       dynamodb: credentialStore === 'dynamodb' ? readDynamoSettings(env, problems) : null,
+      exchanges,
+      exchangeServerUrl: exchanges ? readExchangeServerUrl(env, problems) : null,
     },
     problems,
   };
@@ -140,4 +152,50 @@ function readDynamoSettings(env: Env, problems: string[]): DynamoSettings | null
   if (!region) problems.push('CREDENTIAL_STORE is dynamodb, so set AWS_REGION');
   if (!table || !region) return null;
   return { table, region, endpoint };
+}
+
+/** Lambda sets this in every function's environment. */
+export function isLambda(env: Env): boolean {
+  return Boolean(env.AWS_LAMBDA_FUNCTION_NAME);
+}
+
+// TEMPORARY(transaction-service): remove with the in-app exchange
+function readExchanges(env: Env, problems: string[]): boolean {
+  const value = env.EXCHANGES?.trim();
+  if (!value) {
+    problems.push('EXCHANGES is not set; set it to on or off');
+    return false;
+  }
+  if (value !== 'on' && value !== 'off') {
+    problems.push(`EXCHANGES is '${value}'; set it to on or off`);
+    return false;
+  }
+  if (value === 'on' && isLambda(env)) {
+    problems.push(
+      'EXCHANGES=on is not supported on Lambda: request exchanges are kept in process memory, ' +
+        'which Lambda does not share between instances. transaction-service is the planned home.',
+    );
+    return false;
+  }
+  return value === 'on';
+}
+
+// TEMPORARY(transaction-service): remove with the in-app exchange
+function readExchangeServerUrl(env: Env, problems: string[]): string | null {
+  const value = env.EXCHANGE_SERVER_URL?.trim();
+  if (!value) return null;
+  if (!isAbsoluteHttpUrl(value)) {
+    problems.push('EXCHANGE_SERVER_URL must be an absolute URL');
+    return null;
+  }
+  return value.replace(/\/+$/, '');
+}
+
+function isAbsoluteHttpUrl(value: string): boolean {
+  try {
+    const { protocol } = new URL(value);
+    return protocol === 'https:' || protocol === 'http:';
+  } catch {
+    return false;
+  }
 }

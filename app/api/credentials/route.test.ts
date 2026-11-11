@@ -92,7 +92,7 @@ describe('the credential routes', () => {
   });
 
   it('answers 503 naming the setting when no store is configured', async () => {
-    await runInContext(await createAppContext({}), async () => {
+    await runInContext(await createAppContext({ EXCHANGES: 'off' }), async () => {
       const res = await post(JSON.stringify(getTestVP()));
       expect(res.status).toBe(503);
       expect(await res.json()).toEqual({
