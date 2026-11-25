@@ -2,6 +2,14 @@ import { expect, type Page } from "@playwright/test";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds";
 
+/**
+ * How long to wait for the first result after clicking Verify. Verifying calls
+ * /api/verify, which fetches DID documents, status lists and registries; on a
+ * deployed site under parallel load that can take longer than Playwright's
+ * 5-second default.
+ */
+export const VERIFY_RESULT_TIMEOUT_MS = 20_000;
+
 /** The accessible names of the status icons beside each verification log line. */
 export enum LogIcon {
     Positive = 'green checkmark',

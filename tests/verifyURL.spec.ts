@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds"
+import { VERIFY_RESULT_TIMEOUT_MS } from "@/tests/helpers/resultLog";
 
 // NOTE: these tests paste the url for the VC into V+, 
 // The tests in verifyText.spec.ts retrieve the json and paste that.
@@ -37,6 +38,8 @@ logTests.forEach(({ name, vc, expected }) => {
     await page.goto("/")
     await page.getByTestId('vc-text-area').fill(vc)
     await page.getByRole('button', { name: 'Verify' }).click()
+    // the log appears once verification returns
+    await expect(page.getByTestId(TestId.ResultLog)).toBeVisible({ timeout: VERIFY_RESULT_TIMEOUT_MS })
     for (let i = 0; i < expected.length; i++) {
       const logTest = expected[i];
       await expect(page.getByText(logTest.expectedText)).toBeVisible();
