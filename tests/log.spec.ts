@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { getTamperedVCAsString } from "@/tests/fixtures/minimalVCv2";
 import { LogMessages } from "@/components/ResultLog/ResultLog";
 import { TestId } from "@/lib/testIds"
-import { expectLogIcons } from "@/tests/helpers/resultLog";
+import { expectLogIcons, VERIFY_RESULT_TIMEOUT_MS } from "@/tests/helpers/resultLog";
 
 const badDiDWebErrorMessage = "The signature could not be checked because the public signing key could not be retrieved from https://digitalcredentials.github.io/dcc-did-web-bad/did.json";
 
@@ -60,8 +60,8 @@ logTests.forEach(({ name, vc, expected }) => {
         await page.goto("/")
         await page.getByTestId('vc-text-area').fill(vc)
         await page.getByRole('button', { name: 'Verify' }).click()
-        // check well formed message matches expected
-        await expect(page.getByText(expectedMessages.wellFormed)).toBeVisible();
+        // check well formed message matches expected; the log appears once verification returns
+        await expect(page.getByText(expectedMessages.wellFormed)).toBeVisible({ timeout: VERIFY_RESULT_TIMEOUT_MS });
         await expect(page.getByTestId(TestId.MalformedLogMsg)).toHaveText(expectedMessages.wellFormed)
         // check signature message matches expected
         await expect(page.getByText(expectedMessages.signature)).toBeVisible();
@@ -86,7 +86,7 @@ test('tampered', async ({ page }) => {
     await page.goto("/")
     await page.getByTestId('vc-text-area').fill(tamperedVC)
     await page.getByRole('button', { name: 'Verify' }).click()
-    await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError);
+    await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError, { timeout: VERIFY_RESULT_TIMEOUT_MS });
 })
 
 test('unresolvable did document', async ({ page }) => {
@@ -94,6 +94,6 @@ test('unresolvable did document', async ({ page }) => {
     await page.goto("/")
     await page.getByTestId('vc-text-area').fill(badVC)
     await page.getByRole('button', { name: 'Verify' }).click()
-    await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError);
+    await expect(page.getByTestId(TestId.GeneralErrorMsg)).toHaveText(LogMessages.GeneralError, { timeout: VERIFY_RESULT_TIMEOUT_MS });
     await expect(page.getByTestId(TestId.ReturnedErrorMsg)).toHaveText(badDiDWebErrorMessage);
 })
